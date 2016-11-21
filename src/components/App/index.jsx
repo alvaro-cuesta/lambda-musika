@@ -41,11 +41,11 @@ export default class App extends React.Component {
     let builder = new Function('Musika', 'sampleRate', 'setLength', code)
     let fn = builder(Musika, this.state.sampleRate, this.setLength.bind(this))
 
-    this.setState({fn})
+    this.setState({builder, fn})
   }
 
   handleRender() {
-    let {playing, length, fn} = this.state
+    let {playing, builder} = this.state
     let renderSampleRate = this.refs.renderSampleRate.value
 
     if (playing) {
@@ -53,6 +53,9 @@ export default class App extends React.Component {
     }
 
     this.handleUpdate()
+
+    let length
+    let fn = builder(Musika, renderSampleRate, (l) => length = l)
 
     let download = document.createElement('a')
     let buffer = Int16Stereo(renderSampleRate, length, fn)

@@ -6,8 +6,6 @@
   - Abstraction is leaking everywhere (e.g. filters don't work with time, only
     samples)
   - Possible solution: work with samples and `dt` instead
-- When rendering, respect the sampleRate (i.e. instance a second `fn`, don't reuse
-  the `Player` one)
 - Sound click on play/pause/update
 
 ## Features
