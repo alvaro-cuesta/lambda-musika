@@ -126,8 +126,7 @@ return (t) => {
     lastMelodyIndex = currentMelodyIndex
   }
 
-  let melodyL = 0
-  let melodyR = 0
+  let melodyL = 0, melodyR = 0
 
   if (melodyPlays) {
     let melody = melodyInstrument(chosenSemitone, melodyT)
