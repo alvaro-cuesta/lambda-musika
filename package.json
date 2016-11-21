@@ -1,0 +1,30 @@
+{
+  "name": "lambda-musika",
+  "version": "1.0.0",
+  "description": "The functional DAW.",
+  "keywords": [
+    "lambda",
+    "musica",
+    "functional",
+    "daw",
+    "music",
+    "sound"
+  ],
+  "author": "Álvaro Cuesta <alvaro-cuesta@GitHub>",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://gihub.com/alvaro-cuesta/lambda-musika"
+  },
+  "homepage": "https://github.com/alvaro-cuesta/lambda-musika#readme",
+  "bugs": {
+    "url": "https://github.com/alvaro-cuesta/lambda-musika/issues"
+  },
+  "main": "./lib/index.js",
+  "scripts": {
+    "build": "cross-env NODE_ENV=production webpack -p --progress --profile --colors",
+    "dev": "webpack-dev-server --progress --profile --colors",
+    "watch": "cross-env NODE_ENV=production webpack -w -p --progress --profile --colors",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
