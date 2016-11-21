@@ -60,7 +60,7 @@ export default class TimeSlider extends React.Component {
         onMouseUp={this.handleMouseUp.bind(this)}
         onMouseMove={this.handleMouseMove.bind(this)}
       ></input>
-      {this.toMinSecs(max)}
+      {this.toMinSecs(length)}
     </span>
   }
 }
