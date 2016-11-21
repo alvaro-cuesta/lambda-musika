@@ -97,21 +97,24 @@ export default class App extends React.Component {
         }}
       />
       <button onClick={this.handleUpdate.bind(this)}>Update</button>
-      <div>
-        <button onClick={this.handleRender.bind(this)}>Render</button>
-        <select ref='renderSampleRate' defaultValue={44100}>
-          <option value={8000}>8000Hz</option>
-          <option value={11025}>11025Hz</option>
-          <option value={16000}>16000Hz</option>
-          <option value={22500}>22500Hz</option>
-          <option value={32000}>32000Hz</option>
-          <option value={37800}>37800Hz</option>
-          <option value={44100}>44100Hz</option>
-          <option value={48000}>48000Hz</option>
-          <option value={88200}>88200Hz</option>
-          <option value={96000}>96000Hz</option>
-        </select>
-      </div>
+      {length
+        ? <div>
+            <button onClick={this.handleRender.bind(this)}>Render</button>
+            <select ref='renderSampleRate' defaultValue={44100}>
+              <option value={8000}>8000Hz</option>
+              <option value={11025}>11025Hz</option>
+              <option value={16000}>16000Hz</option>
+              <option value={22500}>22500Hz</option>
+              <option value={32000}>32000Hz</option>
+              <option value={37800}>37800Hz</option>
+              <option value={44100}>44100Hz</option>
+              <option value={48000}>48000Hz</option>
+              <option value={88200}>88200Hz</option>
+              <option value={96000}>96000Hz</option>
+            </select>
+          </div>
+        : null
+      }
     </div>
   }
 }
