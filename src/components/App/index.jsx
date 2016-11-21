@@ -48,10 +48,7 @@ export default class App extends React.Component {
     let {playing, builder} = this.state
     let renderSampleRate = this.refs.renderSampleRate.value
 
-    if (playing) {
-      this.handlePlay()
-    }
-
+    this.refs.player.stop()
     this.handleUpdate()
 
     let length
