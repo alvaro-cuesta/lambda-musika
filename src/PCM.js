@@ -93,5 +93,5 @@ export function Int16Stereo(sampleRate, length, fn) {
   return buffer;
 }
 
-import * as myself from './Util.js'
+import * as myself from './PCM.js'
 export default myself
