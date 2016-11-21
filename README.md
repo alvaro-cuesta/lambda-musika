@@ -67,15 +67,15 @@ return t => [oscL(F, t) * A, oscR(F + DF, t) * A]
 ```js
 const {Filter} = Musika
 
-const Noise = () => {
+const NoiseGen = () => {
+  const A = Math.SQRT1_2  // Amplitude = 0.707
   const COEFF = Filter.Biquad.LP(400/sampleRate, Math.SQRT1_2)  // Cutoff = 400Hz, Q = 0.707
-  const A = 0.7
 
   const filter = Filter.Biquad()
   return () => filter(COEFF, Math.random() * A)
 }
 
-const noiseL = Noise(), noiseR = Noise()
+const noiseL = NoiseGen(), noiseR = NoiseGen()
 
 return () => [noiseL(), noiseR()]
 ```
@@ -85,8 +85,8 @@ return () => [noiseL(), noiseR()]
 ```js
 const {Generator, Filter} = Musika
 
-const Noise = () => {
-  const A = 0.7
+const NoiseGen = () => {
+  const A = Math.SQRT1_2  // Amplitude = 0.707
 
   const filter = Filter.Biquad()
   return cutoff => {
@@ -95,12 +95,12 @@ const Noise = () => {
   }
 }
 
-const noiseL = Noise(), noiseR = Noise()
+const noiseL = NoiseGen(), noiseR = NoiseGen()
 const cutL = Generator.Sin(), cutR = Generator.Sin()
 
 return t => [
-  noiseL(200 + (cutL(0.1, t) + 1) * 100),
-  noiseR(200 + (cutR(0.08, t) + 1) * 100),
+  noiseL(300 + cutL(0.1, t) * 200),
+  noiseR(300 + cutR(0.08, t) * 200),
 ]
 ```
 

@@ -7,19 +7,18 @@
     samples)
   - Possible solution: work with samples and `dt` instead
 - Sound click on play/pause/update
+- Click when rendering the THX sound example
 
 ## Features
 
 - Musika scripts with Mono output
-- Memoization helper
-- Rate limiting helper
 
 ##### - DAW Interface
 
 - New `TimeSeeker` when `length === undefined`
   - Zero, Rewind, FF, FFF
-- Static plot window to confirm formulas
-  - Ability to plot arbitrary 2D data
+- Static plot window
+  - Ability to plot arbitrary 2D data, formulas, etc.
   - Helpers for filter frequency response, FFT, etc.
 - Favicon(s)
 
@@ -31,6 +30,8 @@
 
 ##### - Editor
 
+- Show compile and runtime errors on editor, highlight error lines, etc.
+- Update hotkey
 - Import Gists or other sources of functions (for custom libraries)
 - Save/load code from file
 - Save/load code from Gist (+ link generation)
@@ -64,12 +65,14 @@
   - Timing helpers
   - Compositional helpers
   - Arpeggiator
+- Memoization helper
+- Rate limiting helper
 
 ##### - Development
 
 - Fix hot module replacement
 - Move PCM to library?
-- Auto publish to GH pages
+- Deploy task: tag and publish to GH pages
 
 ##### - Maybe
 
