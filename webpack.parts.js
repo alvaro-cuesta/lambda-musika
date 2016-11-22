@@ -13,7 +13,8 @@ exports.basic = function(paths) {
     resolve: {
       root: [paths.app, paths.lib],
       extensions: [''],
-    }
+    },
+    devtool: process.env.WEBPACK_DEVTOOL
   };
 };
 
@@ -123,3 +124,11 @@ exports.CSS = function() {
     }
   };
 };
+
+exports.productionSourceMap = function() {
+  return { devtool: 'source-map' };
+}
+
+exports.devSourceMap = function() {
+  return { devtool: 'eval-source-map' };
+}
