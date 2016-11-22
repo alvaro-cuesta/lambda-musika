@@ -156,7 +156,17 @@ exports.extractCSS = function() {
 }
 
 exports.productionSourceMap = function() {
-  return { devtool: 'source-map' };
+  return {
+    plugins: [
+      new webpack.SourceMapDevToolPlugin({
+        exclude: [/vendor/, /manifest/],
+        filename: '[file].map',
+        moduleFilenameTemplate: 'webpack:///[resource-path]',
+        fallbackModuleFilenameTemplate: 'webpack:///[resourcePath]?[hash]',
+        columns: true
+      })
+    ]
+  }
 }
 
 exports.devSourceMap = function() {
