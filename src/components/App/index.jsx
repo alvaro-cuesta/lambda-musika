@@ -48,11 +48,11 @@ export default class App extends React.Component {
     let {playing, builder} = this.state
     let renderSampleRate = this.refs.renderSampleRate.value
 
-    this.refs.player.stop()
+    this.refs.player.pause()
     this.handleUpdate()
 
     let length
-    let fn = builder(Musika, renderSampleRate, (l) => length = l)
+    let fn = builder(Musika, renderSampleRate, l => length = l)
 
     let download = document.createElement('a')
     let buffer = Int16Stereo(renderSampleRate, length, fn)
