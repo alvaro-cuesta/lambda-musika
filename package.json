@@ -42,6 +42,7 @@
     "babel-preset-stage-3": "^6.17.0",
     "clean-webpack-plugin": "^0.1.14",
     "css-loader": "^0.26.0",
+    "extract-text-webpack-plugin": "^1.0.1",
     "html-webpack-plugin": "^2.24.1",
     "raw-loader": "^0.5.1",
     "react-transform-hmr": "^1.0.4",

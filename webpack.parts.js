@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 exports.basic = function(paths) {
   return {
@@ -125,11 +126,35 @@ exports.CSS = function() {
     resolve: { extensions: ['.css'] },
     module: {
       loaders: [
-        { test: /\.css$/, loaders: ['style', 'css'] },
+        { test: /\.css$/, loaders: ['style', 'css' /*FIX: 'css?sourceMap'*/] },
       ]
     }
   };
 };
+
+exports.extractCSS = function() {
+  let appCSS = new ExtractTextPlugin('[name].[chunkhash].css');
+  let vendorCSS = new ExtractTextPlugin('[name]-vendor.[chunkhash].css');
+
+  return {
+    resolve: { extensions: ['.css'] },
+    module: {
+      loaders: [
+        {
+          test: /\.css$/,
+          loader: appCSS.extract('style', 'css?sourceMap'),
+          exclude: /node_modules/
+        },
+        {
+          test: /\.css$/,
+          loader: vendorCSS.extract('style', 'css'),
+          include: /node_modules/
+        }
+      ]
+    },
+    plugins: [appCSS, vendorCSS]
+  };
+}
 
 exports.productionSourceMap = function() {
   return { devtool: 'source-map' };

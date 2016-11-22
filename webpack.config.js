@@ -33,8 +33,7 @@ const common = merge(
       new HtmlWebpackPlugin({template: 'index.ejs'}),
     ]
   },
-  parts.babelJSX(),
-  parts.CSS()
+  parts.babelJSX()
 );
 
 let config;
@@ -45,10 +44,12 @@ switch(process.env.npm_lifecycle_event) {
       common,
       parts.productionSourceMap(),
       parts.productionEnv(),
+      parts.extractCSS(),
       parts.clean(PATHS.build),
       parts.minify()
     );
     break;
+
   case 'dev':
     config = merge(
       parts.devServer({
@@ -61,13 +62,16 @@ switch(process.env.npm_lifecycle_event) {
         port: PORT
       }),
       common,
-      parts.devSourceMap()
+      parts.devSourceMap(),
+      parts.CSS()
     );
     break;
+
   default:
     config = merge(
       common,
-      parts.devSourceMap()
+      parts.devSourceMap(),
+      parts.CSS()
     );
 }
 
