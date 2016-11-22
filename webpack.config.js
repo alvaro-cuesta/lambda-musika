@@ -1,116 +1,84 @@
 "use strict";
-const webpack = require('webpack');
 const path = require('path');
-
+const webpack = require('webpack');
+const merge = require('webpack-merge');
+const validate = require('webpack-validator');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+
+const parts = require('./webpack.parts.js');
 
 const PRODUCTION = process.env.NODE_ENV === 'production';
 const HOST = process.env.HOST || "0.0.0.0";
 const PORT = process.env.PORT || "8888";
 
-const SRC_DIR = path.join(__dirname, 'src');
-const LIB_DIR = path.join(__dirname, 'lib');
-const BUILD_DIR = path.join(__dirname, 'build');
-const EXAMPLES_DIR = path.join(__dirname, 'examples');
-
-/**/
-
-var entry = {
-  'lambda-musika': [],
+const PATHS = {
+  app: path.join(__dirname, 'src'),
+  lib: path.join(__dirname, 'lib'),
+  build: path.join(__dirname, 'build'),
+  examples: path.join(__dirname, 'examples'),
 };
-
-if (!PRODUCTION) {
-  entry['lambda-musika'].push(
-    `webpack-dev-server/client?http://${HOST}:${PORT}`,
-    'webpack/hot/only-dev-server'
-  );
-}
-
-entry['lambda-musika'].push('./index.jsx');
-
-/**/
-
-var devServer = !PRODUCTION
-  ? {
-    host: HOST,
-    port: PORT,
-    contentBase: BUILD_DIR,
-    noInfo: true,
-    hot: true,
-  }
-  : undefined
-  ;
-
-/**/
 
 var devtool = process.env.WEBPACK_DEVTOOL || (PRODUCTION ? 'source-map' : 'eval-source-map');
 
-/**/
-
-var plugins = [];
-
-if (!PRODUCTION) {
-  plugins.push(
-    new webpack.NoErrorsPlugin(),
-    new webpack.HotModuleReplacementPlugin()
-  );
-}
-
-plugins.push(
-  new HtmlWebpackPlugin({template: 'index.ejs'}),
-  new CopyWebpackPlugin([{from: './index.css'},])
-);
-
-if (PRODUCTION) {
-  plugins.push(
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: '"production"'
-      }
-    }),
-    new webpack.optimize.UglifyJsPlugin({
-      minimize: true,
-      mangle: true,
-      sourceMap: true,
-      output: {
-        comments: false
-      },
-      compress: {
-        warnings: false,
-      }
-    }),
-    new CleanWebpackPlugin([BUILD_DIR], { root: process.cwd() })
-  );
-}
-
-/**/
-
-module.exports = {
-  context: SRC_DIR,
-  entry,
-  output: {
-    path: BUILD_DIR,
-    //filename: '[name].[chunkhash].js',
-    filename: '[name].[hash].js',
-    chunkFilename: '[chunkhash].js'
-  },
-  resolve: {
-    root: SRC_DIR,
-    alias: {
-      Musika: LIB_DIR,
-      examples: EXAMPLES_DIR,
+const common = merge(
+  parts.dontEmitIfErrors(),
+  {
+    context: PATHS.app,
+    entry: {
+      'lambda-musika': [ './index.jsx' ]
     },
-    extensions: ['', '.js', '.jsx', '.css'],
-  },
-  module: {
-    loaders: [
-      { test: /\.jsx?$/, exclude: /node_modules/, loaders: ['babel'] },
-      { test: /\.css$/, loaders: ['style', 'css'] },
+    output: {
+      path: PATHS.build,
+      //filename: '[name].[chunkhash].js',
+      filename: '[name].[hash].js',
+      chunkFilename: '[chunkhash].js'
+    },
+    resolve: {
+      root: PATHS.app,
+      alias: {
+        Musika: PATHS.lib,
+        examples: PATHS.examples,
+      },
+      extensions: [''],
+    },
+    devtool,
+    plugins: [
+      new HtmlWebpackPlugin({template: 'index.ejs'}),
+      new CopyWebpackPlugin([{from: './index.css'},])
     ]
   },
-  devServer,
-  devtool,
-  plugins
-};
+  parts.babelJSX(),
+  parts.CSS()
+);
+
+let config;
+
+switch(process.env.npm_lifecycle_event) {
+  case 'build':
+    config = merge(
+      common,
+      parts.productionEnv(),
+      parts.clean(PATHS.build),
+      parts.minify()
+    );
+    break;
+  case 'dev':
+    config = merge(
+      parts.devServer({
+        host: HOST,
+        port: PORT
+      }),
+      parts.hotOnly({
+        entry: 'lambda-musika',
+        host: HOST,
+        port: PORT
+      }),
+      common
+    );
+    break;
+  default:
+    config = common;
+}
+
+module.exports = validate(config);
