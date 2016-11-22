@@ -23,24 +23,15 @@ var devtool = process.env.WEBPACK_DEVTOOL || (PRODUCTION ? 'source-map' : 'eval-
 
 const common = merge(
   parts.dontEmitIfErrors(),
+  parts.basic(PATHS),
   {
-    context: PATHS.app,
     entry: {
       'lambda-musika': [ './index.jsx' ]
     },
-    output: {
-      path: PATHS.build,
-      //filename: '[name].[chunkhash].js',
-      filename: '[name].[hash].js',
-      chunkFilename: '[chunkhash].js'
-    },
     resolve: {
-      root: PATHS.app,
       alias: {
-        Musika: PATHS.lib,
         examples: PATHS.examples,
       },
-      extensions: [''],
     },
     devtool,
     plugins: [

@@ -1,6 +1,22 @@
 const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
+exports.basic = function(paths) {
+  return {
+    context: paths.app,
+    output: {
+      path: paths.build,
+      //filename: '[name].[chunkhash].js',
+      filename: '[name].[hash].js',
+      chunkFilename: '[chunkhash].js'
+    },
+    resolve: {
+      root: [paths.app, paths.lib],
+      extensions: [''],
+    }
+  };
+};
+
 exports.devServer = function(options) {
   return {
     devServer: {
@@ -16,7 +32,7 @@ exports.devServer = function(options) {
       })
     ]
   };
-}
+};
 
 exports.hotOnly = function(options) {
   const points = [
@@ -36,7 +52,7 @@ exports.hotOnly = function(options) {
     entry,
     devServer: { inline: false }
   };
-}
+};
 
 exports.clean = function(path) {
   return {
@@ -46,7 +62,7 @@ exports.clean = function(path) {
       })
     ]
   };
-}
+};
 
 exports.minify = function() {
   return {
@@ -64,7 +80,7 @@ exports.minify = function() {
       })
     ]
   };
-}
+};
 
 exports.dontEmitIfErrors = function() {
   return {
@@ -72,7 +88,7 @@ exports.dontEmitIfErrors = function() {
       new webpack.NoErrorsPlugin()
     ]
   };
-}
+};
 
 exports.productionEnv = function() {
   return {
@@ -84,7 +100,7 @@ exports.productionEnv = function() {
       })
     ]
   };
-}
+};
 
 exports.babelJSX = function() {
   return {
@@ -95,7 +111,7 @@ exports.babelJSX = function() {
       ]
     }
   };
-}
+};
 
 exports.CSS = function() {
   return {
@@ -106,4 +122,4 @@ exports.CSS = function() {
       ]
     }
   };
-}
+};
