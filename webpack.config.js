@@ -2,7 +2,9 @@
 const webpack = require('webpack');
 const path = require('path');
 
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 const PRODUCTION = process.env.NODE_ENV === 'production';
 const HOST = process.env.HOST || "0.0.0.0";
@@ -14,16 +16,18 @@ const BUILD_DIR = path.join(__dirname, 'build');
 
 /**/
 
-var entry = [];
+var entry = {
+  'lambda-musika': [],
+};
 
 if (!PRODUCTION) {
-  entry.push(
+  entry['lambda-musika'].push(
     `webpack-dev-server/client?http://${HOST}:${PORT}`,
     'webpack/hot/only-dev-server'
   );
 }
 
-entry.push('./index.jsx');
+entry['lambda-musika'].push('./index.jsx');
 
 /**/
 
@@ -54,7 +58,7 @@ if (!PRODUCTION) {
 }
 
 plugins.push(
-  new CopyWebpackPlugin([{from: './index.html'},]),
+  new HtmlWebpackPlugin({template: 'index.ejs'}),
   new CopyWebpackPlugin([{from: './index.css'},])
 );
 
@@ -75,7 +79,8 @@ if (PRODUCTION) {
       compress: {
         warnings: false,
       }
-    })
+    }),
+    new CleanWebpackPlugin([BUILD_DIR], { root: process.cwd() })
   );
 }
 
@@ -86,7 +91,8 @@ module.exports = {
   entry,
   output: {
     path: BUILD_DIR,
-    filename: "lambda-musika.js"
+    filename: '[name].[chunkhash].js',
+    chunkFilename: '[chunkhash].js'
   },
   resolve: {
     root: SRC_DIR,
