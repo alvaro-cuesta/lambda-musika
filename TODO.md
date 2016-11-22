@@ -70,7 +70,6 @@
 
 ##### - Development
 
-- Fix hot module replacement
 - Move PCM to library?
 - Deploy task: tag and publish to GH pages
 

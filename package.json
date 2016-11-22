@@ -36,6 +36,7 @@
   "devDependencies": {
     "babel-core": "^6.18.2",
     "babel-loader": "^6.2.8",
+    "babel-plugin-react-transform": "^2.0.2",
     "babel-preset-latest": "^6.16.0",
     "babel-preset-react": "^6.16.0",
     "babel-preset-stage-3": "^6.17.0",
@@ -45,7 +46,7 @@
     "css-loader": "^0.26.0",
     "html-webpack-plugin": "^2.24.1",
     "raw-loader": "^0.5.1",
-    "react-hot-loader": "^3.0.0-beta.6",
+    "react-transform-hmr": "^1.0.4",
     "style-loader": "^0.13.1",
     "webpack": "^1.13.3",
     "webpack-dev-server": "^1.16.2"

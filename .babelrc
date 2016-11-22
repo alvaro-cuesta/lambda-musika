@@ -1,4 +1,14 @@
 {
   "presets": ["latest", "stage-3", "react"],
-  "plugins": ["react-hot-loader/babel"]
+  "env": {
+    "development": {
+      "plugins": [["react-transform", {
+        "transforms": [{
+          "transform": "react-transform-hmr",
+          "imports": ["react"],
+          "locals": ["module"]
+        }]
+      }]]
+    }
+  }
 }
