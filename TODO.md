@@ -70,7 +70,6 @@
 
 ##### - Development
 
-- Move PCM to library?
 - Deploy task: tag and publish to GH pages
 
 ##### - Maybe
