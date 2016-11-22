@@ -70,13 +70,19 @@ exports.minify = function() {
     plugins: [
       new webpack.optimize.UglifyJsPlugin({
         minimize: true,
-        mangle: true,
+        mangle: {
+          except: ['webpackJsonp'],
+          screw_ie8 : true
+        },
         sourceMap: true,
         output: {
           comments: false
         },
         compress: {
           warnings: false,
+          drop_console: true,
+          screw_ie8 : true,
+          keep_fnames: false
         }
       })
     ]
