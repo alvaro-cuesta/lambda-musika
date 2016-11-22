@@ -7,7 +7,6 @@ exports.basic = function(paths) {
     context: paths.app,
     output: {
       path: paths.build,
-      //filename: '[name].[chunkhash].js',
       filename: '[name].[hash].js',
       chunkFilename: '[chunkhash].js'
     },
@@ -162,4 +161,26 @@ exports.productionSourceMap = function() {
 
 exports.devSourceMap = function() {
   return { devtool: 'eval-source-map' };
+}
+
+exports.extractBundle = function(options) {
+  const entry = {};
+  entry[options.name] = options.entries;
+
+  return {
+    entry: entry,
+    output: {filename: '[name].[chunkhash].js'},
+    plugins: [
+      new webpack.optimize.CommonsChunkPlugin({
+        names: [options.name, 'manifest']
+      })
+    ]
+  };
+}
+
+exports.extractVendor = function() {
+  return exports.extractBundle({
+    name: 'vendor',
+    entries: Object.keys(require('./package.json').dependencies)
+  });
 }

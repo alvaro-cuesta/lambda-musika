@@ -21,16 +21,17 @@ const common = merge(
   parts.dontEmitIfErrors(),
   parts.basic(PATHS),
   {
-    entry: {
-      'lambda-musika': [ './index.jsx' ]
-    },
+    entry: { 'lambda-musika': [ './index.jsx' ] },
     resolve: {
       alias: {
         examples: PATHS.examples,
       },
     },
     plugins: [
-      new HtmlWebpackPlugin({template: 'index.ejs'}),
+      new HtmlWebpackPlugin({
+        template: 'index.ejs',
+        chunksSortMode: 'dependency'
+      }),
     ]
   },
   parts.babelJSX()
@@ -44,6 +45,7 @@ switch(process.env.npm_lifecycle_event) {
       common,
       parts.productionSourceMap(),
       parts.productionEnv(),
+      parts.extractVendor(),
       parts.extractCSS(),
       parts.clean(PATHS.build),
       parts.minify()
