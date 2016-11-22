@@ -17,6 +17,8 @@ import CPULoad from 'components/CPULoad'
 import Musika from 'Musika'
 import {Int16Stereo, makeWAVURL} from 'PCM'
 
+const DEFAULT_SCRIPT = require('!raw!examples/default')
+
 export default class App extends React.Component {
   constructor(props) {
     super(props)
@@ -82,7 +84,7 @@ export default class App extends React.Component {
       />
       <CPULoad renderTime={renderTime} bufferLength={bufferLength} sampleRate={sampleRate} />
       <Codemirror ref='code'
-        defaultValue={require('!raw!./default-song.js')}
+        defaultValue={DEFAULT_SCRIPT}
         options={{
           lineNumbers: true,
           mode: 'javascript',

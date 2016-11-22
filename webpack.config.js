@@ -13,6 +13,7 @@ const PORT = process.env.PORT || "8888";
 const SRC_DIR = path.join(__dirname, 'src');
 const LIB_DIR = path.join(__dirname, 'lib');
 const BUILD_DIR = path.join(__dirname, 'build');
+const EXAMPLES_DIR = path.join(__dirname, 'examples');
 
 /**/
 
@@ -99,6 +100,7 @@ module.exports = {
     root: SRC_DIR,
     alias: {
       Musika: LIB_DIR,
+      examples: EXAMPLES_DIR,
     },
     extensions: ['', '.js', '.jsx', '.css'],
   },
