@@ -71,10 +71,6 @@ export default class App extends React.Component {
     this.setState({renderTime})
   }
 
-  setLength(length) {
-    this.setState({length})
-  }
-
   render() {
     let {fn, length, renderTime, sampleRate} = this.state
     let {bufferLength} = this.props
