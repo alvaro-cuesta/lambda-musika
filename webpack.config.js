@@ -91,7 +91,8 @@ module.exports = {
   entry,
   output: {
     path: BUILD_DIR,
-    filename: '[name].[chunkhash].js',
+    //filename: '[name].[chunkhash].js',
+    filename: '[name].[hash].js',
     chunkFilename: '[chunkhash].js'
   },
   resolve: {
