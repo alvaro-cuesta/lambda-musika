@@ -20,8 +20,8 @@ A Musika script is just regular JS program:
   range
 
 For now there is no static documentation available, just dive in the source code
-and learn form the [default song](src/components/App/default-song.js) and [other
-examples](#examples).
+and learn form the [README examples](#examples), [default song](examples/default.js)
+and other [more complex examples](examples/).
 
 ##### - Available defines:
 
