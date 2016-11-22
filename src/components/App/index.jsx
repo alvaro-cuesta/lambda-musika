@@ -35,13 +35,13 @@ export default class App extends React.Component {
   }
 
   handleUpdate() {
-    this.setState({length: undefined})
-
     let code = this.refs.code.getCodeMirror().getValue()
     let builder = new Function('Musika', 'sampleRate', 'setLength', code)
-    let fn = builder(Musika, this.state.sampleRate, this.setLength.bind(this))
 
-    this.setState({builder, fn})
+    let length
+    let fn = builder(Musika, this.state.sampleRate, l => length = l)
+
+    this.setState({builder, fn, length})
   }
 
   handleRender() {
