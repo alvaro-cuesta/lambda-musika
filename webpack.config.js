@@ -30,7 +30,8 @@ const common = merge(
     plugins: [
       new HtmlWebpackPlugin({
         template: 'index.ejs',
-        chunksSortMode: 'dependency'
+        chunksSortMode: 'dependency',
+        minify: { collapseWhitespace: true }
       }),
     ]
   },
