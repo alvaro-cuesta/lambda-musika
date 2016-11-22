@@ -4,7 +4,6 @@ const webpack = require('webpack');
 const merge = require('webpack-merge');
 const validate = require('webpack-validator');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const parts = require('./webpack.parts.js');
 
@@ -36,7 +35,6 @@ const common = merge(
     devtool,
     plugins: [
       new HtmlWebpackPlugin({template: 'index.ejs'}),
-      new CopyWebpackPlugin([{from: './index.css'},])
     ]
   },
   parts.babelJSX(),
