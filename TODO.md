@@ -2,14 +2,39 @@
 
 ## Bugs
 
-- Using `t` as DSP time variable is probably not... good
+- Using `t` as DSP time variable is awkward
   - Abstraction is leaking everywhere (e.g. filters don't work with time, only
     samples)
   - Possible solution: work with samples and `dt` instead
-- Sound click on play/pause/update
-- Click when rendering the THX sound example
+  - Problem: `t` is still useful in other situations (e.g. envelopes)
 - Auto-updating on app open is broken
-- User can undo the first text value
+
+##### - DAW Interface
+
+##### - Player
+
+- Sound clicks on play/pause/update
+- There is leftover sound from previous buffer state after pausing, updating an
+  then playing the new buffer
+
+##### - Editor
+
+- User can undo the first text value. Clear undo history!
+- Gutter highlight line is mispositioned (because I did the hack to move the
+  gutter down)
+
+##### - Renderer
+
+- Audible clicks when rendering the THX sound example
+
+##### - Musika
+
+##### - Development
+
+- I broke hot reload... again
+- CSS source map breaks CodeMirror (I'm now using Ace, is this still a problem?)
+
+
 
 ## Features
 
@@ -17,35 +42,25 @@
 
 ##### - DAW Interface
 
-- New `TimeSeeker` when `length === undefined`
-  - Zero, Rewind, FF, FFF
-- Static plot window
-  - Ability to plot arbitrary 2D data, formulas, etc.
-  - Helpers for filter frequency response, FFT, etc.
 - Favicon(s)
 
 ##### - Player
 
-- Alternate realtime-rendering methods (if faster or more responsive)
-  - `eval`
-  - Premaking buffers via Workers
+- New `TimeSeeker` when `length === undefined`
+  - Zero, Rewind, FF, FFF
+- Volume slider
 
 ##### - Editor
 
-- Show runtime errors on editor etc.
-- Show last error on status bar
-- Update hotkey
-- Import Gists or other sources of functions (for custom libraries)
-- Save/load code from file
-- Save/load code from Gist (+ link generation)
-- REPL
-- Enable ACE worker but with custom rules
-- Detect tab settings from buffer
-- Continue comments
+- Show runtime errors on editor
+- Show errors on status bar (right now in the gutter they're quite unnoticeable)
+- Update hotkey (CTRL-Enter?, CTRL-S?)
+- Preserve code on F5 (how to reset to default song then?)
 
 ##### - Renderer
 
-- Handle big/little endian architectures (I don't remember what this means)
+- Handle big/little endian architectures (I don't remember what I meant with
+  this task)
 - Quantization
   - More quantization methods (currently truncating)
   - Dithering
@@ -58,8 +73,8 @@
 - Documentation
   - Add comments
   - Static documentation generation
-- Log-to-Linear function (for linear parameters into freqs and such)
-  - Also for amplitude?
+- Log-to-Linear function and viceversa (for linear parameters into freqs and such)
+  - Also for amplitude? I.e. work with decibels
 - Envelopes
   - Attack/release more interpolations
     - Linear
@@ -74,17 +89,86 @@
   - Arpeggiator
 - Memoization helper
 - Rate limiting helper
+- Panning helper
 
 ##### - Development
 
-- Deploy task: tag and publish to GH pages
+- Deploy task: bump version, tag and publish to GH pages and NPM
+  - https://www.npmjs.com/package/gh-pages
+  - https://github.com/iamcco/gh-pages-webpack-plugin
+  - https://gist.github.com/cobyism/4730490
+  - https://github.com/bvaughn/react-virtualized/blob/master/package.json
+  - http://survivejs.com/webpack/building-with-webpack/hosting-on-github-pages/
+- http://survivejs.com/webpack/building-with-webpack/separating-css/#separating-application-code-and-styling
+  - Extract theme, components and vendor CSS separately
+  - Check that vendor CSS hash doesn't change
+- Move Web Audio bits to library, abstracting audio playing in the process
+- Use `extend PureComponent` where possible
 
-##### - Maybe
 
-- Musika Equalizer
+## Ideas or possible research lines
+
+- Microphone/MIDI/keyboard/mouse input
+- Offline/AppCache
+
+##### - DAW Interface
+
+- Declare sliders and other controls in scripts, which the user can control
+  to affect sound/constants in real time
+- Static plots
+  - Ability to plot arbitrary 2D data, formulas, etc.
+  - Helpers for filter frequency response, FFT, etc.
 - Visualization
   - Wave
   - FFT
   - XY
-- Microphone/MIDI/keyboard/mouse input
-- MP3/OGG rendering
+
+##### - Player
+
+- Test alternate playing methods (if faster or more responsive)
+  - `eval`
+  - Premaking buffers via Workers
+  - Script tag
+- https://reactify.github.io/react-player-controls/
+
+##### - Editor
+
+- Custom scrollbars (https://github.com/ajaxorg/ace/issues/869)
+- REPL
+- Import Gists or other sources of functions (for custom libraries)
+- Save/load code from file
+- Save/load code from Gist (+ link generation)
+- Enable ACE worker but with custom rules
+- Detect tab settings from buffer
+- Continue comments
+- Slider when double-clicking numerical values in editor
+
+##### - Renderer
+
+- MP3/OGG
+
+##### - Musika
+
+- Make the API more functional by taking Sin(), Constant(), etc. as parameters...
+  i.e. take functions instead of values (easier composition)
+  - Function calls might be expensive, leave it to the user?
+- Equalizer
+
+##### - Development
+
+- https://webpack.github.io/docs/list-of-plugins.html#dedupeplugin
+- `new webpack.optimize.OccurrenceOrderPlugin(true)`
+- Move vendor libraries to CDN instead of `vendor` chunk
+- http://survivejs.com/webpack/building-with-webpack/eliminating-unused-css/
+- http://survivejs.com/webpack/building-with-webpack/analyzing-build-statistics/
+- http://survivejs.com/webpack/loading-assets/formats-supported/
+  - Build library as an UMD package to be used outside of the DAW as a
+    regular JavaScript library
+- http://survivejs.com/webpack/loading-assets/loading-styles/
+  - Stylus
+  - CSS modules
+- http://survivejs.com/webpack/advanced-techniques/linting/
+- http://survivejs.com/webpack/advanced-techniques/authoring-packages/
+- http://survivejs.com/webpack/advanced-techniques/configuring-react/
+  - TypeScript
+  - Flow
