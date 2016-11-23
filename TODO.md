@@ -97,7 +97,6 @@
   - Extract theme, components and vendor CSS separately
   - Check that vendor CSS hash doesn't change
 - Move Web Audio bits to library, abstracting audio playing in the process
-- Use `extend PureComponent` where possible
 
 
 

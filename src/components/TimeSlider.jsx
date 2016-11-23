@@ -1,13 +1,10 @@
 import React from 'react'
 
 // A slider component to seek time
-export default class TimeSlider extends React.Component {
+export default class TimeSlider extends React.PureComponent {
   constructor(props) {
     super(props)
-    this.state = {sliding: false}
   }
-
-  /* Private API */
 
   // Regular change event
   handleChange({target: {value}}) {
@@ -20,13 +17,13 @@ export default class TimeSlider extends React.Component {
 
   // Also allow changing value by sliding
   handleMouseDown() {
-    this.setState({sliding: true})
+    this.isSliding = true
   }
 
   handleMouseUp({target: {value}}) {
     let {onChange} = this.props
 
-    this.setState({sliding: false})
+    this.isSliding = false
     if (typeof onChange !== 'undefined') {
       onChange(value)
     }
@@ -35,7 +32,7 @@ export default class TimeSlider extends React.Component {
   handleMouseMove({target: {value}}) {
     let {onChange} = this.props
 
-    if (this.state.sliding && typeof onChange !== 'undefined') {
+    if (this.isSliding && typeof onChange !== 'undefined') {
       onChange(value)
     }
   }

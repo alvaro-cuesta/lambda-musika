@@ -3,7 +3,7 @@ import React from 'react'
 import TimeSlider from 'components/TimeSlider'
 
 // Audio player component which receives a function `fn` to generate audio
-export default class Player extends React.Component {
+export default class Player extends React.PureComponent {
   constructor(props) {
     super(props)
 

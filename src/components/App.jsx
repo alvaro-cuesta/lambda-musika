@@ -8,7 +8,7 @@ import {Int16Stereo, makeWAVURL} from 'PCM'
 
 const DEFAULT_SCRIPT = require('!raw!examples/default')
 
-export default class App extends React.Component {
+export default class App extends React.PureComponent {
   constructor(props) {
     super(props)
 
@@ -22,10 +22,11 @@ export default class App extends React.Component {
 
   componentDidMount() {
     this.setState({sampleRate: this.refs.player.getSampleRate()})
+    this.handleUpdate()
   }
 
   handleUpdate() {
-    let editor = this.refs.editor.get()
+    let editor = this.refs.editor.editor
     let source = editor.getValue()
     let session = editor.getSession()
 
@@ -52,7 +53,7 @@ export default class App extends React.Component {
 
     this.handleUpdate()
 
-    let source = this.refs.editor.get().getValue()
+    let source = this.refs.editor.editor.getValue()
     let sampleRate = this.refs.renderSampleRate.value
     let {fn, length, error} = compile(code, sampleRate)
 
@@ -86,7 +87,7 @@ export default class App extends React.Component {
         onRenderTime={this.handleRenderTime.bind(this)}
       />
       <CPULoad renderTime={renderTime} bufferLength={bufferLength} sampleRate={sampleRate} />
-      <Editor ref='editor' defaultValue={DEFAULT_SCRIPT} onLoad={this.handleUpdate.bind(this)} />
+      <Editor ref='editor' defaultValue={DEFAULT_SCRIPT} />
       <div className='Musika-bottomPanel'>
         <button onClick={this.handleUpdate.bind(this)}>Update</button>
         {length

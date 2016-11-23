@@ -8,17 +8,9 @@ import 'brace/ext/elastic_tabstops_lite'
 import 'brace/ext/keybinding_menu'
 import 'brace/ext/settings_menu'
 
-export default class Editor extends React.Component {
+export default class Editor extends React.PureComponent {
   constructor(props) {
     super(props);
-
-    this.state = {
-      editor: undefined
-    }
-  }
-
-  get() {
-    return this.state.editor
   }
 
   componentDidMount() {
@@ -76,9 +68,8 @@ export default class Editor extends React.Component {
 
     editor.focus()
 
-    this.setState({editor}, () => {
-      if (this.props.onLoad) this.props.onLoad(editor)
-    })
+    this.editor = editor
+    if (this.props.onLoad) this.props.onLoad(editor)
   }
 
   render() {
