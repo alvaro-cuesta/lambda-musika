@@ -188,9 +188,11 @@ exports.extractBundle = function(options) {
   };
 }
 
-exports.extractVendor = function() {
+exports.extractVendor = function(additionalVendorModules) {
+  additionalVendorModules = additionalVendorModules || []
+
   return exports.extractBundle({
     name: 'vendor',
-    entries: Object.keys(require('./package.json').dependencies)
+    entries: Object.keys(require('./package.json').dependencies).concat(additionalVendorModules)
   });
 }

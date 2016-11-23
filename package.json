@@ -29,6 +29,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "brace": "^0.9.0",
     "react": "^15.4.0",
     "react-codemirror": "^0.2.6",
     "react-dom": "^15.4.0"

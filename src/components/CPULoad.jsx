@@ -14,7 +14,7 @@ export default function CPULoad({renderTime, bufferLength, sampleRate}) {
       : 0
   }
 
-  return <div className='CPULoad'>
+  return <div className='Musika-CPULoad'>
     <div className='black' style={{minWidth: `${100 - percentage}%`}} />
     {renderTime
       ? <span className='left'>{renderTime.toFixed(2)}ms</span>

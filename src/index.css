@@ -1,13 +1,49 @@
-html, body {
+* {
+  box-sizing: border-box;
+}
+
+html, body, #container, .Musika-App {
+  height: 100%;
   margin: 0;
+  padding: 0;
 }
 
-.ReactCodeMirror {
-  border: 1px solid #ccc;
+.Musika-App {
+  display: flex;
+  flex-direction: column;
 }
 
-.SongSlider {
+.ace_editor {
+  width: 100% !important;
+  height: 100% !important;
+}
 
+.Musika-Player {
+  height: 2em;
+  flex: 0;
+}
+
+.Musika-bottomPanel {
+  flex: 0;
+}
+
+.Musika-SongSlider {
+
+}
+
+.Musika-CPULoad {
+  width: 100%;
+  height: 1em;
+  background: linear-gradient(to right, rgba(0,255,0,1) 0%, rgba(255,255,0,1) 30%, rgba(255,255,0,1) 50%, rgba(255,0,0,1) 100%);
+  color: white;
+  /*flex: 0;*/
+}
+
+.Musika-CPULoad > .black {
+  position: absolute;
+  right: 0;
+  height: 1em;
+  background-color: black;
 }
 
 .left {
@@ -18,18 +54,4 @@ html, body {
 .right {
   position: absolute;
   right: 0;
-}
-
-.CPULoad {
-  width: 100%;
-  height: 1em;
-  background: linear-gradient(to right, rgba(0,255,0,1) 0%, rgba(255,255,0,1) 30%, rgba(255,255,0,1) 50%, rgba(255,0,0,1) 100%);
-  color: white;
-}
-
-.CPULoad > .black {
-  position: absolute;
-  right: 0;
-  height: 1em;
-  background-color: black;
 }

@@ -145,7 +145,7 @@ export default class Player extends React.Component {
     let {audioCtx: {sampleRate}, playing, lastFrame} = this.state
     let {length, bufferLength} = this.props
 
-    return <div>
+    return <div className='Musika-Player'>
       <button onClick={this.togglePlay.bind(this)}>{playing ? '⏸' : '▶'}</button>
       {length
         ? <TimeSlider length={length} value={lastFrame/sampleRate} onChange={this.handleTime.bind(this)} />

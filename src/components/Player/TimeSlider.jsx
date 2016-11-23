@@ -51,7 +51,7 @@ export default class TimeSlider extends React.Component {
   render() {
     let {length, value, onChange, ...other} = this.props
 
-    return <span className='SongSlider'>
+    return <span className='Musika-TimeSlider'>
       {this.toMinSecs(Math.floor(value))}
       <input {...other}
         type='range' min='0' max={length} value={value}

@@ -40,13 +40,22 @@ const common = merge(
 
 let config;
 
+
+
 switch(process.env.npm_lifecycle_event) {
   case 'build':
     config = merge(
       common,
       parts.productionSourceMap(),
       parts.productionEnv(),
-      parts.extractVendor(),
+      parts.extractVendor([
+        'brace/mode/javascript',
+        'brace/theme/tomorrow_night_eighties',
+        'brace/ext/searchbox',
+        'brace/ext/elastic_tabstops_lite',
+        'brace/ext/keybinding_menu',
+        'brace/ext/settings_menu'
+      ]),
       parts.extractCSS(),
       parts.clean(PATHS.build),
       parts.minify()

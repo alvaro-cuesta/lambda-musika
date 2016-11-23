@@ -8,6 +8,8 @@
   - Possible solution: work with samples and `dt` instead
 - Sound click on play/pause/update
 - Click when rendering the THX sound example
+- Auto-updating on app open is broken
+- User can undo the first text value
 
 ## Features
 
@@ -35,6 +37,10 @@
 - Import Gists or other sources of functions (for custom libraries)
 - Save/load code from file
 - Save/load code from Gist (+ link generation)
+- REPL
+- Enable ACE worker but with custom rules
+- Detect tab settings from buffer
+- Continue comments
 
 ##### - Renderer
 
