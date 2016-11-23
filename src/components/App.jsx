@@ -3,7 +3,7 @@ import React from 'react'
 import Player from 'components/Player'
 import CPULoad from 'components/CPULoad'
 import Editor from 'components/Editor'
-import Musika from 'Musika'
+import compile from 'compile'
 import {Int16Stereo, makeWAVURL} from 'PCM'
 
 const DEFAULT_SCRIPT = require('!raw!examples/default')
@@ -26,56 +26,46 @@ export default class App extends React.Component {
 
   handleUpdate() {
     let editor = this.refs.editor.get()
-    let code = editor.getValue()
+    let source = editor.getValue()
     let session = editor.getSession()
 
     session.setAnnotations()
 
-    let builder, length, fn
-    try {
-      builder = new Function('Musika', 'sampleRate', 'setLength', code)
-      fn = builder(Musika, this.state.sampleRate, l => length = l)
-    } catch(e) {
-      let {message, name, /*fileName, lineNumber, columnNumber, */stack} = e
+    let {fn, length, error} = compile(source, this.state.sampleRate)
 
-      let [fileName, lineNumber, columnNumber] = stack
-        .split('\n')[1]
-        .split('), ')[1]
-        .slice(0, -1)
-        .split(':')
-
-      let row = parseInt(lineNumber - 3)
-      let column = parseInt(columnNumber)
-
+    if (error) {
       session.setAnnotations([{
         type: 'error',
-        text: `${name}: ${message}`,
-        row, column,
+        text: `${error.name}: ${error.message}`,
+        row: error.row,
+        column: error.column,
       }])
-
-      return
+      console.error(error)
+      throw error.e
     }
 
-    this.setState({builder, fn, length})
+    this.setState({fn, length})
   }
 
   handleRender() {
-    let {playing, builder} = this.state
-    let renderSampleRate = this.refs.renderSampleRate.value
-
     this.refs.player.pause()
+
     this.handleUpdate()
 
-    let length
-    let fn = builder(Musika, renderSampleRate, l => length = l)
+    let source = this.refs.editor.get().getValue()
+    let sampleRate = this.refs.renderSampleRate.value
+    let {fn, length, error} = compile(code, sampleRate)
 
-    let download = document.createElement('a')
-    let buffer = Int16Stereo(renderSampleRate, length, fn)
-    download.download = 'render.wav'
-    download.href = makeWAVURL(buffer, 2, renderSampleRate)
-    download.click()
+    if (!error) {
+      let buffer = Int16Stereo(sampleRate, length, fn)
 
-    URL.revokeObjectURL(download.href)
+      let link = document.createElement('a')
+      link.download = 'render.wav'
+      link.href = makeWAVURL(buffer, 2, sampleRate)
+      link.click()
+
+      URL.revokeObjectURL(link.href)
+    }
   }
 
   handlePlayingChange(playing) {
