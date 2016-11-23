@@ -2,6 +2,35 @@ import React from 'react'
 
 import TimeSlider from 'components/TimeSlider'
 
+//HACK: Why can't I import this from compile.js?
+export function tryParseStack(stack) {
+  try {
+    let [fileName, lineNumber, columnNumber] = stack
+      .split('\n')[1]
+      .split('), ')[1]
+      .slice(0, -1)
+      .split(':')
+
+    let row = parseInt(lineNumber - 3)
+    let column = parseInt(columnNumber)
+
+    return {fileName, row, column}
+  } catch (e) {
+    return {}
+  }
+}
+
+export function tryParseException(e) {
+  let {message, name, stack} = e
+  let {fileName, row, column} = tryParseStack(stack)
+
+  if (e.fileName) fileName = e.fileName
+  if (e.lineNumber) row = e.lineNumber
+  if (e.columnNumber) column = e.columnNumber
+
+  return { name, message, fileName, row, column, e }
+}
+
 // Audio player component which receives a function `fn` to generate audio
 export default class Player extends React.PureComponent {
   constructor(props) {
@@ -114,7 +143,7 @@ export default class Player extends React.PureComponent {
   // Fills the audio buffer - this is what actually plays the sound
   handleAudioProcess(audioProcessingEvent) {
     let {audioCtx: {sampleRate}, lastFrame} = this.state
-    let {fn, length, onRenderTime} = this.props
+    let {fn, length, onRenderTime, onError} = this.props
 
     let buffer = audioProcessingEvent.outputBuffer
     let lChannel = buffer.getChannelData(0)
@@ -127,9 +156,15 @@ export default class Player extends React.PureComponent {
     }
     for (let i = 0; i < buffer.length; i++) {
       let t = (i + lastFrame)/sampleRate
-      let [l, r] = fn(t)
-      lChannel[i] = l
-      rChannel[i] = r
+      try {
+        let [l, r] = fn(t)
+        lChannel[i] = l
+        rChannel[i] = r
+      } catch (e) {
+        this.pause()
+        onError(tryParseException(e))
+        return
+      }
     }
     lastFrame += buffer.length
 

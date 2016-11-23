@@ -23,6 +23,7 @@
 ##### - Renderer
 
 - Audible clicks when rendering the THX sound example
+- TODO: Not handling render fn() errors
 
 ##### - Musika
 
@@ -30,6 +31,8 @@
 
 - Since Player is a PureComponent, hot reloading it stops the song
   - Maybe the problem is HMR, try React Hot Loader 3
+- For some reason I can't import and then use tryParseException in Player. Returns
+  empty information. Probably something about the stack trace.
 
 
 
@@ -49,8 +52,8 @@
 
 ##### - Editor
 
-- Show runtime errors on editor
-- Show errors on status bar (right now in the gutter they're quite unnoticeable)
+- Show errors on status bar or line (right now in the gutter they're quite
+  unnoticeable)
 - Update hotkey (CTRL-Enter?, CTRL-S?)
 - Preserve code on F5 (how to reset to default song then?)
 

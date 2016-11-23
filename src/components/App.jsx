@@ -77,6 +77,17 @@ export default class App extends React.Component {
     this.setState({renderTime})
   }
 
+  handleError(error) {
+    this.refs.editor.editor.getSession().setAnnotations([{
+      type: 'error',
+      text: `${error.name}: ${error.message}`,
+      row: error.row,
+      column: error.column,
+    }])
+    console.error(error)
+    throw error.e
+  }
+
   render() {
     let {fn, length, renderTime, sampleRate} = this.state
     let {bufferLength} = this.props
@@ -85,6 +96,7 @@ export default class App extends React.Component {
       <Player ref='player' fn={fn} length={length} bufferLength={bufferLength}
         onPlayingChange={this.handlePlayingChange.bind(this)}
         onRenderTime={this.handleRenderTime.bind(this)}
+        onError={this.handleError.bind(this)}
       />
       <CPULoad renderTime={renderTime} bufferLength={bufferLength} sampleRate={sampleRate} />
       <Editor ref='editor' defaultValue={DEFAULT_SCRIPT} />
