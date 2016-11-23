@@ -24,6 +24,8 @@ export default class Editor extends React.Component {
   componentDidMount() {
     let editor = ace.edit(this.refs.editor)
 
+    editor.$blockScrolling = Infinity;
+
     editor.setValue(this.props.defaultValue)
     editor.gotoLine(0, 0, false)
     editor.setOptions({
