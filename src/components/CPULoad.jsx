@@ -8,7 +8,7 @@ export default function CPULoad({renderTime, bufferLength, sampleRate}) {
   if (sampleRate && bufferLength) {
     let maxRenderTime = 1000*bufferLength/sampleRate
 
-    maxRenderTimeLabel = `${(maxRenderTime).toFixed(2)}ms`
+    maxRenderTimeLabel = `Max: ${(maxRenderTime).toFixed(2)}ms`
     percentage = renderTime
       ? 100*renderTime/maxRenderTime
       : 0
@@ -16,9 +16,7 @@ export default function CPULoad({renderTime, bufferLength, sampleRate}) {
 
   return <div className='Musika-CPULoad'>
     <div className='black' style={{minWidth: `${100 - percentage}%`}} />
-    {renderTime
-      ? <span className='left'>{renderTime.toFixed(2)}ms</span>
-      : null}
+    <span className='left'>CPU{renderTime ? `: ${renderTime.toFixed(2)}ms` : ''}</span>
     <span className='right'>{maxRenderTimeLabel}</span>
   </div>
 }
