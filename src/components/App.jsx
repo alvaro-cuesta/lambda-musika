@@ -88,6 +88,10 @@ export default class App extends React.Component {
     throw error.e
   }
 
+  handleTogglePlay() {
+    this.refs.player.togglePlay()
+  }
+
   render() {
     let {fn, length, renderTime, sampleRate} = this.state
     let {bufferLength} = this.props
@@ -99,7 +103,10 @@ export default class App extends React.Component {
         onError={this.handleError.bind(this)}
       />
       <CPULoad renderTime={renderTime} bufferLength={bufferLength} sampleRate={sampleRate} />
-      <Editor ref='editor' defaultValue={DEFAULT_SCRIPT} />
+      <Editor ref='editor' defaultValue={DEFAULT_SCRIPT}
+        onUpdate={this.handleUpdate.bind(this)}
+        onTogglePlay={this.handleTogglePlay.bind(this)}
+      />
       <div className='Musika-bottomPanel'>
         <button onClick={this.handleUpdate.bind(this)}>Update</button>
         {length

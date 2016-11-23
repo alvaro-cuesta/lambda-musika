@@ -19,6 +19,7 @@
 ##### - Editor
 
 - Syntax errors (e.g. omitting `=` in `const` declaration) marks are bugged
+- Uncaught errors on CTRL-S open the document save window
 
 ##### - Renderer
 
@@ -54,7 +55,6 @@
 
 - Show errors on status bar or line (right now in the gutter they're quite
   unnoticeable)
-- Update hotkey (CTRL-Enter?, CTRL-S?)
 - Preserve code on F5 (how to reset to default song then?)
 
 ##### - Renderer

@@ -64,6 +64,22 @@ export default class Editor extends React.PureComponent {
       useElasticTabstops: true,
     })
 
+    editor.commands.addCommand({
+      name: "Update",
+      bindKey: { win: "Ctrl-S", mac: "Command-S" },
+      exec: () => {
+        if (this.props.onUpdate) this.props.onUpdate(editor.getValue(), editor)
+      }
+    })
+
+    editor.commands.addCommand({
+      name: "Toggle Play",
+      bindKey: { win: "Ctrl-Space", mac: "Command-Space" },
+      exec: () => {
+        if (this.props.onTogglePlay) this.props.onTogglePlay()
+      }
+    })
+
     ace.acequire('ace/ext/keybinding_menu').init(editor)
 
     editor.focus()
