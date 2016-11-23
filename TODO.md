@@ -7,7 +7,6 @@
     samples)
   - Possible solution: work with samples and `dt` instead
   - Problem: `t` is still useful in other situations (e.g. envelopes)
-- Auto-updating on app open is broken
 
 ##### - DAW Interface
 

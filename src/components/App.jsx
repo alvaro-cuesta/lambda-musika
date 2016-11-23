@@ -96,7 +96,7 @@ export default class App extends React.Component {
         onRenderTime={this.handleRenderTime.bind(this)}
       />
       <CPULoad renderTime={renderTime} bufferLength={bufferLength} sampleRate={sampleRate} />
-      <Editor ref='editor' defaultValue={DEFAULT_SCRIPT} />
+      <Editor ref='editor' defaultValue={DEFAULT_SCRIPT} onLoad={this.handleUpdate.bind(this)} />
       <div className='Musika-bottomPanel'>
         <button onClick={this.handleUpdate.bind(this)}>Update</button>
         {length

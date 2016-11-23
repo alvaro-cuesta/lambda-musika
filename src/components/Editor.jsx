@@ -76,7 +76,9 @@ export default class Editor extends React.Component {
 
     editor.focus()
 
-    this.setState({editor})
+    this.setState({editor}, () => {
+      if (this.props.onLoad) this.props.onLoad(editor)
+    })
   }
 
   render() {
