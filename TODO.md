@@ -27,8 +27,6 @@
 
 ##### - Development
 
-- CSS source map breaks CodeMirror (I'm now using Ace, is this still a problem?)
-
 
 
 ## Features

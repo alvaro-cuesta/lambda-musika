@@ -125,7 +125,7 @@ exports.CSS = function() {
     resolve: { extensions: ['.css'] },
     module: {
       loaders: [
-        { test: /\.css$/, loaders: ['style', 'css' /*FIX: 'css?sourceMap'*/] },
+        { test: /\.css$/, loaders: ['style', 'css?sourceMap'] },
       ]
     }
   };
