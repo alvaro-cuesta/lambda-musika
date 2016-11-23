@@ -61,7 +61,7 @@ export default class Editor extends React.Component {
 
       // Session
       useWorker: false,
-      useSoftTabs: false/*true*/,
+      useSoftTabs: true/*false?*/,
       tabSize: 2,
       wrap: false,
       /*foldStyle*/
