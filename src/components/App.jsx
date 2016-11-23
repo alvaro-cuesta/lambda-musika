@@ -25,11 +25,36 @@ export default class App extends React.Component {
   }
 
   handleUpdate() {
-    let code = this.refs.editor.get().getValue()
-    let builder = new Function('Musika', 'sampleRate', 'setLength', code)
+    let editor = this.refs.editor.get()
+    let code = editor.getValue()
+    let session = editor.getSession()
 
-    let length
-    let fn = builder(Musika, this.state.sampleRate, l => length = l)
+    session.setAnnotations()
+
+    let builder, length, fn
+    try {
+      builder = new Function('Musika', 'sampleRate', 'setLength', code)
+      fn = builder(Musika, this.state.sampleRate, l => length = l)
+    } catch(e) {
+      let {message, name, /*fileName, lineNumber, columnNumber, */stack} = e
+
+      let [fileName, lineNumber, columnNumber] = stack
+        .split('\n')[1]
+        .split('), ')[1]
+        .slice(0, -1)
+        .split(':')
+
+      let row = parseInt(lineNumber - 3)
+      let column = parseInt(columnNumber)
+
+      session.setAnnotations([{
+        type: 'error',
+        text: `${name}: ${message}`,
+        row, column,
+      }])
+
+      return
+    }
 
     this.setState({builder, fn, length})
   }

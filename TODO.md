@@ -32,7 +32,8 @@
 
 ##### - Editor
 
-- Show compile and runtime errors on editor, highlight error lines, etc.
+- Show runtime errors on editor etc.
+- Show last error on status bar
 - Update hotkey
 - Import Gists or other sources of functions (for custom libraries)
 - Save/load code from file
