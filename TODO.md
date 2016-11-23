@@ -20,8 +20,6 @@
 ##### - Editor
 
 - User can undo the first text value. Clear undo history!
-- Gutter highlight line is mispositioned (because I did the hack to move the
-  gutter down)
 
 ##### - Renderer
 
