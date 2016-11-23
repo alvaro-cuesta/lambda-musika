@@ -88,6 +88,14 @@ export default class Player extends React.PureComponent {
     }
   }
 
+  // Destroy script processor
+  componentWillUnmount() {
+    let {playing, audioCtx, scriptProcessor} = this.state
+    if (playing) {
+      scriptProcessor.disconnect(audioCtx.destination)
+    }
+  }
+
   // Instantiate ScriptProcessorNode
   makeScriptProcessor(bufferLength) {
     let {audioCtx, scriptProcessor} = this.state

@@ -8,7 +8,7 @@ import {Int16Stereo, makeWAVURL} from 'PCM'
 
 const DEFAULT_SCRIPT = require('!raw!examples/default')
 
-export default class App extends React.PureComponent {
+export default class App extends React.Component {
   constructor(props) {
     super(props)
 

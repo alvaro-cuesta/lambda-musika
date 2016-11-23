@@ -28,6 +28,9 @@
 
 ##### - Development
 
+- Since Player is a PureComponent, hot reloading it stops the song
+  - Maybe the problem is HMR, try React Hot Loader 3
+
 
 
 ## Features
