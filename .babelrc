@@ -1,7 +1,7 @@
 {
   "presets": ["latest", "stage-3", "react"],
   "env": {
-    "dev": {
+    "development": {
       "plugins": [["react-transform", {
         "transforms": [{
           "transform": "react-transform-hmr",

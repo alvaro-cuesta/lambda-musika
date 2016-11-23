@@ -40,10 +40,9 @@ const common = merge(
 
 let config;
 
-
-
 switch(process.env.npm_lifecycle_event) {
   case 'build':
+    process.env.BABEL_ENV = 'production'
     config = merge(
       common,
       parts.productionSourceMap(),

@@ -29,7 +29,6 @@
 
 ##### - Development
 
-- I broke hot reload... again
 - CSS source map breaks CodeMirror (I'm now using Ace, is this still a problem?)
 
 
