@@ -28,6 +28,7 @@ export default class Editor extends React.Component {
 
     editor.setValue(this.props.defaultValue)
     editor.gotoLine(0, 0, false)
+    editor.getSession().setUndoManager(new ace.UndoManager())
     editor.setOptions({
       // Editor
       selectionStyle: 'line',

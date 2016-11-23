@@ -19,8 +19,6 @@
 
 ##### - Editor
 
-- User can undo the first text value. Clear undo history!
-
 ##### - Renderer
 
 - Audible clicks when rendering the THX sound example
