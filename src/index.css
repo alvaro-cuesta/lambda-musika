@@ -2,20 +2,19 @@
   box-sizing: border-box;
 }
 
-html, body, #container, .Musika-App {
+html, body, #container {
   height: 100%;
   margin: 0;
   padding: 0;
+  background-color: #000000;
+  color: #CCCCCC;
+  font: 14px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
 }
 
 .Musika-App {
+  height: 100%;
   display: flex;
   flex-direction: column;
-}
-
-.ace_editor {
-  width: 100% !important;
-  height: 100% !important;
 }
 
 .Musika-Player {
@@ -23,18 +22,15 @@ html, body, #container, .Musika-App {
   flex: 0;
 }
 
-.Musika-bottomPanel {
-  flex: 0;
-}
-
-.Musika-SongSlider {
-
+.Musika-Player button {
+  width: 2em;
+  height: 2em;
 }
 
 .Musika-CPULoad {
   width: 100%;
   height: 1em;
-  background: linear-gradient(to right, rgba(0,255,0,1) 0%, rgba(255,255,0,1) 30%, rgba(255,255,0,1) 50%, rgba(255,0,0,1) 100%);
+  background: linear-gradient(to right, rgba(141,249,87,1) 0%, rgba(255,255,0,1) 30%, rgba(249,145,87,1) 50%, rgba(242,119,122,1) 100%);
   color: white;
   /*flex: 0;*/
 }
@@ -45,6 +41,79 @@ html, body, #container, .Musika-App {
   height: 1em;
   background-color: black;
 }
+
+.ace_editor {
+  width: 100%;
+  height: 100%;
+}
+
+.ace_scroller, .ace_gutter {
+  padding-top: 0.4em;
+}
+
+.ace_scroller::before, .ace_gutter::before {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 1em;
+  content: '';
+  background: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 1%, rgba(0,0,0,0) 100%);
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.ace_scroller::after, .ace_gutter::after {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 1em;
+  content: '';
+  background: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.5) 1%, rgba(0,0,0,0) 100%);
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.Musika-bottomPanel {
+  flex: 0;
+  background-color: #2D2D2D;
+}
+
+.Musika-bottomPanel select {
+  height: 100%;
+}
+
+.Musika-bottomPanel span button {
+  background-color: #bc89bc;
+}
+
+.Musika-bottomPanel span button:hover {
+  background-color: #ac79ac;
+}
+
+.Musika-bottomPanel span button:active {
+  background-color: #CC99CC;
+}
+
+button {
+  color: #fbfbfb;
+  background-color: #F99157;
+  font: 14px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+  border: none;
+  outline: none;
+}
+
+button:hover {
+  background-color: #E98147;
+}
+
+button:active {
+  background-color: #FFB177;
+}
+
+select {
+  border: none;
+}
+
 
 .left {
   position: absolute;

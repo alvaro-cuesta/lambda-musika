@@ -77,6 +77,6 @@ export default class Editor extends React.Component {
   }
 
   render() {
-    return <div ref='editor' />
+    return <div ref='editor' className='Musika-Editor' />
   }
 }

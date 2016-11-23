@@ -90,7 +90,7 @@ export default class App extends React.Component {
     let {fn, length, renderTime, sampleRate} = this.state
     let {bufferLength} = this.props
 
-    return <div className='Musika-App ace-tomorrow-night-eighties ace_dark'>
+    return <div className='Musika-App'>
       <Player ref='player' fn={fn} length={length} bufferLength={bufferLength}
         onPlayingChange={this.handlePlayingChange.bind(this)}
         onRenderTime={this.handleRenderTime.bind(this)}
@@ -100,7 +100,7 @@ export default class App extends React.Component {
       <div className='Musika-bottomPanel'>
         <button onClick={this.handleUpdate.bind(this)}>Update</button>
         {length
-          ? <div>
+          ? <span>
               <button onClick={this.handleRender.bind(this)}>Render</button>
               <select ref='renderSampleRate' defaultValue={44100}>
                 <option value={8000}>8000Hz</option>
@@ -114,7 +114,7 @@ export default class App extends React.Component {
                 <option value={88200}>88200Hz</option>
                 <option value={96000}>96000Hz</option>
               </select>
-            </div>
+            </span>
           : null
         }
       </div>
