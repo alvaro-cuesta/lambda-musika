@@ -36,10 +36,7 @@ export default class Player extends React.PureComponent {
   constructor(props) {
     super(props)
 
-    let audioCtx = new (window.AudioContext || window.webkitAudioContext)()
-
     this.state = {
-      audioCtx,
       scriptProcessor: undefined,
       playing: false,
       lastFrame: 0,
@@ -49,13 +46,9 @@ export default class Player extends React.PureComponent {
 
   /* Public API */
 
-  getSampleRate() {
-    return this.state.audioCtx.sampleRate
-  }
-
   play() {
-    let {audioCtx, scriptProcessor} = this.state
-    let {onPlayingChange} = this.props
+    let {scriptProcessor} = this.state
+    let {audioCtx, onPlayingChange} = this.props
 
     if (!this.state.playing) {
       this.setState({playing: true})
@@ -67,8 +60,8 @@ export default class Player extends React.PureComponent {
   }
 
   pause() {
-    let {audioCtx, scriptProcessor} = this.state
-    let {onPlayingChange} = this.props
+    let {scriptProcessor} = this.state
+    let {audioCtx, onPlayingChange} = this.props
 
     if (this.state.playing) {
       this.setState({playing: false})
@@ -88,8 +81,8 @@ export default class Player extends React.PureComponent {
   }
 
   stop() {
-    let {audioCtx, scriptProcessor, playing} = this.state
-    let {onPlayingChange} = this.props
+    let {scriptProcessor, playing} = this.state
+    let {audioCtx, onPlayingChange} = this.props
 
     this.setState({
       playing: false,
@@ -119,15 +112,16 @@ export default class Player extends React.PureComponent {
 
   // Destroy script processor
   componentWillUnmount() {
-    let {playing, audioCtx, scriptProcessor} = this.state
+    let {playing, scriptProcessor} = this.state
     if (playing) {
-      scriptProcessor.disconnect(audioCtx.destination)
+      scriptProcessor.disconnect(this.props.audioCtx.destination)
     }
   }
 
   // Instantiate ScriptProcessorNode
   makeScriptProcessor(bufferLength) {
-    let {audioCtx, scriptProcessor} = this.state
+    let {scriptProcessor} = this.state
+    let {audioCtx} = this.props
     let {sampleRate} = audioCtx
 
     if (typeof scriptProcessor !== 'undefined') {
@@ -142,8 +136,8 @@ export default class Player extends React.PureComponent {
 
   // Fills the audio buffer - this is what actually plays the sound
   handleAudioProcess(audioProcessingEvent) {
-    let {audioCtx: {sampleRate}, lastFrame} = this.state
-    let {fn, length, onRenderTime, onError} = this.props
+    let {lastFrame} = this.state
+    let {audioCtx: {sampleRate}, fn, length, onRenderTime, onError} = this.props
 
     let buffer = audioProcessingEvent.outputBuffer
     let lChannel = buffer.getChannelData(0)
@@ -181,24 +175,25 @@ export default class Player extends React.PureComponent {
 
   // Handle seeking from controls
   handleTime(time) {
-    this.setState({lastFrame: time * this.state.audioCtx.sampleRate})
+    this.setState({lastFrame: time * this.props.audioCtx.sampleRate})
   }
 
   render() {
-    let {audioCtx: {sampleRate}, playing, lastFrame} = this.state
-    let {length, bufferLength} = this.props
+    let {playing, lastFrame} = this.state
+    let {audioCtx: {sampleRate}, length, bufferLength} = this.props
 
     return <div className='Musika-Player'>
       <button onClick={this.togglePlay.bind(this)}>{playing ? '⏸' : '▶'}</button>
       {length
         ? <TimeSlider length={length} value={lastFrame/sampleRate} onChange={this.handleTime.bind(this)} />
-        : null
+        : <TimeSeeker value={lastFrame/sampleRate} onChange={this.handleTime.bind(this)} />
       }
     </div>
   }
 }
 
 Player.propTypes = {
+  audioCtx: React.PropTypes.object.isRequired,
   fn: React.PropTypes.func.isRequired,
   length: React.PropTypes.number,
   bufferLength: React.PropTypes.number,

@@ -16,12 +16,12 @@ export default class App extends React.Component {
       fn: () => [0, 0],
       length: 0,
       renderTime: undefined,
-      sampleRate: undefined,
     }
+
+    this.audioCtx = new (window.AudioContext || window.webkitAudioContext)()
   }
 
   componentDidMount() {
-    this.setState({sampleRate: this.refs.player.getSampleRate()})
     this.handleUpdate()
   }
 
@@ -32,7 +32,7 @@ export default class App extends React.Component {
 
     session.setAnnotations()
 
-    let {fn, length, error} = compile(source, this.state.sampleRate)
+    let {fn, length, error} = compile(source, this.audioCtx.sampleRate)
 
     if (error) {
       session.setAnnotations([{
@@ -93,16 +93,17 @@ export default class App extends React.Component {
   }
 
   render() {
-    let {fn, length, renderTime, sampleRate} = this.state
+    let {fn, length, renderTime} = this.state
     let {bufferLength} = this.props
 
     return <div className='Musika-App'>
       <Player ref='player' fn={fn} length={length} bufferLength={bufferLength}
+        audioCtx={this.audioCtx}
         onPlayingChange={this.handlePlayingChange.bind(this)}
         onRenderTime={this.handleRenderTime.bind(this)}
         onError={this.handleError.bind(this)}
       />
-      <CPULoad renderTime={renderTime} bufferLength={bufferLength} sampleRate={sampleRate} />
+      <CPULoad renderTime={renderTime} bufferLength={bufferLength} sampleRate={this.audioCtx.sampleRate} />
       <Editor ref='editor' defaultValue={DEFAULT_SCRIPT}
         onUpdate={this.handleUpdate.bind(this)}
         onTogglePlay={this.handleTogglePlay.bind(this)}
