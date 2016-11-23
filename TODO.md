@@ -19,6 +19,8 @@
 
 ##### - Editor
 
+- Syntax errors (e.g. omitting `=` in `const` declaration) marks are bugged
+
 ##### - Renderer
 
 - Audible clicks when rendering the THX sound example
@@ -97,6 +99,7 @@
   - Check that vendor CSS hash doesn't change
 - Move Web Audio bits to library, abstracting audio playing in the process
 - Use `extend PureComponent` where possible
+
 
 
 ## Ideas or possible research lines
