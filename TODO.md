@@ -15,7 +15,6 @@
 - Sound clicks on play/pause/update
 - There is leftover sound from previous buffer state after pausing, updating an
   then playing the new buffer
-- TimeSeeker rewind/fast-forward icons are replaced by Emoji in Chrome
 - TimeSeeker maxes at 23:59
 
 ##### - Editor
@@ -159,6 +158,9 @@
 - https://webpack.github.io/docs/list-of-plugins.html#dedupeplugin
 - `new webpack.optimize.OccurrenceOrderPlugin(true)`
 - Move vendor libraries to CDN instead of `vendor` chunk
+- Font Awesome is being used from CDN... Webpack it as vendor css/font? Include
+  locally but don't bundle? Leave it on CDN?
+- I'm importing the full Font Awesome instead of only the few icons I need
 - http://survivejs.com/webpack/building-with-webpack/eliminating-unused-css/
 - http://survivejs.com/webpack/building-with-webpack/analyzing-build-statistics/
 - http://survivejs.com/webpack/loading-assets/formats-supported/

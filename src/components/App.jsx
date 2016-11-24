@@ -113,10 +113,10 @@ export default class App extends React.Component {
         onTogglePlay={this.handleTogglePlay.bind(this)}
       />
       <div className='Musika-bottomPanel'>
-        <button onClick={this.handleUpdate.bind(this)}>Update</button>
+        <button className='color-orange' onClick={this.handleUpdate.bind(this)}>Update</button>
         {length
           ? <span>
-              <button onClick={this.handleRender.bind(this)}>Render</button>
+              <button className='color-purple' onClick={this.handleRender.bind(this)}>Render</button>
               <select ref='renderSampleRate' defaultValue={44100}>
                 <option value={8000}>8000Hz</option>
                 <option value={11025}>11025Hz</option>

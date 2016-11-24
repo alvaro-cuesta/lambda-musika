@@ -139,33 +139,84 @@ html, body, #container {
   height: 100%;
 }
 
-.Musika-bottomPanel span button {
-  background-color: #bc89bc;
-}
-
-.Musika-bottomPanel span button:hover {
-  background-color: #ac79ac;
-}
-
-.Musika-bottomPanel span button:active {
-  background-color: #CC99CC;
-}
-
 button {
   color: #fbfbfb;
-  background-color: #F99157;
   font: 14px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
   border: none;
   outline: none;
   cursor: pointer;
 }
 
-button:hover {
+button, button.color-orange {
+  background-color: #F99157;
+}
+
+button:hover, button.color-orange:hover {
   background-color: #E98147;
 }
 
-button:active {
+button:active, button.color-orange:active {
   background-color: #FFB177;
+}
+
+button.color-green {
+  background-color: #40e889;
+}
+
+button.color-green:hover {
+  background-color: #30d879;
+}
+
+button.color-green:active {
+  background-color: #50f899;
+}
+
+button.color-green2 {
+  background-color: #99CC99;
+}
+
+button.color-green2:hover {
+  background-color: #89BC89;
+}
+
+button.color-green2:active {
+  background-color: #A9DCA9;
+}
+
+button.color-purple {
+  background-color: #bc89bc;
+}
+
+button.color-purple:hover {
+  background-color: #ac79ac;
+}
+
+button.color-purple:active {
+  background-color: #CC99CC;
+}
+
+button.color-red {
+  background-color: #f2777a;
+}
+
+button.color-red:hover {
+  background-color: #e2676a;
+}
+
+button.color-red:active {
+  background-color: #ff878a;
+}
+
+button.color-blue {
+  background-color: #66CCCC;
+}
+
+button.color-blue:hover {
+  background-color: #56BCBC;
+}
+
+button.color-blue:active {
+  background-color: #76DCDC;
 }
 
 select {

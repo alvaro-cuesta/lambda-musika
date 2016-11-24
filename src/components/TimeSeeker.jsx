@@ -52,13 +52,21 @@ export default class TimeSeeker extends React.PureComponent {
     let {value, onChange} = this.props
 
     return <div className='Musika-TimeSeeker'>
-      <button onClick={this.handleRestart.bind(this)}>⏮</button>
-      <button onClick={this.handleRewind.bind(this)}>⏪</button>
-      <input type='time' value={toMinSecs(value)} required
+      <button className='color-purple' onClick={this.handleRestart.bind(this)}>
+        <i className="fa fa-undo"></i>
+      </button>
+      <button className='color-green' onClick={this.handleRewind.bind(this)}>
+        <i className="fa fa-backward"></i>
+      </button>
+      <input className='color-yellow' type='time' value={toMinSecs(value)} required
         onChange={this.handleChange.bind(this)}
       />
-      <button onClick={this.handleFastForward.bind(this)}>⏩</button>
-      <button onClick={this.handleVeryFastForward.bind(this)}>➠</button>{/*⏩⏵*/}{/*⏭*/}{/*➛ ➜ ➔ ➝ ➞ ➟ ➠ ➥ ➦ ➧ ➨ ➲*/}
+      <button className='color-blue' onClick={this.handleFastForward.bind(this)}>
+        <i className="fa fa-forward"></i>
+      </button>
+      <button className='color-red' onClick={this.handleVeryFastForward.bind(this)}>
+        <i className="fa fa-fast-forward"></i>
+      </button>
     </div>
   }
 }
