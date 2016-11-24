@@ -2,6 +2,7 @@ import React from 'react'
 
 import TimeSlider from 'components/TimeSlider'
 import TimeSeeker from 'components/TimeSeeker'
+import Icon from 'components/Icon'
 
 import { tryParseException } from 'compile'
 
@@ -158,7 +159,7 @@ export default class Player extends React.PureComponent {
 
     return <div className='Musika-Player'>
       <button className='color-orange' onClick={this.togglePlay.bind(this)}>
-        <i className={`fa fa-${playing ? 'pause' : 'play'}`}></i>
+        <Icon name={playing ? 'pause' : 'play'} title={playing ? 'Pause' : 'Play'} />
       </button>
       {length
         ? <TimeSlider length={length} value={lastFrame/sampleRate} onChange={this.handleTime.bind(this)} />

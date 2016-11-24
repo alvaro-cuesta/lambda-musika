@@ -1,5 +1,7 @@
 import React from 'react'
 
+import Icon from 'components/Icon'
+
 import { toMinSecs } from 'components/util'
 
 const REWIND_FF_SECS = 10
@@ -53,19 +55,19 @@ export default class TimeSeeker extends React.PureComponent {
 
     return <div className='Musika-TimeSeeker'>
       <button className='color-purple' onClick={this.handleRestart.bind(this)}>
-        <i className="fa fa-undo"></i>
+        <Icon name='undo' title='Restart' />
       </button>
       <button className='color-green' onClick={this.handleRewind.bind(this)}>
-        <i className="fa fa-backward"></i>
+        <Icon name='backward' title={`-${REWIND_FF_SECS} seconds`} />
       </button>
       <input className='color-yellow' type='time' value={toMinSecs(value)} required
         onChange={this.handleChange.bind(this)}
       />
       <button className='color-blue' onClick={this.handleFastForward.bind(this)}>
-        <i className="fa fa-forward"></i>
+        <Icon name='forward' title={`+${REWIND_FF_SECS} seconds`} />
       </button>
       <button className='color-red' onClick={this.handleVeryFastForward.bind(this)}>
-        <i className="fa fa-fast-forward"></i>
+        <Icon name='fast-forward' title={`+${VERY_FF_SECS} seconds`} />
       </button>
     </div>
   }

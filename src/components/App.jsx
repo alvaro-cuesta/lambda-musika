@@ -3,6 +3,8 @@ import React from 'react'
 import Player from 'components/Player'
 import CPULoad from 'components/CPULoad'
 import Editor from 'components/Editor'
+import Icon from 'components/Icon'
+
 import compile from 'compile'
 import {Int16Stereo, makeWAVURL} from 'PCM'
 
@@ -113,10 +115,14 @@ export default class App extends React.Component {
         onTogglePlay={this.handleTogglePlay.bind(this)}
       />
       <div className='Musika-bottomPanel'>
-        <button className='color-orange' onClick={this.handleUpdate.bind(this)}>Update</button>
+        <button className='color-orange' onClick={this.handleUpdate.bind(this)}>
+          <Icon name='share' /> Commit
+        </button>
         {length
           ? <span>
-              <button className='color-purple' onClick={this.handleRender.bind(this)}>Render</button>
+              <button className='color-purple' onClick={this.handleRender.bind(this)}>
+                <Icon name='download' /> Render
+              </button>
               <select ref='renderSampleRate' defaultValue={44100}>
                 <option value={8000}>8000Hz</option>
                 <option value={11025}>11025Hz</option>
