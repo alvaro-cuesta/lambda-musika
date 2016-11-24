@@ -32,8 +32,6 @@
 
 - Since Player is a PureComponent, hot reloading it stops the song
   - Maybe the problem is HMR, try React Hot Loader 3
-- For some reason I can't import and then use tryParseException in Player. Returns
-  empty information. Probably something about the stack trace.
 
 
 

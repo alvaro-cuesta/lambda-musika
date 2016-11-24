@@ -1,6 +1,6 @@
 import * as Musika from 'Musika'
 
-function tryParseStack(stack) {
+export function tryParseStack(stack) {
   try {
     let [fileName, lineNumber, columnNumber] = stack
       .split('\n')[1]
@@ -17,7 +17,7 @@ function tryParseStack(stack) {
   }
 }
 
-function tryParseException(e) {
+export function tryParseException(e) {
   let {message, name, stack} = e
   let {fileName, row, column} = tryParseStack(stack)
 
