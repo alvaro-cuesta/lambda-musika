@@ -1,6 +1,7 @@
 import React from 'react'
 
 import TimeSlider from 'components/TimeSlider'
+import TimeSeeker from 'components/TimeSeeker'
 
 import { tryParseException } from 'compile'
 

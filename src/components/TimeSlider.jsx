@@ -1,11 +1,9 @@
 import React from 'react'
 
+import { toMinSecs } from 'components/util'
+
 // A slider component to seek time
 export default class TimeSlider extends React.PureComponent {
-  constructor(props) {
-    super(props)
-  }
-
   // Regular change event
   handleChange({target: {value}}) {
     let {onChange} = this.props
@@ -37,19 +35,11 @@ export default class TimeSlider extends React.PureComponent {
     }
   }
 
-  // Pretty-print seconds as MM:SS
-  toMinSecs(secs) {
-    let mins = Math.floor(secs / 60)
-    secs = secs % 60
-
-    return `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`
-  }
-
   render() {
     let {length, value, onChange, ...other} = this.props
 
     return <div className='Musika-TimeSlider'>
-      {this.toMinSecs(Math.floor(value))}
+      {toMinSecs(Math.floor(value))}
       <input {...other}
         type='range' min='0' max={length} value={value}
         onChange={this.handleChange.bind(this)}
@@ -57,7 +47,7 @@ export default class TimeSlider extends React.PureComponent {
         onMouseUp={this.handleMouseUp.bind(this)}
         onMouseMove={this.handleMouseMove.bind(this)}
       ></input>
-      {this.toMinSecs(length)}
+      {toMinSecs(length)}
     </div>
   }
 }

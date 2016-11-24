@@ -35,7 +35,31 @@ html, body, #container {
   margin-left: 0.5em;
 }
 
-.Musika-Player input {
+.Musika-TimeSeeker {
+  height: 2em;
+  display: inline-block;
+  margin-left: 0.2em;
+}
+
+.Musika-TimeSeeker input[type=time] {
+  height: 100%;
+  border: none;
+  outline: none;
+  -moz-appearance: textfield;
+  padding: 0 0 0 1em;
+
+  margin: 0px;
+  width: 5em;
+  vertical-align: top;
+}
+
+.Musika-TimeSeeker input[type=time]::-webkit-inner-spin-button,
+.Musika-TimeSeeker input[type=time]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.Musika-Player input[type=range] {
   height: 0.8em;
   margin: 0 0.5em;
   cursor: pointer;

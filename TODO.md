@@ -15,6 +15,8 @@
 - Sound clicks on play/pause/update
 - There is leftover sound from previous buffer state after pausing, updating an
   then playing the new buffer
+- TimeSeeker rewind/fast-forward icons are replaced by Emoji in Chrome
+- TimeSeeker maxes at 23:59
 
 ##### - Editor
 
