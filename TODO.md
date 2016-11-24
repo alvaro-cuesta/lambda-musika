@@ -46,8 +46,6 @@
 
 ##### - Player
 
-- New `TimeSeeker` when `length === undefined`
-  - Zero, Rewind, FF, FFF
 - Volume slider
 
 ##### - Editor
