@@ -1,3 +1,5 @@
+import { parse } from 'acorn'
+
 import * as Musika from 'Musika'
 
 export function tryParseStack(stack) {
@@ -28,7 +30,20 @@ export function tryParseException(e) {
   return { name, message, fileName, row, column, e }
 }
 
+function parseAcornException(e, source) {
+  let {message, name, loc: {line, column}} = e
+  return { name, message, fileName: undefined, row: (line - 1), column, e }
+}
+
 export default function compile(source, sampleRate) {
+  // Check for syntax errors - JavaScript doesn't provide error location otherwise
+  const fnString = `(Musika, sampleRate, setLength) => {${source}\n}`
+  try {
+    parse(fnString)
+  } catch(e) {
+    return {error: parseAcornException(e, fnString)}
+  }
+
   // Compile fn builder
   let builder
   try {

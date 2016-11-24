@@ -8,8 +8,6 @@
 - `[BUG]` `[PLAYER]` There is leftover sound from previous buffer state after
   pausing, updating and then playing the new buffer
 - `[BUG]` `[EDITOR]` Uncaught errors on CTRL-S open the document save window
-- `[BUG]` `[EDITOR]` Syntax errors (e.g. omitting `=` in `const` declaration)
-  marks are bugged
 - `[BUG]` `[RENDERER]` Audible clicks when rendering the THX sound example
 - `[TODO]` `[RENDERER]` Handling render `fn()` errors
 

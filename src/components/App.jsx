@@ -41,12 +41,13 @@ export default class App extends React.Component {
     let {fn, length, error} = compile(source, this.audioCtx.sampleRate)
 
     if (error) {
-      session.setAnnotations([{
-        type: 'error',
-        text: `${error.name}: ${error.message}`,
-        row: error.row,
-        column: error.column,
-      }])
+      let {name, message, row, column} = error
+      let text = `${name}: ${message.replace(/\s+\(\d+:\d+\)$/, '')}
+---
+${source.split('\n')[row]}
+${Array(column).join(' ')}^`
+
+      session.setAnnotations([{ type: 'error', text, row, column }])
       console.error(error)
       throw error.e
     }
