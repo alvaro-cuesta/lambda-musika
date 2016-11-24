@@ -122,7 +122,7 @@ export default class App extends React.Component {
         {length
           ? <span>
               <button className='color-purple' onClick={this.handleRender.bind(this)}>
-                <Icon name='download' /> Render
+                <Icon name='download' /> .WAV
               </button>
               <select ref='renderSampleRate' defaultValue={44100}>
                 <option value={8000}>8000Hz</option>

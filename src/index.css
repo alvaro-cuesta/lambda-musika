@@ -139,6 +139,10 @@ html, body, #container {
   height: 100%;
 }
 
+button i.fa {
+  vertical-align: middle;
+}
+
 button {
   color: #fbfbfb;
   font: 14px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
