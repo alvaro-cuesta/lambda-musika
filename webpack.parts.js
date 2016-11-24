@@ -65,26 +65,42 @@ exports.clean = function(path) {
   };
 };
 
+const MINIFY_CONFIG = {
+  minimize: true,
+  mangle: {
+    except: ['webpackJsonp'],
+    screw_ie8 : true
+  },
+  output: {
+    comments: false
+  },
+  compress: {
+    warnings: false,
+    drop_console: true,
+    screw_ie8 : true,
+    keep_fnames: false
+  }
+};
+
 exports.minify = function() {
   return {
     plugins: [
-      new webpack.optimize.UglifyJsPlugin({
-        minimize: true,
-        mangle: {
-          except: ['webpackJsonp'],
-          screw_ie8 : true
-        },
-        sourceMap: true,
-        output: {
-          comments: false
-        },
-        compress: {
-          warnings: false,
-          drop_console: true,
-          screw_ie8 : true,
-          keep_fnames: false
+      new webpack.optimize.UglifyJsPlugin(Object.assign(
+        {},
+        MINIFY_CONFIG,
+        {
+          exclude: [/vendor/, /manifest/],
+          sourceMap: true,
         }
-      })
+      )),
+      new webpack.optimize.UglifyJsPlugin(Object.assign(
+        {},
+        MINIFY_CONFIG,
+        {
+          test: [/vendor/, /manifest/],
+          sourceMap: false,
+        }
+      ))
     ]
   };
 };

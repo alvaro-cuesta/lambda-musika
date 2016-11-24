@@ -22,9 +22,9 @@
   },
   "main": "./lib/index.js",
   "scripts": {
-    "build": "webpack -p --progress --profile --colors --bail",
+    "build": "webpack --progress --profile --colors --bail",
     "dev": "webpack-dev-server --progress --profile --colors",
-    "watch": "webpack -w -p --progress --profile --colors",
+    "watch": "webpack -w --progress --profile --colors",
     "gh-pages": "npm run build && echo Deploy to GH pages",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
