@@ -31,27 +31,34 @@ export default class App extends React.Component {
     this.audioCtx.close()
   }
 
-  handleUpdate() {
+  maybeAddErrorToEditor(error) {
     let editor = this.refs.editor.editor
     let source = editor.getValue()
     let session = editor.getSession()
 
     session.setAnnotations()
-
-    let {fn, length, error} = compile(source, this.audioCtx.sampleRate)
-
     if (error) {
       let {name, message, row, column} = error
-      let text = `${name}: ${message.replace(/\s+\(\d+:\d+\)$/, '')}
----
-${source.split('\n')[row]}
-${Array(column).join(' ')}^`
+      let text = `${name}: ${message.replace(/\s+\(\d+:\d+\)$/, '')}`
 
       session.setAnnotations([{ type: 'error', text, row, column }])
+
+      editor.scrollToLine(row + 1, true, true, function () {})
+      editor.gotoLine(row + 1, column - 1, true)
+      editor.focus()
+
       console.error(error)
       throw error.e
     }
+  }
 
+  handleUpdate() {
+    let editor = this.refs.editor.editor
+    let source = editor.getValue()
+
+    let {fn, length, error} = compile(source, this.audioCtx.sampleRate)
+
+    this.maybeAddErrorToEditor(error)
     this.setState({fn, length})
   }
 
@@ -85,14 +92,7 @@ ${Array(column).join(' ')}^`
   }
 
   handleError(error) {
-    this.refs.editor.editor.getSession().setAnnotations([{
-      type: 'error',
-      text: `${error.name}: ${error.message}`,
-      row: error.row,
-      column: error.column,
-    }])
-    console.error(error)
-    throw error.e
+    this.maybeAddErrorToEditor(error)
   }
 
   handleTogglePlay() {
