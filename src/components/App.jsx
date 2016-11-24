@@ -25,6 +25,10 @@ export default class App extends React.Component {
     this.handleUpdate()
   }
 
+  componentWillUnmount() {
+    this.audioCtx.close()
+  }
+
   handleUpdate() {
     let editor = this.refs.editor.editor
     let source = editor.getValue()
