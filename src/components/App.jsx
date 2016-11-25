@@ -115,7 +115,7 @@ export default class App extends React.Component {
       <CPULoad renderTime={renderTime} bufferLength={bufferLength} sampleRate={this.audioCtx.sampleRate} />
       <Editor ref='editor' defaultValue={DEFAULT_SCRIPT} />
       <div className='Musika-bottomPanel'>
-        <button className='color-orange' onClick={this.handleUpdate.bind(this)}>
+        <button className='color-orange' onClick={this.handleUpdate.bind(this)} title='CTRL-S, CTRL-Enter'>
           <Icon name='share' /> Commit
         </button>
         {length

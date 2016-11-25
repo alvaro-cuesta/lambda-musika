@@ -8,7 +8,6 @@
 - `[BUG]` `[RENDERER]` Audible clicks when rendering the THX sound example
 - `[TODO]` `[RENDERER]` Handling render `fn()` errors
 - `[TODO]` `[COMPILER]` Also check possible syntax error of returned fn
-- `[FEATURE]` `[APP]` Button hotkey tooltips
 
 ### 0.0.3
 
