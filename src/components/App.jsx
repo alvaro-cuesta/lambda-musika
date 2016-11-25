@@ -37,7 +37,7 @@ export default class App extends React.Component {
 
     let {fn, length, error} = compile(source, this.audioCtx.sampleRate)
 
-    this.refs.editor.maybeAddError(error)
+    this.refs.editor.maybeAddError(error) // Throws
     this.setState({fn, length})
   }
 
@@ -48,18 +48,18 @@ export default class App extends React.Component {
 
     let source = this.refs.editor.editor.getValue()
     let sampleRate = this.refs.renderSampleRate.value
-    let {fn, length, error} = compile(code, sampleRate)
+    let {fn, length, error} = compile(source, sampleRate)
 
-    if (!error) {
-      let buffer = Int16Stereo(sampleRate, length, fn)
+    this.refs.editor.maybeAddError(error) // Throws
 
-      let link = document.createElement('a')
-      link.download = 'render.wav'
-      link.href = makeWAVURL(buffer, 2, sampleRate)
-      link.click()
+    let buffer = Int16Stereo(sampleRate, length, fn)
 
-      URL.revokeObjectURL(link.href)
-    }
+    let link = document.createElement('a')
+    link.download = 'render.wav'
+    link.href = makeWAVURL(buffer, 2, sampleRate)
+    link.click()
+
+    URL.revokeObjectURL(link.href)
   }
 
   handlePlayingChange(playing) {
@@ -71,7 +71,7 @@ export default class App extends React.Component {
   }
 
   handleError(error) {
-    this.refs.editor.maybeAddError(error)
+    this.refs.editor.maybeAddError(error) // Throws
   }
 
   handleTogglePlay() {
