@@ -33,8 +33,8 @@ for (var i = 0; i < NUM_VOICES; i++) {
   voices[i].target_f = Music.semitoneToFrequency(semitone)
 }
 
+// Faster than using Envelope.linear
 function sweep_envelope(x1, x2, y1, t) {
-  // y = y0 + (x - x0) * (y1 - y0) / (x1 - x0)
   if (t < x1) {
     return y1 * t/x1
   } else if (t < x2) {
@@ -48,8 +48,8 @@ return t => {
   let lout = 0
   let rout = 0
 
-  for (var i = 0; i < NUM_VOICES; i++) {
-    let {osc, f, f_noise, target_f, target_f_noise, pan, x1, x2, y1} = voices[i]
+  for (let voice of voices) {
+    let {osc, f, f_noise, target_f, target_f_noise, pan, x1, x2, y1} = voice
 
     f = f + f_noise(t) * 3 * (i + 1)
     target_f = target_f + target_f_noise(t) * i/4
