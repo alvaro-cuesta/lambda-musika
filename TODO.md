@@ -106,7 +106,6 @@
   - Check that vendor CSS hash doesn't change
 - `[TODO]` Move Web Audio bits to library, abstracting audio playing in the
   process
-- `[TODO]` Remove Musika export shim
 
 
 ## Unassigned
