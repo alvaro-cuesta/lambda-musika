@@ -107,10 +107,6 @@
 - `[TODO]` Move Web Audio bits to library, abstracting audio playing in the
   process
 - `[TODO]` Remove Musika export shim
-- `[TODO]` Test and add optimizations
-  - https://webpack.github.io/docs/list-of-plugins.html#dedupeplugin
-  - `new webpack.optimize.OccurrenceOrderPlugin(true)`
-  - [noParse](http://survivejs.com/webpack/advanced-techniques/configuring-react/)
 
 
 ## Unassigned
