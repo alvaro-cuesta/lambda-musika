@@ -139,7 +139,7 @@ html, body, #container {
   height: 100%;
 }
 
-button i.fa {
+button i.fa:only-child {
   vertical-align: middle;
 }
 

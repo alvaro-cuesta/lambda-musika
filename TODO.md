@@ -10,7 +10,6 @@
 - `[TODO]` `[RENDERER]` Handling render `fn()` errors
 - `[TODO]` `[COMPILER]` Also check possible syntax error of returned fn
 - `[FEATURE]` `[APP]` Button hotkey tooltips
-- `[COSMETIC]` I lowered all buttons, but only ones with text should be lowered
 - `[BUG]` CTRL-S, CTRL-Space should be app-wide, not only on editor
 
 ### 0.0.3
