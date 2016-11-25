@@ -17,7 +17,7 @@ const PATHS = {
   examples: path.join(__dirname, 'examples'),
 };
 
-const common = merge(
+const COMMON = merge(
   parts.dontEmitIfErrors(),
   parts.basic(PATHS),
   {
@@ -44,7 +44,7 @@ switch(process.env.npm_lifecycle_event) {
   case 'build':
     process.env.BABEL_ENV = 'production'
     config = merge(
-      common,
+      COMMON,
       parts.productionSourceMap(),
       parts.productionEnv(),
       parts.extractVendor([
@@ -73,7 +73,7 @@ switch(process.env.npm_lifecycle_event) {
         host: HOST,
         port: PORT
       }),
-      common,
+      COMMON,
       parts.devSourceMap(),
       parts.CSS()
     );
@@ -81,7 +81,7 @@ switch(process.env.npm_lifecycle_event) {
 
   default:
     config = merge(
-      common,
+      COMMON,
       parts.devSourceMap(),
       parts.CSS()
     );
