@@ -84,16 +84,30 @@ export default class ScriptProcessorPlayer {
         lChannel[i] = l
         rChannel[i] = r
       } catch (e) {
-        this.pause()
         if (typeof onError !== 'undefined') {
           onError(tryParseException(e))
         }
-        return
+        // Try to recover using backup fn
+        if (this.lastFn) {
+          fn = this.fn = this.lastFn
+          this.lastFn = undefined
+          i = 0
+          continue
+        }
+        // No backup fn, just stop
+        else {
+          this.pause()
+          return
+        }
       }
     }
 
+    // Advance frame
     lastFrame += buffer.length
     if (typeof onFrame !== 'undefined') onFrame(lastFrame)
+
+    // Save this (presumably working) fn as a backup fn
+    if (typeof this.lastFn === 'undefined') this.lastFn = fn
 
     // Continue playing or stop if we've reached the end
     if (length && lastFrame > length*sampleRate) {

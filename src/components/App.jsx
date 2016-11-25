@@ -71,7 +71,9 @@ export default class App extends React.Component {
   }
 
   handleError(error) {
-    this.refs.editor.maybeAddError(error) // Throws
+    try {
+      this.refs.editor.maybeAddError(error)
+    } catch (e) {/* IGNORE EXCEPTION! Let the player try to recover */}
   }
 
   handleTogglePlay() {
