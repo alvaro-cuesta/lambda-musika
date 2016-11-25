@@ -5,8 +5,6 @@
 ### 0.0.2
 
 - `[BUG]` `[PLAYER]` Sound clicks on play/pause/update
-- `[BUG]` `[PLAYER]` There is leftover sound from previous buffer state after
-  pausing, updating and then playing the new buffer
 - `[BUG]` `[EDITOR]` Uncaught errors on CTRL-S open the document save window
 - `[BUG]` `[RENDERER]` Audible clicks when rendering the THX sound example
 - `[TODO]` `[RENDERER]` Handling render `fn()` errors

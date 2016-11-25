@@ -4,158 +4,97 @@ import TimeSlider from 'components/TimeSlider'
 import TimeSeeker from 'components/TimeSeeker'
 import Icon from 'components/Icon'
 
-import { tryParseException } from 'compile'
+import ScriptProcessorPlayer from 'ScriptProcessorPlayer'
 
 // Audio player component which receives a function `fn` to generate audio
 export default class Player extends React.PureComponent {
   constructor(props) {
     super(props)
 
+    this.newFnPlayer(props)
+
     this.state = {
-      scriptProcessor: undefined,
       playing: false,
       lastFrame: 0,
-      renderTime: undefined,
     }
   }
 
   /* Public API */
 
   play() {
-    let {scriptProcessor} = this.state
-    let {audioCtx, onPlayingChange} = this.props
-
-    if (!this.state.playing) {
-      this.setState({playing: true})
-      scriptProcessor.connect(audioCtx.destination)
-      if (typeof onPlayingChange !== 'undefined') {
-        onPlayingChange(true)
-      }
-    }
+    this.fnPlayer.play()
   }
 
   pause() {
-    let {scriptProcessor} = this.state
-    let {audioCtx, onPlayingChange} = this.props
-
-    if (this.state.playing) {
-      this.setState({playing: false})
-      scriptProcessor.disconnect(audioCtx.destination)
-      if (typeof onPlayingChange !== 'undefined') {
-        onPlayingChange(false)
-      }
-    }
+    this.fnPlayer.pause()
   }
 
   togglePlay() {
-    if (this.state.playing) {
-      this.pause()
-    } else {
-      this.play()
-    }
+    this.fnPlayer.togglePlay()
   }
 
   stop() {
-    let {scriptProcessor, playing} = this.state
-    let {audioCtx, onPlayingChange} = this.props
-
-    this.setState({
-      playing: false,
-      lastFrame: 0,
-    })
-
-    if (playing) {
-      scriptProcessor.disconnect(audioCtx.destination)
-      if (typeof onPlayingChange !== 'undefined') {
-        onPlayingChange(false)
-      }
-    }
+    this.fnPlayer.stop()
   }
 
   /* Private API and lifecycle */
 
-  componentDidMount() {
-    this.makeScriptProcessor(this.props.bufferLength)
+  newFnPlayer({audioCtx, bufferLength, fn, length, onRenderTime, onError}, playing, lastFrame) {
+    if (this.fnPlayer) {
+      this.fnPlayer.onPlayingChange = undefined  // Do not notify of stop...
+      this.fnPlayer.stop()  // ..because we just want to detroy and recreate
+    }
+
+    this.fnPlayer = new ScriptProcessorPlayer(audioCtx, bufferLength, fn, length, playing, lastFrame)
+    this.fnPlayer.onPlayingChange = this.handlePlayingChange.bind(this)
+    this.fnPlayer.onFrame = this.handleFrame.bind(this)
+    this.fnPlayer.onRenderTime = onRenderTime
+    this.fnPlayer.onError = onError
   }
 
-  // Reinstantiate ScriptProcessorNode if we receive new buffer length
   componentWillReceiveProps(nextProps) {
-    if (this.props.bufferLength !== nextProps.bufferLength) {
-      this.makeScriptProcessor(nextProps.bufferLength)
+    if ( (this.props.audioCtx !== nextProps.audioCtx)
+      || (this.props.fn !== nextProps.fn)
+      || (this.props.length !== nextProps.length)
+      || (this.props.bufferLength !== nextProps.bufferLength)
+    ) {
+      let {playing, lastFrame} = this.state
+      this.newFnPlayer(nextProps, playing, lastFrame)
+    }
+
+    if (this.props.onRenderTime !== nextProps.onRenderTime) {
+      this.fnPlayer.onRenderTime = nextProps.onRenderTime
+    }
+
+    if (this.props.onError !== nextProps.onError) {
+      this.fnPlayer.onError = nextProps.onError
     }
   }
 
-  // Destroy script processor
   componentWillUnmount() {
-    let {playing, scriptProcessor} = this.state
-    if (playing) {
-      scriptProcessor.disconnect(this.props.audioCtx.destination)
-    }
-  }
-
-  // Instantiate ScriptProcessorNode
-  makeScriptProcessor(bufferLength) {
-    let {scriptProcessor} = this.state
-    let {audioCtx} = this.props
-    let {sampleRate} = audioCtx
-
-    if (typeof scriptProcessor !== 'undefined') {
-      scriptProcessor.disconnect(audioCtx.destination)
-    }
-
-    scriptProcessor = audioCtx.createScriptProcessor(bufferLength, 0, 2)
-    scriptProcessor.onaudioprocess = this.handleAudioProcess.bind(this)
-
-    this.setState({scriptProcessor})
-  }
-
-  // Fills the audio buffer - this is what actually plays the sound
-  handleAudioProcess(audioProcessingEvent) {
-    let {lastFrame} = this.state
-    let {audioCtx: {sampleRate}, fn, length, onRenderTime, onError} = this.props
-
-    let buffer = audioProcessingEvent.outputBuffer
-    let lChannel = buffer.getChannelData(0)
-    let rChannel = buffer.getChannelData(1)
-
-    // Fill the buffer and time how long it takes
-    let start;
-    if (typeof onRenderTime !== 'undefined') {
-      start = performance.now()
-    }
-    for (let i = 0; i < buffer.length; i++) {
-      let t = (i + lastFrame)/sampleRate
-      try {
-        let [l, r] = fn(t)
-        lChannel[i] = l
-        rChannel[i] = r
-      } catch (e) {
-        this.pause()
-        onError(tryParseException(e))
-        return
-      }
-    }
-    lastFrame += buffer.length
-
-    // Continue playing or stop if we've reached the end
-    if (lastFrame > length*sampleRate) {
-      this.stop()
-    } else {
-      this.setState({lastFrame})
-      if (typeof onRenderTime !== 'undefined') {
-        onRenderTime(performance.now() - start)
-      }
-    }
+    this.fnPlayer.stop()
   }
 
   // Handle seeking from controls
   handleTime(time) {
-    this.setState({lastFrame: time * this.props.audioCtx.sampleRate})
+    let lastFrame = time * this.props.audioCtx.sampleRate
+    this.fnPlayer.setFrame(lastFrame)
+    this.setState({lastFrame})
+  }
+
+  // Handle frame updates as time progresses
+  handleFrame(lastFrame) {
+    this.setState({lastFrame})
+  }
+
+  handlePlayingChange(playing) {
+    this.setState({playing})
+    this.props.onPlayingChange(playing)
   }
 
   render() {
     let {playing, lastFrame} = this.state
-    let {audioCtx: {sampleRate}, length, bufferLength} = this.props
+    let {audioCtx: {sampleRate}, length} = this.props
 
     return <div className='Musika-Player'>
       <button className='color-orange' onClick={this.togglePlay.bind(this)}>
@@ -176,6 +115,7 @@ Player.propTypes = {
   bufferLength: React.PropTypes.number,
   onPlayingChange: React.PropTypes.func,
   onRenderTime: React.PropTypes.func,
+  onError: React.PropTypes.func,
 }
 
 Player.defaultProps = {
