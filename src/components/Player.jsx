@@ -54,7 +54,6 @@ export default class Player extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     if ( (this.props.audioCtx !== nextProps.audioCtx)
-      || (this.props.length !== nextProps.length)
       || (this.props.bufferLength !== nextProps.bufferLength)
     ) {
       let {playing, lastFrame} = this.state
@@ -63,6 +62,10 @@ export default class Player extends React.PureComponent {
 
     if (this.props.fn !== nextProps.fn) {
       this.fnPlayer.setFunction(nextProps.fn)
+    }
+
+    if (this.props.length !== nextProps.length) {
+      this.fnPlayer.setLength(nextProps.length)
     }
 
     if (this.props.onRenderTime !== nextProps.onRenderTime) {
