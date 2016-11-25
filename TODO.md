@@ -59,7 +59,6 @@
 - `[API]` `[MUSIKA]` `[MUSIKA-ENVELOPE]` ADSR Envelope
 - `[API]` `[MUSIKA]` `[MUSIKA-ENVELOPE]` Should inv envelopes actually be
   logarithmic?
-- `[API]` `[MUSIKA]` `[MUSIKA-OPERATOR]` Panning helper
 - `[API]` `[MUSIKA]` `[MUSIKA-MUSIC]` Chordify signals (given an osc constructor,
   instance several and mix)
 - `[API]` `[MUSIKA]` `[MUSIKA-MUSIC]` Randomization helpers
