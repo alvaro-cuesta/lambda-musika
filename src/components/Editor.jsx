@@ -78,7 +78,16 @@ export default class Editor extends React.PureComponent {
     let source = editor.getValue()
     let session = editor.getSession()
 
+    // Clear errors
     session.setAnnotations()
+    if (session.lineWidgets) {
+      session.lineWidgets.forEach(w => {
+        console.log(w)
+        session.widgetManager.removeLineWidget(w)
+      })
+    }
+
+    // Add new error
     if (error) {
       let {name, message, row, column} = error
       let text = `${name}: ${message.replace(/\s+\(\d+:\d+\)$/, '')}`
