@@ -10,6 +10,10 @@
 - `[BUG]` `[EDITOR]` Uncaught errors on CTRL-S open the document save window
 - `[BUG]` `[RENDERER]` Audible clicks when rendering the THX sound example
 - `[TODO]` `[RENDERER]` Handling render `fn()` errors
+- `[TODO]` `[COMPILER]` Also check possible syntax error of returned fn
+- `[FEATURE]` `[APP]` Button hotkey tooltips
+- `[COSMETIC]` I lowered all buttons, but only ones with text should be lowered
+- `[BUG]` CTRL-S, CTRL-Space should be app-wide, not only on editor
 
 ### 0.0.3
 
@@ -109,6 +113,11 @@
   - [noParse](http://survivejs.com/webpack/advanced-techniques/configuring-react/)
 
 
+## Unassigned
+
+- Allow empty fn for player, but disable and gray out it
+
+
 ## Ideas or possible research lines
 
 - `[COSMETIC]` "3D" box-shadow buttons Material Design style
@@ -134,8 +143,10 @@
 - `[FEATURE]` `[EDITOR]` REPL
 - `[FEATURE]` `[EDITOR]` Save/load code from Gist (+ link generation)
 - `[FEATURE]` `[EDITOR]` Enable ACE worker but with custom rules
+  - https://github.com/ajaxorg/ace/blob/master/lib/ace/mode/javascript.js
 - `[FEATURE]` `[EDITOR]` Detect tab settings from buffer
 - `[FEATURE]` `[EDITOR]` Continue comments
+  - https://github.com/ajaxorg/ace/blob/master/lib/ace/mode/javascript.js
 - `[FEATURE]` `[EDITOR]` `[COMPILER]` Multiple files/tabs
 - `[FEATURE]` `[APP]` `[EDITOR]` Slider when double-clicking numerical values in editor
 - `[FEATURE]` `[COMPILER]` Import Gists or other sources of functions (for custom
@@ -164,5 +175,6 @@
 - http://survivejs.com/webpack/advanced-techniques/linting/
 - http://survivejs.com/webpack/advanced-techniques/authoring-packages/
 - http://survivejs.com/webpack/advanced-techniques/configuring-react/
+  - react-lite
   - TypeScript
   - Flow
