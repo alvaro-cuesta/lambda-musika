@@ -14,8 +14,6 @@
 ### 0.0.3
 
 - `[FEATURE]` `[EDITOR]` Save/load code from file
-- `[FEATURE]` `[EDITOR]` Show errors on status bar or line (right now in the
-  gutter they're quite unnoticeable)
 - `[FEATURE]` `[EDITOR]` Preserve code between reloads
   - Add some way to reset to default song
   - Try to preserve Undo and other state between app loads

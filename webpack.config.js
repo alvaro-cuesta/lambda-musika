@@ -50,6 +50,7 @@ switch(process.env.npm_lifecycle_event) {
       parts.extractVendor([
         'brace/mode/javascript',
         'brace/theme/tomorrow_night_eighties',
+        'brace/ext/error_marker',
         'brace/ext/searchbox',
         'brace/ext/elastic_tabstops_lite',
         'brace/ext/keybinding_menu',

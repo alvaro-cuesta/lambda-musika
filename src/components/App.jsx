@@ -41,10 +41,8 @@ export default class App extends React.Component {
       let {name, message, row, column} = error
       let text = `${name}: ${message.replace(/\s+\(\d+:\d+\)$/, '')}`
 
-      session.setAnnotations([{ type: 'error', text, row, column }])
-
-      editor.scrollToLine(row + 1, true, true, function () {})
-      editor.gotoLine(row + 1, column - 1, true)
+      session.setAnnotations([{ type: 'error', text, row, column: column - 1 }])
+      ace.acequire('ace/ext/error_marker').showErrorMarker(editor, 1)
       editor.focus()
 
       console.error(error)
