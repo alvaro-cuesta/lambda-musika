@@ -36,7 +36,7 @@ const DRUM_ENVELOPE = [[0, 0], [DRUM_ATTACK, DRUM_FREQUENCY], [DRUM_NOTE_LENGTH,
 const SNARE_NOTE_VALUE = 8
 const SNARE_NOTE_LENGTH = SONG_TEMPO.noteLength(SNARE_NOTE_VALUE)
 const SNARE_PLAYS_IN = [3, 7]
-const SNARE_AMPLITUDE = 0.3
+const SNARE_AMPLITUDE = 0.2
 const SNARE_DECAY_POWER = 7
 
 
@@ -78,7 +78,7 @@ function DrumInstrument() {
 }
 
 function snareInstrument(t) {
-  return Math.random() * SNARE_AMPLITUDE
+  return Generator.random() * SNARE_AMPLITUDE
     * Envelope.release(SNARE_NOTE_LENGTH, SNARE_NOTE_LENGTH, SNARE_DECAY_POWER, t)
 }
 

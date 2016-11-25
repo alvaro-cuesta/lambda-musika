@@ -72,7 +72,7 @@ const NoiseGen = () => {
   const COEFF = Filter.Biquad.LP(400/sampleRate, Math.SQRT1_2)  // Cutoff = 400Hz, Q = 0.707
 
   const filter = Filter.Biquad()
-  return () => filter(COEFF, Math.random() * A)
+  return () => filter(COEFF, Generator.random() * A)
 }
 
 const noiseL = NoiseGen(), noiseR = NoiseGen()
@@ -91,7 +91,7 @@ const NoiseGen = () => {
   const filter = Filter.Biquad()
   return cutoff => {
     let coeff = Filter.Biquad.LP(cutoff/sampleRate, Math.SQRT1_2)
-    return filter(coeff, Math.random() * A)
+    return filter(coeff, Generator.random() * A)
   }
 }
 
