@@ -23,9 +23,7 @@ export default class ScriptProcessorPlayer {
     if (!playing) {
       this.playing = true
       scriptProcessor.connect(audioCtx.destination)
-      if (typeof onPlayingChange !== 'undefined') {
-        onPlayingChange(true)
-      }
+      if (typeof onPlayingChange !== 'undefined') onPlayingChange(true)
     }
   }
 
@@ -35,9 +33,7 @@ export default class ScriptProcessorPlayer {
     if (playing) {
       this.playing = false
       scriptProcessor.disconnect(audioCtx.destination)
-      if (typeof onPlayingChange !== 'undefined') {
-        onPlayingChange(false)
-      }
+      if (typeof onPlayingChange !== 'undefined') onPlayingChange(false)
     }
   }
 
@@ -52,9 +48,9 @@ export default class ScriptProcessorPlayer {
   stop() {
     this.pause()
     this.lastFrame = 0
-    if (typeof onFrame !== 'undefined') {
-      onFrame(0)
-    }
+
+    let {onFrame} = this
+    if (typeof onFrame !== 'undefined') onFrame(0)
   }
 
   setFrame(frame) {
@@ -91,16 +87,15 @@ export default class ScriptProcessorPlayer {
         return
       }
     }
+
     lastFrame += buffer.length
+    if (typeof onFrame !== 'undefined') onFrame(lastFrame)
 
     // Continue playing or stop if we've reached the end
     if (length && lastFrame > length*sampleRate) {
       this.stop()
     } else {
       this.lastFrame = lastFrame
-      if (typeof onFrame !== 'undefined') {
-        onFrame(lastFrame)
-      }
       if (typeof onRenderTime !== 'undefined') {
         onRenderTime(performance.now() - start)
       }
