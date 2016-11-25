@@ -5,12 +5,10 @@
 ### 0.0.2
 
 - `[BUG]` `[PLAYER]` Sound clicks on play/pause/update
-- `[BUG]` `[EDITOR]` Uncaught errors on CTRL-S open the document save window
 - `[BUG]` `[RENDERER]` Audible clicks when rendering the THX sound example
 - `[TODO]` `[RENDERER]` Handling render `fn()` errors
 - `[TODO]` `[COMPILER]` Also check possible syntax error of returned fn
 - `[FEATURE]` `[APP]` Button hotkey tooltips
-- `[BUG]` CTRL-S, CTRL-Space should be app-wide, not only on editor
 
 ### 0.0.3
 

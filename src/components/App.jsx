@@ -78,11 +78,34 @@ export default class App extends React.Component {
     this.refs.player.togglePlay()
   }
 
+  handleKeyDown(e) {
+    let {ctrlKey, keyCode} = e
+
+    // Prevent CTRL-S from opening the webpage save dialog
+    if (ctrlKey && keyCode === 83 /* S */) {
+      e.preventDefault()
+    }
+  }
+
+  handleKeyUp({ctrlKey, keyCode}) {
+    if (ctrlKey) {
+      if (keyCode === 13 /* ENTER */ || keyCode === 83 /* S */ ) {
+        this.handleUpdate()
+      } else if (keyCode === 32 /* SPACE */) {
+        this.handleTogglePlay()
+      }
+    }
+  }
+
   render() {
     let {fn, length, renderTime} = this.state
     let {bufferLength} = this.props
 
-    return <div className='Musika-App'>
+    return <div className='Musika-App'
+      onKeyDown={this.handleKeyDown.bind(this)} onKeyUp={this.handleKeyUp.bind(this)}
+      // {/*Make element focusable (or it won't catch kotkeys when clicked on empty zones)*/}
+      tabIndex='0'
+    >
       <Player ref='player' fn={fn} length={length} bufferLength={bufferLength}
         audioCtx={this.audioCtx}
         onPlayingChange={this.handlePlayingChange.bind(this)}
@@ -90,10 +113,7 @@ export default class App extends React.Component {
         onError={this.handleError.bind(this)}
       />
       <CPULoad renderTime={renderTime} bufferLength={bufferLength} sampleRate={this.audioCtx.sampleRate} />
-      <Editor ref='editor' defaultValue={DEFAULT_SCRIPT}
-        onUpdate={this.handleUpdate.bind(this)}
-        onTogglePlay={this.handleTogglePlay.bind(this)}
-      />
+      <Editor ref='editor' defaultValue={DEFAULT_SCRIPT} />
       <div className='Musika-bottomPanel'>
         <button className='color-orange' onClick={this.handleUpdate.bind(this)}>
           <Icon name='share' /> Commit
