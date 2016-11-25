@@ -89,6 +89,25 @@ export default class Editor extends React.PureComponent {
     if (this.props.onLoad) this.props.onLoad(editor)
   }
 
+  maybeAddError(error) {
+    let editor = this.editor
+    let source = editor.getValue()
+    let session = editor.getSession()
+
+    session.setAnnotations()
+    if (error) {
+      let {name, message, row, column} = error
+      let text = `${name}: ${message.replace(/\s+\(\d+:\d+\)$/, '')}`
+
+      session.setAnnotations([{ type: 'error', text, row, column }])
+      ace.acequire('ace/ext/error_marker').showErrorMarker(editor, 1)
+      editor.focus()
+
+      console.error(error)
+      throw error.e
+    }
+  }
+
   render() {
     return <div ref='editor' className='Musika-Editor' />
   }

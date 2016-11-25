@@ -31,32 +31,13 @@ export default class App extends React.Component {
     this.audioCtx.close()
   }
 
-  maybeAddErrorToEditor(error) {
-    let editor = this.refs.editor.editor
-    let source = editor.getValue()
-    let session = editor.getSession()
-
-    session.setAnnotations()
-    if (error) {
-      let {name, message, row, column} = error
-      let text = `${name}: ${message.replace(/\s+\(\d+:\d+\)$/, '')}`
-
-      session.setAnnotations([{ type: 'error', text, row, column: column - 1 }])
-      ace.acequire('ace/ext/error_marker').showErrorMarker(editor, 1)
-      editor.focus()
-
-      console.error(error)
-      throw error.e
-    }
-  }
-
   handleUpdate() {
     let editor = this.refs.editor.editor
     let source = editor.getValue()
 
     let {fn, length, error} = compile(source, this.audioCtx.sampleRate)
 
-    this.maybeAddErrorToEditor(error)
+    this.refs.editor.maybeAddError(error)
     this.setState({fn, length})
   }
 
@@ -90,7 +71,7 @@ export default class App extends React.Component {
   }
 
   handleError(error) {
-    this.maybeAddErrorToEditor(error)
+    this.refs.editor.maybeAddError(error)
   }
 
   handleTogglePlay() {
