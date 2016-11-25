@@ -61,6 +61,10 @@ export default class ScriptProcessorPlayer {
     this.lastFrame = frame
   }
 
+  setFunction(fn) {
+    this.fn = fn
+  }
+
   handleAudioProcess(audioProcessingEvent) {
     let {audioCtx: {sampleRate}, lastFrame, fn, length, onFrame, onRenderTime, onError} = this
 

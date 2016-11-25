@@ -54,12 +54,15 @@ export default class Player extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     if ( (this.props.audioCtx !== nextProps.audioCtx)
-      || (this.props.fn !== nextProps.fn)
       || (this.props.length !== nextProps.length)
       || (this.props.bufferLength !== nextProps.bufferLength)
     ) {
       let {playing, lastFrame} = this.state
       this.newFnPlayer(nextProps, playing, lastFrame)
+    }
+
+    if (this.props.fn !== nextProps.fn) {
+      this.fnPlayer.setFunction(nextProps.fn)
     }
 
     if (this.props.onRenderTime !== nextProps.onRenderTime) {
