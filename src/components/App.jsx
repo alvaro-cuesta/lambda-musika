@@ -89,7 +89,7 @@ export default class App extends React.Component {
 
   handleKeyUp({ctrlKey, keyCode}) {
     if (ctrlKey) {
-      if (keyCode === 13 /* ENTER */ || keyCode === 83 /* S */ ) {
+      if (keyCode === 83 /* S */ ) {
         this.handleUpdate()
       } else if (keyCode === 32 /* SPACE */) {
         this.handleTogglePlay()
@@ -115,7 +115,7 @@ export default class App extends React.Component {
       <CPULoad renderTime={renderTime} bufferLength={bufferLength} sampleRate={this.audioCtx.sampleRate} />
       <Editor ref='editor' defaultValue={DEFAULT_SCRIPT} />
       <div className='Musika-bottomPanel'>
-        <button className='color-orange' onClick={this.handleUpdate.bind(this)} title='CTRL-S, CTRL-Enter'>
+        <button className='color-orange' onClick={this.handleUpdate.bind(this)} title='CTRL-S'>
           <Icon name='share' /> Commit
         </button>
         {length
