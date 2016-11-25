@@ -60,5 +60,13 @@ export default function compile(source, sampleRate) {
     return {error: tryParseException(e)}
   }
 
+  // Run fn dummy with t=0 to check for basic errors
+  try {
+    fn(0)
+  } catch(e) {
+    console.log('dummy failed')
+    return {error: tryParseException(e)}
+  }
+
   return {builder, length, fn}
 }
