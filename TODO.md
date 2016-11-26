@@ -2,12 +2,9 @@
 
 ## Milestones
 
-### 0.0.2
-
-- `[BUG]` `[PLAYER]` Sound clicks on play/pause/update/seek
-
 ### 0.0.3
 
+- `[BUG]` `[PLAYER]` Sound clicks on play/pause/update/seek
 - `[FEATURE]` `[EDITOR]` Save/load code from file
 - `[FEATURE]` `[EDITOR]` Preserve code between reloads
   - Add some way to reset to default song
