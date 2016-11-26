@@ -47,7 +47,7 @@ export default function compile(source, sampleRate) {
   // Compile fn builder
   let builder
   try {
-    builder = new Function('Musika', 'sampleRate', 'setLength', source)
+    builder = new Function('Musika', 'sampleRate', 'console', 'setLength', source)
   } catch (e) {
     return {error: tryParseException(e)}
   }
@@ -55,7 +55,7 @@ export default function compile(source, sampleRate) {
   // Run fn builder
   let length, fn
   try {
-    fn = builder(Musika, sampleRate, l => length = l)
+    fn = builder(Musika, sampleRate, console, l => length = l)
   } catch(e) {
     return {error: tryParseException(e)}
   }
