@@ -82,16 +82,16 @@ export default class App extends React.Component {
   }
 
   handleKeyDown(e) {
-    let {ctrlKey, keyCode} = e
+    let {ctrlKey, shiftKey, altKey, keyCode} = e
 
     // Prevent CTRL-S from opening the webpage save dialog
-    if (ctrlKey && keyCode === 83 /* S */) {
+    if (ctrlKey && !shiftKey && !altKey && keyCode === 83 /* S */) {
       e.preventDefault()
     }
   }
 
-  handleKeyUp({ctrlKey, keyCode}) {
-    if (ctrlKey) {
+  handleKeyUp({ctrlKey, shiftKey, altKey, keyCode}) {
+    if (ctrlKey && !shiftKey && !altKey) {
       if (keyCode === 83 /* S */ ) {
         this.handleUpdate()
       } else if (keyCode === 32 /* SPACE */) {
