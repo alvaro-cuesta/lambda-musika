@@ -5,7 +5,6 @@
 ### 0.0.2
 
 - `[BUG]` `[PLAYER]` Sound clicks on play/pause/update/seek
-- `[FEATURE]` `[PLAYER]` Allow empty fn for prop, but disable and gray out it
 
 ### 0.0.3
 
