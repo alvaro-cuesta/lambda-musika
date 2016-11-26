@@ -4,7 +4,8 @@
 
 ### 0.0.2
 
-- `[BUG]` `[PLAYER]` Sound clicks on play/pause/update
+- `[BUG]` `[PLAYER]` Sound clicks on play/pause/update/seek
+- `[FEATURE]` `[PLAYER]` Allow empty fn for prop, but disable and gray out it
 - `[TODO]` `[RENDERER]` Handling render `fn()` errors
 
 ### 0.0.3
@@ -95,13 +96,6 @@
 - `[TODO]` http://survivejs.com/webpack/building-with-webpack/separating-css/#separating-application-code-and-styling
   - Extract theme, components and vendor CSS separately
   - Check that vendor CSS hash doesn't change
-- `[TODO]` Move Web Audio bits to library, abstracting audio playing in the
-  process
-
-
-## Unassigned
-
-- Allow empty fn for player, but disable and gray out it
 
 
 ## Ideas or possible research lines
