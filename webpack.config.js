@@ -11,7 +11,7 @@ const HOST = process.env.HOST || "0.0.0.0";
 const PORT = process.env.PORT || "8888";
 
 const PATHS = {
-  app: path.join(__dirname, 'src'),
+  app: path.join(__dirname, 'app'),
   lib: path.join(__dirname, 'lib'),
   build: path.join(__dirname, 'build'),
   examples: path.join(__dirname, 'examples'),
