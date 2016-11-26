@@ -11,12 +11,12 @@ const SONG_IN_LENGTH = 0.5
 const SONG_OUT_LENGTH = 0.5
 const SONG_STRUCTURE = [
   {
-    melodyKey: 'C',
-    bassNote: 'C2',
-  },
-  {
     melodyKey: 'E',
     bassNote: 'E2',
+  },
+  {
+    melodyKey: 'C',
+    bassNote: 'C2',
   },
 ]
 const SONG_BARS_REPEAT = 4
