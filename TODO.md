@@ -6,7 +6,6 @@
 
 - `[BUG]` `[PLAYER]` Sound clicks on play/pause/update/seek
 - `[FEATURE]` `[PLAYER]` Allow empty fn for prop, but disable and gray out it
-- `[TODO]` `[RENDERER]` Handling render `fn()` errors
 
 ### 0.0.3
 

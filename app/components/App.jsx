@@ -48,11 +48,12 @@ export default class App extends React.Component {
 
     let source = this.refs.editor.editor.getValue()
     let sampleRate = this.refs.renderSampleRate.value
-    let {fn, length, error} = compile(source, sampleRate)
 
-    this.refs.editor.maybeAddError(error) // Throws
+    let {fn, length, error: compileError} = compile(source, sampleRate)
+    this.refs.editor.maybeAddError(compileError) // Throws
 
-    let buffer = Int16Stereo(sampleRate, length, fn)
+    let {buffer, error: runtimeError} = Int16Stereo(sampleRate, length, fn)
+    this.refs.editor.maybeAddError(runtimeError) // Throws
 
     let link = document.createElement('a')
     link.download = 'render.wav'
