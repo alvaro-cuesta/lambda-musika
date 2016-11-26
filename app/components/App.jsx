@@ -3,7 +3,7 @@ import React from 'react'
 import Player from 'components/Player'
 import CPULoad from 'components/CPULoad'
 import Editor from 'components/Editor'
-import Icon from 'components/Icon'
+import { Icon, IconStack } from 'components/Icon'
 
 import compile from 'compile'
 import {Int16Stereo, makeWAVURL} from 'PCM'
@@ -121,9 +121,32 @@ export default class App extends React.Component {
         <button className='color-orange' onClick={this.handleUpdate.bind(this)} title='CTRL-S'>
           <Icon name='share' /> Commit
         </button>
+        <span className='color-purple'>
+          <button onClick={this.handleUpdate.bind(this)} title='New'>
+            <Icon name='file' />
+          </button>
+          <button onClick={this.handleUpdate.bind(this)} title='Load'>
+            <IconStack icons={[
+              {name: 'file', className: 'fa-stack-1x'},
+              {name: 'arrow-left', className: 'icon-stack-0-5x', inverse: true, style: {left: '-0.3em'}},
+            ]}
+            />
+          </button>
+          <button onClick={this.handleUpdate.bind(this)} title='Save'>
+            <span className="icon-stack">
+              <i className="fa fa-file fa-stack-1x"></i>
+              <i className="fa fa-arrow-right fa-inverse icon-stack-0-5x" style={{left: '-0.3em'}}></i>
+            </span>
+          </button>
+        </span>
+        <span className='color-blue'>
+          <button onClick={this.handleUpdate.bind(this)} title='Default song'>
+            <Icon name='file-text' />
+          </button>
+        </span>
         {length
-          ? <span>
-              <button className='color-purple' onClick={this.handleRender.bind(this)}>
+          ? <span className='color-red'>
+              <button onClick={this.handleRender.bind(this)} title='Render'>
                 <Icon name='download' /> .WAV
               </button>
               <select ref='renderSampleRate' defaultValue={44100}>

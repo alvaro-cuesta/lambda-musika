@@ -1,8 +1,6 @@
 import React from 'react'
 
-export default function Icon({name, title}) {
-  let props = {}
-
+export function Icon({name, title}) {
   let hasTitle = typeof title !== 'undefined'
 
   let icon = <i className={`fa fa-${name}`} title={title} aria-hidden={!hasTitle} />
@@ -21,3 +19,33 @@ Icon.propTypes = {
   name: React.PropTypes.string.isRequired,
   title: React.PropTypes.string,
 }
+
+export function IconStack({icons, title}) {
+  let hasTitle = typeof title !== 'undefined'
+
+  let icon = Object.keys(icons).map((k, idx) => {
+    let {name, className, inverse, style} = icons[k]
+    return <i key={idx}
+      className={`fa fa-${name} ${inverse ? 'fa-inverse' : ''} ${className}`}
+      aria-hidden={!hasTitle}
+      style={style}
+    />
+  })
+
+  return <span className='icon-stack' title={title} >
+    {icon}
+    {title ? <span className='sr-only'>{title}</span> : null}
+  </span>
+}
+
+IconStack.propTypes = {
+  icons: React.PropTypes.arrayOf(React.PropTypes.shape({
+    name: React.PropTypes.string.isRequired,
+    className: React.PropTypes.string,
+    inverse: React.PropTypes.boolean,
+    style: React.PropTypes.object,
+  })).isRequired,
+  title: React.PropTypes.string,
+}
+
+export default Icon

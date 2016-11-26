@@ -175,28 +175,62 @@ exports.CSS = function() {
   };
 };
 
-exports.extractCSS = function() {
+exports.stylus = function() {
+  return {
+    resolve: { extensions: ['.styl'] },
+    module: {
+      loaders: [
+        { test: /\.styl$/, loaders: ['style', 'css?sourceMap', 'stylus'] },
+      ]
+    }
+  };
+};
+
+exports.extractStyles = function(options) {
   let appCSS = new ExtractTextPlugin('[name].[chunkhash].css');
   let vendorCSS = new ExtractTextPlugin('[name]-vendor.[chunkhash].css');
 
-  return {
-    resolve: { extensions: ['.css'] },
-    module: {
-      loaders: [
-        {
-          test: /\.css$/,
-          loader: appCSS.extract('style', 'css?sourceMap'),
-          exclude: /node_modules/
-        },
-        {
-          test: /\.css$/,
-          loader: vendorCSS.extract('style', 'css'),
-          include: /node_modules/
-        }
-      ]
-    },
+  let config = {
+    resolve: { extensions: [] },
+    module: { loaders: [] },
     plugins: [appCSS, vendorCSS]
   };
+
+  if (options.css !== false) {
+    config.resolve.extensions.push('.css');
+
+    config.module.loaders.push(
+      {
+        test: /\.css$/,
+        loader: appCSS.extract('css?sourceMap'),
+        exclude: /node_modules/
+      },
+      {
+        test: /\.css$/,
+        loader: vendorCSS.extract('css'),
+        include: /node_modules/
+      }
+    );
+  }
+
+  if (options.stylus) {
+    config.resolve.extensions.push('.styl');
+
+    config.module.loaders.push(
+      {
+        test: /\.styl$/,
+        loader: appCSS.extract(['css?sourceMap', 'stylus']),
+        exclude: /node_modules/
+      },
+      {
+        test: /\.styl$/,
+        loader: vendorCSS.extract(['css', 'stylus']),
+        include: /node_modules/
+      }
+    );
+  }
+
+  return config;
 }
 
 exports.productionSourceMap = function() {

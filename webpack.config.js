@@ -56,7 +56,7 @@ switch(process.env.npm_lifecycle_event) {
         'brace/ext/keybinding_menu',
         'brace/ext/settings_menu'
       ]),
-      parts.extractCSS(),
+      parts.extractStyles({css: false, stylus: true}),
       parts.clean(PATHS.build),
       parts.minify()
     );
@@ -75,7 +75,7 @@ switch(process.env.npm_lifecycle_event) {
       }),
       COMMON,
       parts.devSourceMap(),
-      parts.CSS()
+      parts.stylus()
     );
     break;
 
@@ -83,7 +83,7 @@ switch(process.env.npm_lifecycle_event) {
     config = merge(
       COMMON,
       parts.devSourceMap(),
-      parts.CSS()
+      parts.stylus()
     );
 }
 
