@@ -169,6 +169,10 @@ export default class App extends React.Component {
   }
 }
 
+App.propTypes = {
+  bufferLength: React.PropTypes.number,
+}
+
 App.defaultProps = {
   bufferLength: 8192,
 }

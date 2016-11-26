@@ -19,8 +19,10 @@ export default class Editor extends React.PureComponent {
 
     editor.$blockScrolling = Infinity;
 
-    editor.setValue(this.props.defaultValue)
-    editor.gotoLine(0, 0, false)
+    if (this.props.defaultValue) {
+      editor.setValue(this.props.defaultValue)
+      editor.gotoLine(0, 0, false)
+    }
     editor.getSession().setUndoManager(new ace.UndoManager())
     editor.setOptions({
       // Editor
@@ -104,4 +106,9 @@ export default class Editor extends React.PureComponent {
   render() {
     return <div ref='editor' className='Musika-Editor' />
   }
+}
+
+Editor.propTypes = {
+  defaultValue: React.PropTypes.string,
+  onLoad: React.PropTypes.func,
 }

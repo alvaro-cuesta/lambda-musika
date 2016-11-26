@@ -114,8 +114,9 @@ export default class Player extends React.PureComponent {
   }
 }
 
+const AudioContext = window.AudioContext || window.webkitAudioContext
 Player.propTypes = {
-  audioCtx: React.PropTypes.object.isRequired,
+  audioCtx: React.PropTypes.instanceOf(AudioContext).isRequired,
   fn: React.PropTypes.func.isRequired,
   length: React.PropTypes.number,
   bufferLength: React.PropTypes.number,
