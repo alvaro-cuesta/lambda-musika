@@ -3,42 +3,39 @@ import { tryParseException } from 'compile'
 export default class ScriptProcessorPlayer {
   constructor(audioCtx, bufferLength, fn, length, playing = false, lastFrame = 0) {
     this.audioCtx = audioCtx
+    this.bufferLength = bufferLength
+
     this.fn = fn
     this.length = length
-
-    this.scriptProcessor = audioCtx.createScriptProcessor(bufferLength, 0, 2)
-    this.scriptProcessor.onaudioprocess = this.handleAudioProcess.bind(this)
-
-    this.playing = playing
     this.lastFrame = lastFrame
 
     if (playing) {
-      this.scriptProcessor.connect(audioCtx.destination)
+      this.initScriptProcessor()
     }
   }
 
-  play() {
-    let {audioCtx, scriptProcessor, playing, onPlayingChange} = this
+  /* PUBLIC API */
 
-    if (!playing) {
-      this.playing = true
-      scriptProcessor.connect(audioCtx.destination)
+  play() {
+    if (typeof this.scriptProcessor === 'undefined') {
+      this.initScriptProcessor()
+
+      let {onPlayingChange} = this
       if (typeof onPlayingChange !== 'undefined') onPlayingChange(true)
     }
   }
 
   pause() {
-    let {audioCtx, scriptProcessor, playing, onPlayingChange} = this
+    if (typeof this.scriptProcessor !== 'undefined') {
+      this.destroyScriptProcessor()
 
-    if (playing) {
-      this.playing = false
-      scriptProcessor.disconnect(audioCtx.destination)
+      let {onPlayingChange} = this
       if (typeof onPlayingChange !== 'undefined') onPlayingChange(false)
     }
   }
 
   togglePlay() {
-    if (this.playing) {
+    if (typeof this.scriptProcessor !== 'undefined') {
       this.pause()
     } else {
       this.play()
@@ -65,6 +62,27 @@ export default class ScriptProcessorPlayer {
     this.length = length
   }
 
+  /* PRIVATE FUNCTIONS */
+
+  initScriptProcessor() {
+    let {audioCtx, bufferLength} = this
+
+    if (typeof this.scriptProcessor !== 'undefined') {
+      this.destroyScriptProcessor()
+    }
+
+    this.scriptProcessor = audioCtx.createScriptProcessor(bufferLength, 0, 2)
+    this.scriptProcessor.onaudioprocess = this.handleAudioProcess.bind(this)
+    this.scriptProcessor.connect(audioCtx.destination)
+  }
+
+  destroyScriptProcessor() {
+    if (typeof this.scriptProcessor !== 'undefined') {
+      this.scriptProcessor.disconnect(this.audioCtx.destination)
+      this.scriptProcessor = undefined
+    }
+  }
+
   handleAudioProcess(audioProcessingEvent) {
     let {audioCtx: {sampleRate}, lastFrame, fn, length, onFrame, onRenderTime, onError} = this
 
@@ -73,7 +91,7 @@ export default class ScriptProcessorPlayer {
     let rChannel = buffer.getChannelData(1)
 
     // Fill the buffer and time how long it takes
-    let start;
+    let start
     if (typeof onRenderTime !== 'undefined') {
       start = performance.now()
     }
