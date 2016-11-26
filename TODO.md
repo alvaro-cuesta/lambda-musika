@@ -5,7 +5,6 @@
 ### 0.0.2
 
 - `[BUG]` `[PLAYER]` Sound clicks on play/pause/update
-- `[BUG]` `[RENDERER]` Audible clicks when rendering the THX sound example
 - `[TODO]` `[RENDERER]` Handling render `fn()` errors
 
 ### 0.0.3
