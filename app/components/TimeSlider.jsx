@@ -40,6 +40,7 @@ export default class TimeSlider extends React.PureComponent {
 
     return <div className='Musika-TimeSlider'>
       {toMinSecs(Math.floor(value))}
+
       <input {...other}
         type='range' min='0' max={length} value={value}
         onChange={this.handleChange.bind(this)}
@@ -47,6 +48,7 @@ export default class TimeSlider extends React.PureComponent {
         onMouseUp={this.handleMouseUp.bind(this)}
         onMouseMove={this.handleMouseMove.bind(this)}
       />
+
       {toMinSecs(length)}
     </div>
   }

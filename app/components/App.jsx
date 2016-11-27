@@ -210,7 +210,10 @@ export default class App extends React.Component {
     let newConfirmPanel = newConfirming
       ? <div>
           <h1>New file</h1>
-          <p>This will delete everything, including your undo history. <b>It cannot be undone.</b></p>
+          <p>
+            This will delete everything, including your undo history.<br/>
+            <b>It cannot be undone.</b>
+          </p>
           <p>Discard all changes?</p>
           <button onClick={this.handleNewConfirmed.bind(this)}>Accept</button>
           {' '}
@@ -221,7 +224,10 @@ export default class App extends React.Component {
     let loadConfirmPanel = loadConfirming
       ? <div>
           <h1>Load file</h1>
-          <p>This will delete everything, including your undo history. <b>It cannot be undone.</b></p>
+          <p>
+            This will delete everything, including your undo history.<br/>
+            <b>It cannot be undone.</b>
+          </p>
           <p>Discard all changes and load «<em>{loadConfirming.name}</em>»?</p>
           <button onClick={this.handleLoadConfirmed.bind(this)}>Accept</button>
           {' '}
@@ -245,7 +251,10 @@ export default class App extends React.Component {
       >
         <IconStack icons={[
             {name: 'file'},
-            {name: 'arrow-left', inverse: true, style: {fontSize: '0.5em', left: '-0.4em'}},
+            {name: 'arrow-left', inverse: true, style: {
+              fontSize: '0.5em',
+              left: '-0.4em',
+            }},
           ]}
         />
       </ButtonWithPanel>
@@ -255,7 +264,10 @@ export default class App extends React.Component {
       >
         <IconStack icons={[
             {name: 'file'},
-            {name: 'arrow-right', inverse: true, style: {fontSize: '0.5em', left: '-0.4em'}},
+            {name: 'arrow-right', inverse: true, style: {
+              fontSize: '0.5em',
+              left: '-0.4em'
+            }},
           ]}
         />
       </button>
@@ -314,7 +326,8 @@ export default class App extends React.Component {
     //
 
     return <div className='Musika-App'
-      onKeyDown={this.handleKeyDown.bind(this)} onKeyUp={this.handleKeyUp.bind(this)}
+      onKeyDown={this.handleKeyDown.bind(this)}
+      onKeyUp={this.handleKeyUp.bind(this)}
       onMouseDown={this.handleMouseDown.bind(this)}
       // {/*Make element focusable (or it won't catch kotkeys when clicked on empty zones)*/}
       tabIndex='0'
@@ -325,8 +338,14 @@ export default class App extends React.Component {
         onRenderTime={this.handleRenderTime.bind(this)}
         onError={this.handleError.bind(this)}
       />
-      <CPULoad renderTime={renderTime} bufferLength={bufferLength} sampleRate={this.audioCtx.sampleRate} />
+
+      <CPULoad renderTime={renderTime}
+        bufferLength={bufferLength}
+        sampleRate={this.audioCtx.sampleRate}
+      />
+
       <Editor ref='editor' defaultValue={DEFAULT_SCRIPT} />
+
       <div className='panel-wrapper'>
         <div className='Musika-bottomPanel'>
           {updateControls}
