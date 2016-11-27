@@ -18,6 +18,8 @@ export default class App extends React.Component {
       fn: () => [0, 0],
       length: 0,
       renderTime: undefined,
+      newConfirming: false,
+      loadConfirming: false,
     }
 
     this.audioCtx = new (window.AudioContext || window.webkitAudioContext)()
@@ -87,6 +89,8 @@ export default class App extends React.Component {
     // Prevent CTRL-S from opening the webpage save dialog
     if (ctrlKey && !shiftKey && !altKey && keyCode === 83 /* S */) {
       e.preventDefault()
+    } else if (!ctrlKey && !shiftKey && !altKey && keyCode === 27 /* Escape */) {
+      this.closeConfirmations()
     }
   }
 
@@ -100,12 +104,129 @@ export default class App extends React.Component {
     }
   }
 
+  handleNew() {
+    this.setState({
+      newConfirming: true,
+      loadConfirming: false,
+    })
+  }
+
+  handleNewConfirmed() {
+    this.closeConfirmations()
+  }
+
+  handleLoad() {
+    this.setState({
+      newConfirming: false,
+      loadConfirming: true,
+    })
+  }
+
+  handleLoadConfirmed() {
+    this.closeConfirmations()
+  }
+
+  handleSave() {
+
+  }
+
+  handleDefault() {
+
+  }
+
+  closeConfirmations() {
+    this.setState({
+      newConfirming: false,
+      loadConfirming: false,
+    })
+  }
+
+  handleMouseDown({target, button}) {
+    if (button !== 0 /* LEFT BUTTON*/) return
+
+    for (let node = target; node; node = node.parentNode) {
+      if (node.className === 'panel') return
+    }
+
+    this.closeConfirmations()
+  }
+
   render() {
-    let {fn, length, renderTime} = this.state
+    let {fn, length, renderTime, newConfirming, loadConfirming} = this.state
     let {bufferLength} = this.props
+
+    let updateControls = <button className='color-orange' onClick={this.handleUpdate.bind(this)} title='CTRL-S'>
+      <Icon name='share' /> Commit
+    </button>
+
+    let fileControls = <div className='panel-container color-purple'>
+      <div className={`panel-container${newConfirming ? ' open' : ''}`}>
+        {newConfirming
+          ? <div className='panel'>
+              <p>This will delete everything and <b>cannot be undone</b>.</p>
+              <p>Discard all changes?</p>
+              <button onClick={this.handleNewConfirmed.bind(this)}>Accept</button>
+              {' '}
+              <button onClick={this.closeConfirmations.bind(this)}>Cancel</button>
+            </div>
+          : null}
+        <button onClick={this.handleNew.bind(this)} title='New'>
+          <Icon name='file' />
+        </button>
+      </div>
+      <div className={`panel-container${loadConfirming ? ' open' : ''}`}>
+        {loadConfirming
+          ? <div className='panel'>
+              <p>Discard all changes?</p>
+              <button onClick={this.handleLoadConfirmed.bind(this)}>Accept</button>
+              {' '}
+              <button onClick={this.closeConfirmations.bind(this)}>Cancel</button>
+            </div>
+          : null}
+        <button onClick={this.handleLoad.bind(this)} title='Load'>
+          <IconStack icons={[
+            {name: 'file', className: 'fa-stack-1x'},
+            {name: 'arrow-left', className: 'icon-stack-0-5x', inverse: true, style: {left: '-0.4em'}},
+          ]}
+          />
+        </button>
+      </div>
+      <button onClick={this.handleSave.bind(this)} title='Save'>
+        <IconStack icons={[
+          {name: 'file', className: 'fa-stack-1x'},
+          {name: 'arrow-right', className: 'icon-stack-0-5x', inverse: true, style: {left: '-0.4em'}},
+        ]}
+        />
+      </button>
+    </div>
+
+    let defaultControls = <div className='panel-container color-blue'>
+      <button onClick={this.handleDefault.bind(this)} title='Default song'>
+        <Icon name='file-text' />
+      </button>
+    </div>
+
+    let renderControls = <div className='panel-container color-red'>
+      <button onClick={this.handleRender.bind(this)} title='Render'>
+        <Icon name='download' /> .WAV
+      </button>
+      <select ref='renderSampleRate' defaultValue={44100}>
+        <option value={8000}>8000Hz</option>
+        <option value={11025}>11025Hz</option>
+        <option value={16000}>16000Hz</option>
+        <option value={22500}>22500Hz</option>
+        <option value={32000}>32000Hz</option>
+        <option value={37800}>37800Hz</option>
+        <option value={44100}>44100Hz</option>
+        <option value={48000}>48000Hz</option>
+        <option value={88200}>88200Hz</option>
+        <option value={96000}>96000Hz</option>
+      </select>
+    </div>
 
     return <div className='Musika-App'
       onKeyDown={this.handleKeyDown.bind(this)} onKeyUp={this.handleKeyUp.bind(this)}
+      onMouseDown={this.handleMouseDown.bind(this)}
       // {/*Make element focusable (or it won't catch kotkeys when clicked on empty zones)*/}
       tabIndex='0'
     >
@@ -117,53 +238,13 @@ export default class App extends React.Component {
       />
       <CPULoad renderTime={renderTime} bufferLength={bufferLength} sampleRate={this.audioCtx.sampleRate} />
       <Editor ref='editor' defaultValue={DEFAULT_SCRIPT} />
-      <div className='Musika-bottomPanel'>
-        <button className='color-orange' onClick={this.handleUpdate.bind(this)} title='CTRL-S'>
-          <Icon name='share' /> Commit
-        </button>
-        <span className='color-purple'>
-          <button onClick={this.handleUpdate.bind(this)} title='New'>
-            <Icon name='file' />
-          </button>
-          <button onClick={this.handleUpdate.bind(this)} title='Load'>
-            <IconStack icons={[
-              {name: 'file', className: 'fa-stack-1x'},
-              {name: 'arrow-left', className: 'icon-stack-0-5x', inverse: true, style: {left: '-0.3em'}},
-            ]}
-            />
-          </button>
-          <button onClick={this.handleUpdate.bind(this)} title='Save'>
-            <span className="icon-stack">
-              <i className="fa fa-file fa-stack-1x"></i>
-              <i className="fa fa-arrow-right fa-inverse icon-stack-0-5x" style={{left: '-0.3em'}}></i>
-            </span>
-          </button>
-        </span>
-        <span className='color-blue'>
-          <button onClick={this.handleUpdate.bind(this)} title='Default song'>
-            <Icon name='file-text' />
-          </button>
-        </span>
-        {length
-          ? <span className='color-red'>
-              <button onClick={this.handleRender.bind(this)} title='Render'>
-                <Icon name='download' /> .WAV
-              </button>
-              <select ref='renderSampleRate' defaultValue={44100}>
-                <option value={8000}>8000Hz</option>
-                <option value={11025}>11025Hz</option>
-                <option value={16000}>16000Hz</option>
-                <option value={22500}>22500Hz</option>
-                <option value={32000}>32000Hz</option>
-                <option value={37800}>37800Hz</option>
-                <option value={44100}>44100Hz</option>
-                <option value={48000}>48000Hz</option>
-                <option value={88200}>88200Hz</option>
-                <option value={96000}>96000Hz</option>
-              </select>
-            </span>
-          : null
-        }
+      <div className='panel-wrapper'>
+        <div className='Musika-bottomPanel'>
+          {updateControls}
+          {fileControls}
+          {defaultControls}
+          {length ? renderControls : null }
+        </div>
       </div>
     </div>
   }

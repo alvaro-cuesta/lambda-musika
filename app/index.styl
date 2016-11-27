@@ -10,6 +10,7 @@ html, body, #container
   background-color #2D2D2D
   color #CCCCCC
   font 14px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace
+  overflow hidden
 
 select, input, button
   border none
@@ -23,7 +24,7 @@ button
   i.fa:only-child
     vertical-align middle
 
-makeButtonColor(name, normal, hover, active)
+makeColor(name, normal, hover, active)
   button.color-{name}, .color-{name} button
     background-color normal
     .fa-inverse
@@ -34,17 +35,24 @@ makeButtonColor(name, normal, hover, active)
     .fa-inverse
       color hover
 
-  button:active.color-{name}, .color-{name} button:active
+  button:active.color-{name},.color-{name} button:active
     background-color active
     .fa-inverse
         color active
 
-makeButtonColor('orange', #f99157, #e98147, #ffb177)
-makeButtonColor('green', #40e889, #30d879, #50f899)
-makeButtonColor('green2', #99cc99, #89bc89, #a9dca9)
-makeButtonColor('purple', #bc89bc, #ac79ac, #cc99cc)
-makeButtonColor('red', #f2777a, #e2676a, #ff878a)
-makeButtonColor('blue', #66cccc, #56bcbc, #76dcdc)
+  .color-{name} .panel,
+  .color-{name} .panel-container.open > button,
+  .color-{name} .panel-container.open :not(.panel) button,
+  .color-{name}.panel-container.open > button,
+  .color-{name}.panel-container.open :not(.panel) button
+    background-color hover
+
+makeColor('orange', #f99157, #e98147, #ffb177)
+makeColor('green', #40e889, #30d879, #50f899)
+makeColor('green2', #99cc99, #89bc89, #a9dca9)
+makeColor('purple', #bc89bc, #ac79ac, #cc99cc)
+makeColor('red', #f2777a, #e2676a, #ff878a)
+makeColor('blue', #66cccc, #56bcbc, #76dcdc)
 
 .left
   position absolute
@@ -152,6 +160,7 @@ makeButtonColor('blue', #66cccc, #56bcbc, #76dcdc)
 .ace_editor
   width 100%
   height 100%
+  z-index 0
 
 .ace_scroller, .ace_gutter
   padding-top 0.1em
@@ -165,7 +174,7 @@ makeButtonColor('blue', #66cccc, #56bcbc, #76dcdc)
   width 100%
   height 1.5em
   content ' '
-  z-index 1000
+  z-index 1
   pointer-events none
 
 .ace_scroller::before, .ace_gutter::before
@@ -190,10 +199,42 @@ makeButtonColor('blue', #66cccc, #56bcbc, #76dcdc)
     rgba(0,0,0,0) 100%
   )
 
+.panel-wrapper
+  z-index 0
+
 .Musika-bottomPanel
   flex-shrink 0
   height 1.6em
   user-select none
+  background-color #2D2D2D
+
+  .panel-container
+    position relative
+    display inline-block
+    height 100%
+
+  .panel
+    color #fbfbfb
+    padding 0 1em 1.5em 1em
+    width 25em
+    height auto
+    display block
+    position absolute
+    left 0
+    z-index -1
+    box-shadow 0 0 30px #000, 0 0 30px #000
+    animation-duration 0.3s
+    animation-name slidein
+    animation-timing-function cubic-bezier(0.675, -0.010, 0.680, 1.210);
+    animation-fill-mode forwards
+    font-family Arial, "Helvetica Neue", Helvetica, sans-serif;
+    cursor default
+    font-size 16px
+
+    button
+      padding 0.4em 1em
+      border 1px solid rgba(251, 251, 251, 0.5)
+      font-family Arial, "Helvetica Neue", Helvetica, sans-serif;
 
   & > *
     margin-right 0.25em
@@ -201,3 +242,10 @@ makeButtonColor('blue', #66cccc, #56bcbc, #76dcdc)
   & button,
   & select
     height 100%
+
+@keyframes slidein
+  from
+    bottom -10em
+
+  to
+    bottom calc(1.6em - 1em)
