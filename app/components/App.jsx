@@ -129,9 +129,8 @@ export default class App extends React.Component {
   handleLoad() {
     let input = document.createElement('input')
     input.type = 'file'
-    input.accept = 'application/javascript'
+    input.accept = '.musika,application/javascript'
     input.click()
-
     input.onchange = () => {
       let f = input.files[0]
 
@@ -163,7 +162,7 @@ export default class App extends React.Component {
     let url = URL.createObjectURL(blob)
 
     let link = document.createElement('a')
-    link.download = 'script.js'
+    link.download = 'script.musika'
     link.href = url
     link.click()
 
