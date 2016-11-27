@@ -205,7 +205,8 @@ export default class App extends React.Component {
 
     let newConfirmPanel = newConfirming
       ? <div>
-          <p>This will delete everything and <b>cannot be undone</b>.</p>
+          <h1>New file</h1>
+          <p>This will delete everything, including your undo history. <b>It cannot be undone.</b></p>
           <p>Discard all changes?</p>
           <button onClick={this.handleNewConfirmed.bind(this)}>Accept</button>
           {' '}
@@ -215,8 +216,9 @@ export default class App extends React.Component {
 
     let loadConfirmPanel = loadConfirming
       ? <div>
-          <p>This will delete everything and <b>cannot be undone</b>.</p>
-          <p>Discard all changes and load '{loadConfirming.name}'?</p>
+          <h1>Load file</h1>
+          <p>This will delete everything, including your undo history. <b>It cannot be undone.</b></p>
+          <p>Discard all changes and load «<em>{loadConfirming.name}</em>»?</p>
           <button onClick={this.handleLoadConfirmed.bind(this)}>Accept</button>
           {' '}
           <button onClick={this.closeConfirmations.bind(this)}>Cancel</button>
