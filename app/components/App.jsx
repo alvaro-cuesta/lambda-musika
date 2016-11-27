@@ -130,7 +130,6 @@ export default class App extends React.Component {
     let input = document.createElement('input')
     input.type = 'file'
     input.accept = '.musika,application/javascript'
-    input.click()
     input.onchange = () => {
       let f = input.files[0]
 
@@ -148,6 +147,8 @@ export default class App extends React.Component {
       }
       r.readAsText(f)
     }
+
+    input.click()
   }
 
   handleLoadConfirmed() {
