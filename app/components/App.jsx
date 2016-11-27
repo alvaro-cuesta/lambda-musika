@@ -96,7 +96,9 @@ export default class App extends React.Component {
     // Prevent CTRL-S from opening the webpage save dialog
     if (ctrlKey && !shiftKey && !altKey && keyCode === 83 /* S */) {
       e.preventDefault()
-    } else if (!ctrlKey && !shiftKey && !altKey && keyCode === 27 /* Escape */) {
+    }
+    // Escape closes panels
+    else if (!ctrlKey && !shiftKey && !altKey && keyCode === 27 /* Escape */) {
       this.closeConfirmations()
     }
   }
