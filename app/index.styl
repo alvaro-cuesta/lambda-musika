@@ -36,6 +36,12 @@ html, body, #container
   font $monospace-font
   overflow hidden
 
+a
+  color $light
+
+  &:hover:not(:active)
+    color $lightest
+
 select, input, button
   border none
   outline none
@@ -110,7 +116,7 @@ for name, colors in $colors
   flex-shrink 0
   cursor default
 
-  & > *
+  & > :not(:last-child)
     margin-right $button-group-separation
 
   button
@@ -229,15 +235,20 @@ for name, colors in $colors
     user-select none
     background-color $dark
 
-    & > *
+    & > :not(:last-child)
       margin-right $button-group-separation
-      position relative
       display inline-block
       height 100%
 
     & button,
     & select
       height 100%
+
+    a
+      height 100%
+      font-size $bottomPanel-height
+      i
+        vertical-align top
 
     .panel-container
       position relative

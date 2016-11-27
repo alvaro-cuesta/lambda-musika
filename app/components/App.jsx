@@ -243,6 +243,15 @@ export default class App extends React.Component {
 
     //
 
+    let aboutControls = <a className='right'
+      href='https://www.github.com/alvaro-cuesta/lambda-musika'
+      target="_blank"
+    >
+      <Icon name='github' title='alvaro-cuesta/lambda-musika at GitHub' />
+    </a>
+
+    //
+
     return <div className='Musika-App'
       onKeyDown={this.handleKeyDown.bind(this)} onKeyUp={this.handleKeyUp.bind(this)}
       onMouseDown={this.handleMouseDown.bind(this)}
@@ -263,6 +272,7 @@ export default class App extends React.Component {
           {fileControls}
           {defaultControls}
           {renderControls}
+          {aboutControls}
         </div>
       </div>
     </div>
