@@ -20,19 +20,19 @@ Icon.propTypes = {
   title: React.PropTypes.string,
 }
 
-export function IconStack({icons, title}) {
+export function IconStack({icons, title, ...other}) {
   let hasTitle = typeof title !== 'undefined'
 
   let icon = Object.keys(icons).map((k, idx) => {
     let {name, className, inverse, style} = icons[k]
     return <i key={idx}
-      className={`fa fa-${name} ${inverse ? 'fa-inverse' : ''} ${className}`}
+      className={`fa fa-${name} icon-stack-icon ${inverse ? 'fa-inverse' : ''} ${className}`}
       aria-hidden={!hasTitle}
       style={style}
     />
   })
 
-  return <span className='icon-stack' title={title} >
+  return <span className='icon-stack' title={title} {...other} >
     {icon}
     {title ? <span className='sr-only'>{title}</span> : null}
   </span>

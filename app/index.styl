@@ -1,5 +1,29 @@
 /* General styles */
 
+$monospace-font = 14px 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace
+$sans-serif-font = 16px Arial, 'Helvetica Neue', Helvetica, sans-serif
+
+$lightest = #fbfbfb
+$light = #cccccc
+$dark = #2d2d2d
+$darker = #181818
+$darkest = #000000
+
+$player-button-size = 2em
+$bottomPanel-height = 1.6em
+$panel-bounce-padding = 1em
+
+$colors = {
+  orange: #f99157 #e98147 #ffb177
+  green: #40e889 #30d879 #50f899
+  green2: #99cc99 #89bc89 #a9dca9
+  purple: #bc89bc #ac79ac #cc99cc
+  red: #f2777a #e2676a #ff878a
+  blue: #66cccc #56bcbc #76dcdc
+}
+
+$button-group-separation = 0.21em
+
 *
   box-sizing border-box
 
@@ -7,9 +31,9 @@ html, body, #container
   height 100%
   margin 0
   padding 0
-  background-color #2D2D2D
-  color #CCCCCC
-  font 14px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace
+  background-color $dark
+  color $light
+  font $monospace-font
   overflow hidden
 
 select, input, button
@@ -18,13 +42,17 @@ select, input, button
   cursor pointer
 
 button
-  color #fbfbfb
-  font 14px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace
+  color $lightest
+  font $monospace-font
 
   i.fa:only-child
     vertical-align middle
 
-makeColor(name, normal, hover, active)
+for name, colors in $colors
+  normal = colors[0]
+  hover = colors[1]
+  active = colors[2]
+
   button.color-{name}, .color-{name} button
     background-color normal
     .fa-inverse
@@ -42,17 +70,8 @@ makeColor(name, normal, hover, active)
 
   .color-{name} .panel,
   .color-{name} .panel-container.open > button,
-  .color-{name} .panel-container.open :not(.panel) button,
-  .color-{name}.panel-container.open > button,
-  .color-{name}.panel-container.open :not(.panel) button
+  .color-{name}.panel-container.open > button
     background-color hover
-
-makeColor('orange', #f99157, #e98147, #ffb177)
-makeColor('green', #40e889, #30d879, #50f899)
-makeColor('green2', #99cc99, #89bc89, #a9dca9)
-makeColor('purple', #bc89bc, #ac79ac, #cc99cc)
-makeColor('red', #f2777a, #e2676a, #ff878a)
-makeColor('blue', #66cccc, #56bcbc, #76dcdc)
 
 .left
   position absolute
@@ -70,11 +89,11 @@ makeColor('blue', #66cccc, #56bcbc, #76dcdc)
   line-height 1em
   vertical-align middle
 
-.icon-stack-0-5x
+.icon-stack-icon
+  left 0
   position absolute
   width 100%
   text-align center
-  font-size 0.5em
   line-height inherit
 
 /* Components */
@@ -85,46 +104,48 @@ makeColor('blue', #66cccc, #56bcbc, #76dcdc)
   flex-direction column
 
 .Musika-Player
-  background-color #000000
+  background-color $darkest
   user-select none
-  height 2em
+  height $player-button-size
   flex-shrink 0
   cursor default
 
+  & > *
+    margin-right $button-group-separation
+
   button
-    width 2em
-    height 2em
+    width $player-button-size
+    height $player-button-size
 
   input[type=range]
     height 0.8em
     margin 0 0.5em
     cursor pointer
 
-.Musika-TimeSlider
-  height 100%
-  display inline-block
-  margin-left 0.5em
-
-.Musika-TimeSeeker
-  height 100%
-  display inline-block
-  margin-left 0.2em
-
-  input[type=time]
+  .Musika-TimeSlider
     height 100%
-    border none
-    outline none
-    -moz-appearance textfield
-    padding 0 0 0 1em
+    display inline-block
+    margin-left 0.3em
 
-    margin 0px
-    width 5em
-    vertical-align top
+  .Musika-TimeSeeker
+    height 100%
+    display inline-block
 
-    &::-webkit-inner-spin-button,
-    &::-webkit-outer-spin-button
-      -webkit-appearance none
-      margin 0
+    input[type=time]
+      height 100%
+      border none
+      outline none
+      -moz-appearance textfield
+      padding 0 0 0 1em
+
+      margin 0px
+      width 5em
+      vertical-align top
+
+      &::-webkit-inner-spin-button,
+      &::-webkit-outer-spin-button
+        -webkit-appearance none
+        margin 0
 
 .Musika-CPULoad
   user-select none
@@ -146,8 +167,8 @@ makeColor('blue', #66cccc, #56bcbc, #76dcdc)
   & > .black
     position absolute
     right 0
-    height 1rem
-    background-color #181818
+    height 100%
+    background-color $darker
 
   & > .left, & > .right
     text-shadow 0px 0px 4px rgba(0, 0, 0, 1),
@@ -200,52 +221,51 @@ makeColor('blue', #66cccc, #56bcbc, #76dcdc)
   )
 
 .panel-wrapper
+  flex-shrink 0
   z-index 0
 
-.Musika-bottomPanel
-  flex-shrink 0
-  height 1.6em
-  user-select none
-  background-color #2D2D2D
+  .Musika-bottomPanel
+    height $bottomPanel-height
+    user-select none
+    background-color $dark
 
-  .panel-container
-    position relative
-    display inline-block
-    height 100%
+    & > *
+      margin-right $button-group-separation
+      position relative
+      display inline-block
+      height 100%
 
-  .panel
-    color #fbfbfb
-    padding 0 1em 1.5em 1em
-    width 25em
-    height auto
-    display block
-    position absolute
-    left 0
-    z-index -1
-    box-shadow 0 0 30px #000, 0 0 30px #000
-    animation-duration 0.3s
-    animation-name slidein
-    animation-timing-function cubic-bezier(0.675, -0.010, 0.680, 1.210);
-    animation-fill-mode forwards
-    font-family Arial, "Helvetica Neue", Helvetica, sans-serif;
-    cursor default
-    font-size 16px
+    & button,
+    & select
+      height 100%
 
-    button
-      padding 0.4em 1em
-      border 1px solid rgba(251, 251, 251, 0.5)
-      font-family Arial, "Helvetica Neue", Helvetica, sans-serif;
+    .panel-container
+      position relative
+      display inline-block
+      height 100%
 
-  & > *
-    margin-right 0.25em
+    .panel
+      display block
+      position absolute
+      left 0
+      z-index -1
+      width 25em
+      height auto
+      padding 0 1em (0.5em + $panel-bounce-padding) 1em
+      color $lightest
+      font $sans-serif-font
+      box-shadow 0 0 26px 10px $darker
+      animation slidein 0.3s cubic-bezier(0.675, -0.010, 0.680, 1.210) forwards
+      cursor default
 
-  & button,
-  & select
-    height 100%
+      button
+        padding 0.4em 1em
+        border 1px solid alpha($lightest, 0.5)
+        font $sans-serif-font
+        font-size 14px
 
-@keyframes slidein
-  from
-    bottom -10em
-
-  to
-    bottom calc(1.6em - 1em)
+    @keyframes slidein
+      from
+        bottom -10em
+      to
+        bottom ($bottomPanel-height - $panel-bounce-padding)
