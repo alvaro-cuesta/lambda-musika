@@ -9,6 +9,8 @@
 - `[FEATURE]` `[EDITOR]` Preserve code between reloads
   - Add some way to reset to default song
   - Try to preserve Undo and other state between app loads
+- `[BUG]` `[COSMETIC]` Now that buttons don't have sr-only span, they went lower
+- `[FEATURE]` `[EDITOR]` Blue default song button
 
 ### 0.1.0
 
