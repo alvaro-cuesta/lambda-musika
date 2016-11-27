@@ -102,10 +102,13 @@ export default class Player extends React.PureComponent {
     let {playing, lastFrame} = this.state
     let {audioCtx: {sampleRate}, length} = this.props
 
+    let title = `${playing ? 'Pause' : 'Play'} (CTRL-Space)`
+
     return <div className='Musika-Player'>
-      <button className='color-orange' onClick={this.togglePlay.bind(this)}>
-        <Icon name={playing ? 'pause' : 'play'} title={`${playing ? 'Pause' : 'Play'} (CTRL-Space)`} />
+      <button className='color-orange' onClick={this.togglePlay.bind(this)} title={title} aria-label={title}>
+        <Icon name={playing ? 'pause' : 'play'} />
       </button>
+
       {length
         ? <TimeSlider length={length} value={lastFrame/sampleRate} onChange={this.handleTime.bind(this)} />
         : <TimeSeeker value={lastFrame/sampleRate} onChange={this.handleTime.bind(this)} />

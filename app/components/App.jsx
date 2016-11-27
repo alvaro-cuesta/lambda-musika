@@ -197,7 +197,11 @@ export default class App extends React.Component {
 
     //
 
-    let updateControls = <button className='color-orange' onClick={this.handleUpdate.bind(this)} title='CTRL-S'>
+    let updateControls = <button className='color-orange'
+      onClick={this.handleUpdate.bind(this)}
+      title='CTRL-S'
+      aria-label='Commit (CTRL-S)'
+    >
       <Icon name='share' /> Commit
     </button>
 
@@ -226,17 +230,29 @@ export default class App extends React.Component {
       : null
 
     let fileControls = <div className='color-purple'>
-      <ButtonWithPanel onClick={this.handleNew.bind(this)} title='New' panel={newConfirmPanel}>
+      <ButtonWithPanel onClick={this.handleNew.bind(this)}
+        panel={newConfirmPanel}
+        title='New'
+        aria-label='New'
+      >
         <Icon name='file' />
       </ButtonWithPanel>
-      <ButtonWithPanel onClick={this.handleLoad.bind(this)} title='Load' panel={loadConfirmPanel} >
+
+      <ButtonWithPanel onClick={this.handleLoad.bind(this)}
+        panel={loadConfirmPanel}
+        title='Load'
+        aria-label='Load'
+      >
         <IconStack icons={[
             {name: 'file'},
             {name: 'arrow-left', inverse: true, style: {fontSize: '0.5em', left: '-0.4em'}},
           ]}
         />
       </ButtonWithPanel>
-      <button onClick={this.handleSave.bind(this)} title='Save'>
+      <button onClick={this.handleSave.bind(this)}
+        title='Save'
+        aria-label='Save'
+      >
         <IconStack icons={[
             {name: 'file'},
             {name: 'arrow-right', inverse: true, style: {fontSize: '0.5em', left: '-0.4em'}},
@@ -248,7 +264,10 @@ export default class App extends React.Component {
     //
 
     let defaultControls = <div className='color-blue'>
-      <button onClick={this.handleDefault.bind(this)} title='Default song'>
+      <button onClick={this.handleDefault.bind(this)}
+        title='Default song'
+        aria-label='Default song'
+      >
         <Icon name='file-text' />
       </button>
     </div>
@@ -257,10 +276,18 @@ export default class App extends React.Component {
 
     let renderControls = length
       ? <div className='color-red'>
-          <button onClick={this.handleRender.bind(this)} title='Render'>
+          <button onClick={this.handleRender.bind(this)}
+            title='Render'
+            aria-label='Render'
+          >
             <Icon name='download' /> .WAV
           </button>
-          <select ref='renderSampleRate' defaultValue={44100}>
+
+          <select ref='renderSampleRate'
+            defaultValue={44100}
+            title='Render sample rate'
+            aria-label='Render sample rate'
+          >
             <option value={8000}>8000Hz</option>
             <option value={11025}>11025Hz</option>
             <option value={16000}>16000Hz</option>

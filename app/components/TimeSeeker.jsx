@@ -53,21 +53,49 @@ export default class TimeSeeker extends React.PureComponent {
   render() {
     let {value, onChange} = this.props
 
+    let restartLabel = 'Restart'
+    let rewindLabel = `-${REWIND_FF_SECS} seconds`
+    let timeLabel = 'Time'
+    let forwardLabel = `+${REWIND_FF_SECS} seconds`
+    let fastForwardLabel = `+${VERY_FF_SECS} seconds`
+
     return <div className='Musika-TimeSeeker'>
-      <button className='color-purple' onClick={this.handleRestart.bind(this)}>
-        <Icon name='fast-backward' title='Restart' />
+      <button className='color-purple'
+        onClick={this.handleRestart.bind(this)}
+        title={restartLabel}
+        aria-label={restartLabel}
+      >
+        <Icon name='fast-backward' />
       </button>
-      <button className='color-green' onClick={this.handleRewind.bind(this)}>
-        <Icon name='backward' title={`-${REWIND_FF_SECS} seconds`} />
+
+      <button className='color-green'
+        onClick={this.handleRewind.bind(this)}
+        title={rewindLabel}
+        aria-label={rewindLabel}
+      >
+        <Icon name='backward' />
       </button>
+
       <input className='color-yellow' type='time' value={toMinSecs(value)} required
         onChange={this.handleChange.bind(this)}
+        title={timeLabel}
+        aria-label={timeLabel}
       />
-      <button className='color-blue' onClick={this.handleFastForward.bind(this)}>
-        <Icon name='forward' title={`+${REWIND_FF_SECS} seconds`} />
+
+      <button className='color-blue'
+        onClick={this.handleFastForward.bind(this)}
+        title={forwardLabel}
+        aria-label={forwardLabel}
+      >
+        <Icon name='forward' />
       </button>
-      <button className='color-red' onClick={this.handleVeryFastForward.bind(this)}>
-        <IconStack title={`+${VERY_FF_SECS} seconds`} style={{top: '-2px', left: '1px'}} icons={[
+
+      <button className='color-red'
+        onClick={this.handleVeryFastForward.bind(this)}
+        title={fastForwardLabel}
+        aria-label={fastForwardLabel}
+      >
+        <IconStack style={{top: '-2px', left: '1px'}} icons={[
             {name: 'forward', style: {left: '-0.2em'}},
             {name: 'forward', style: {left: '0.2em'}},
           ]}

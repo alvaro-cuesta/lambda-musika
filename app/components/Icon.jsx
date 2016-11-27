@@ -3,7 +3,7 @@ import React from 'react'
 export function Icon({name, title}) {
   let hasTitle = typeof title !== 'undefined'
 
-  let icon = <i className={`fa fa-${name}`} title={title} aria-hidden={!hasTitle} />
+  let icon = <i className={`fa fa-${name}`} title={title} aria-hidden />
 
   if (title) {
     return <span>
@@ -26,15 +26,15 @@ export function IconStack({icons, title, ...other}) {
   let icon = Object.keys(icons).map((k, idx) => {
     let {name, className, inverse, style} = icons[k]
     return <i key={idx}
-      className={`fa fa-${name} icon-stack-icon ${inverse ? 'fa-inverse' : ''} ${className}`}
-      aria-hidden={!hasTitle}
+      className={`fa fa-${name} icon-stack-icon${inverse ? ' fa-inverse' : ''} ${className ? className : ''}`}
       style={style}
+      aria-hidden
     />
   })
 
   return <span className='icon-stack' title={title} {...other} >
     {icon}
-    {title ? <span className='sr-only'>{title}</span> : null}
+    {hasTitle ? <span className='sr-only'>{title}</span> : null}
   </span>
 }
 
