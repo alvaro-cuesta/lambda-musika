@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Icon from 'components/Icon'
+import { Icon, IconStack } from 'components/Icon'
 
 import { toMinSecs } from 'components/util'
 
@@ -55,7 +55,7 @@ export default class TimeSeeker extends React.PureComponent {
 
     return <div className='Musika-TimeSeeker'>
       <button className='color-purple' onClick={this.handleRestart.bind(this)}>
-        <Icon name='undo' title='Restart' />
+        <Icon name='fast-backward' title='Restart' />
       </button>
       <button className='color-green' onClick={this.handleRewind.bind(this)}>
         <Icon name='backward' title={`-${REWIND_FF_SECS} seconds`} />
@@ -67,7 +67,11 @@ export default class TimeSeeker extends React.PureComponent {
         <Icon name='forward' title={`+${REWIND_FF_SECS} seconds`} />
       </button>
       <button className='color-red' onClick={this.handleVeryFastForward.bind(this)}>
-        <Icon name='fast-forward' title={`+${VERY_FF_SECS} seconds`} />
+        <IconStack title={`+${VERY_FF_SECS} seconds`} style={{top: '-2px', left: '1px'}} icons={[
+            {name: 'forward', style: {left: '-0.2em'}},
+            {name: 'forward', style: {left: '0.2em'}},
+          ]}
+        />
       </button>
     </div>
   }
