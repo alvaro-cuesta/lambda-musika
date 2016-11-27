@@ -1,4 +1,4 @@
-const {Generator, Envelope, Operator, Music, Util} = Musika
+const {Generator, Envelope, Filter, Operator, Music, Util} = Musika
 
 const LENGTH = 15
 const NUM_VOICES = 20
