@@ -9,6 +9,8 @@ import 'brace/ext/elastic_tabstops_lite'
 import 'brace/ext/keybinding_menu'
 import 'brace/ext/settings_menu'
 
+const EMPTY_SCRIPT = require('!raw!examples/empty')
+
 export default class Editor extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -73,6 +75,14 @@ export default class Editor extends React.PureComponent {
 
     this.editor = editor
     if (this.props.onLoad) this.props.onLoad(editor)
+  }
+
+  new(content) {
+    let editor = this.editor
+    editor.setValue(typeof content !== 'undefined' ? content : EMPTY_SCRIPT)
+    editor.gotoLine(0, 0, false)
+    editor.getSession().setUndoManager(new ace.UndoManager())
+    editor.focus()
   }
 
   maybeAddError(error) {

@@ -121,22 +121,53 @@ export default class App extends React.Component {
   }
 
   handleNewConfirmed() {
+    this.refs.editor.new()
+    this.handleUpdate()
     this.closeConfirmations()
   }
 
   handleLoad() {
-    this.setState({
-      newConfirming: false,
-      loadConfirming: true,
-    })
+    let input = document.createElement('input')
+    input.type = 'file'
+    input.accept = 'application/javascript'
+    input.click()
+
+    input.onchange = () => {
+      let f = input.files[0]
+
+      if (!f) return
+
+      let r = new FileReader()
+      r.onload = ({target: {result}}) => {
+        this.setState({
+          newConfirming: false,
+          loadConfirming: {
+            name: f.name,
+            content: result,
+          }
+        })
+      }
+      r.readAsText(f)
+    }
   }
 
   handleLoadConfirmed() {
+    this.refs.editor.new(this.state.loadConfirming.content)
+    this.handleUpdate()
     this.closeConfirmations()
   }
 
   handleSave() {
+    let script = this.refs.editor.editor.getValue()
+    let blob = new Blob([script], {type: 'application/javascript;charset=utf-8'})
+    let url = URL.createObjectURL(blob)
 
+    let link = document.createElement('a')
+    link.download = 'script.js'
+    link.href = url
+    link.click()
+
+    URL.revokeObjectURL(url)
   }
 
   handleDefault() {
@@ -184,7 +215,8 @@ export default class App extends React.Component {
 
     let loadConfirmPanel = loadConfirming
       ? <div>
-          <p>Discard all changes?</p>
+          <p>This will delete everything and <b>cannot be undone</b>.</p>
+          <p>Discard all changes and load '{loadConfirming.name}'?</p>
           <button onClick={this.handleLoadConfirmed.bind(this)}>Accept</button>
           {' '}
           <button onClick={this.closeConfirmations.bind(this)}>Cancel</button>

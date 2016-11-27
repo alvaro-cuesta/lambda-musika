@@ -5,7 +5,7 @@
 ### 0.0.3
 
 - `[BUG]` `[PLAYER]` Sound clicks on play/pause/update/seek
-- `[FEATURE]` `[EDITOR]` Save/load code from file
+- `[FEATURE]` `[EDITOR]` Allow right-click save-as on save button
 - `[FEATURE]` `[EDITOR]` Preserve code between reloads
   - Add some way to reset to default song
   - Try to preserve Undo and other state between app loads
