@@ -11,7 +11,7 @@ return t => {
 
   let to = from + length
 
-  if (t > to) {
+  if (t < from || t > to) {
       from = t + dt
       length = Math.random() * 0.1
       pan = 0.25 + Math.random() * 0.5

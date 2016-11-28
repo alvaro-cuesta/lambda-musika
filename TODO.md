@@ -44,6 +44,9 @@
 
 ### 0.3.0
 
+- `[API]` `[MUSIKA]` popping_wip example was bugged: since you can seek time,
+  `t` is non-monotonic, which made the state invalid. Is this a flaw of the API?
+  Should the user not assume `t` is monotonic? Maybe some kind of events?
 - `[API]` `[MUSIKA]` `[MUSIKA-UTIL]` Log-to-Linear function and viceversa (for
   linear parameters into freqs and such)
   - Also for amplitude? I.e. work with decibels
