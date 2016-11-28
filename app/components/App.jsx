@@ -1,7 +1,5 @@
 import React from 'react'
 
-import ace from 'brace'
-
 import Player from 'components/Player'
 import CPULoad from 'components/CPULoad'
 import Editor from 'components/Editor'
@@ -14,6 +12,29 @@ import EXAMPLE_SCRIPTS from 'examples'
 
 const DEFAULT_SCRIPT = require('!raw!examples/default')
 
+function ConfirmPanel({title, loadName, onAccept, onCancel}) {
+  return <div>
+    {title ? <h1>{title}</h1> : null}
+    <p>
+      This will delete <em>everything</em>, including your undo history.<br/>
+      <b>It cannot be undone.</b>
+    </p>
+    {loadName
+      ? <p>Discard all changes and load «<em>{loadName}</em>»?</p>
+      : <p>Discard all changes?</p>}
+    <button onClick={onAccept}>Accept</button>
+    {' '}
+    <button onClick={onCancel}>Cancel</button>
+  </div>
+}
+
+ConfirmPanel.propTypes = {
+  title: React.PropTypes.string,
+  loadName: React.PropTypes.string,
+  onAccept: React.PropTypes.func.isRequired,
+  onCancel: React.PropTypes.func.isRequired,
+}
+
 function ButtonWithPanel({panel, children, ...other}) {
   return <div className={`panel-container${panel ? ' open' : ''}`}>
     {panel ? <div className='panel'>{panel}</div> : null}
@@ -21,7 +42,7 @@ function ButtonWithPanel({panel, children, ...other}) {
   </div>
 }
 
-ButtonWithPanel.propType = {
+ButtonWithPanel.propTypes = {
   panel: React.PropTypes.node,
 }
 
@@ -46,24 +67,9 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    let editor = this.refs.editor.editor
-
     if (history.state) {
       let {$undoStack, $redoStack, dirtyCounter} = history.state
-      let undoManager = new ace.UndoManager()
-      let session = editor.getSession()
-
-      if (typeof $undoStack !== 'undefined'
-        && typeof $redoStack !== 'undefined'
-        && typeof dirtyCounter !== 'undefined'
-      ) {
-        undoManager.$doc = session
-        undoManager.$undoStack = $undoStack
-        undoManager.$redoStack = $redoStack
-        undoManager.dirtyCounter = dirtyCounter
-      }
-
-      session.setUndoManager(undoManager)
+      this.refs.editor.setUndo($undoStack, $redoStack, dirtyCounter)
     }
 
     this.handleUpdate()
@@ -290,31 +296,20 @@ export default class App extends React.Component {
     //
 
     let newConfirmPanel = newConfirming
-      ? <div>
-          <h1>New script</h1>
-          <p>
-            This will delete <em>everything</em>, including your undo history.<br/>
-            <b>It cannot be undone.</b>
-          </p>
-          <p>Discard all changes?</p>
-          <button onClick={this.handleNewConfirmed.bind(this)}>Accept</button>
-          {' '}
-          <button onClick={this.closePanels.bind(this)}>Cancel</button>
-        </div>
+      ? <ConfirmPanel
+          title='New script'
+          onAccept={this.handleNewConfirmed.bind(this)}
+          onCancel={this.closePanels.bind(this)}
+        />
       : null
 
     let loadConfirmPanel = loadConfirming
-      ? <div>
-          <h1>Load file</h1>
-          <p>
-            This will delete everything, including your undo history.<br/>
-            <b>It cannot be undone.</b>
-          </p>
-          <p>Discard all changes and load «<em>{loadConfirming.name}</em>»?</p>
-          <button onClick={this.handleLoadConfirmed.bind(this)}>Accept</button>
-          {' '}
-          <button onClick={this.closePanels.bind(this)}>Cancel</button>
-        </div>
+      ? <ConfirmPanel
+          title='Load file'
+          loadName={loadConfirming.name}
+          onAccept={this.handleLoadConfirmed.bind(this)}
+          onCancel={this.closePanels.bind(this)}
+        />
       : null
 
     let examplesPanel = examplesOpen
@@ -339,16 +334,11 @@ export default class App extends React.Component {
                 </ul>
                 <button onClick={this.closePanels.bind(this)}>Close</button>
               </div>
-            : <div>
-                <p>
-                  This will delete everything, including your undo history.<br/>
-                  <b>It cannot be undone.</b>
-                </p>
-                <p>Discard all changes and load «<em>{examplesConfirming}</em>»?</p>
-                <button onClick={this.handleExamplesConfirmed.bind(this)}>Accept</button>
-                {' '}
-                <button onClick={this.closePanels.bind(this)}>Cancel</button>
-              </div>}
+            : <ConfirmPanel
+                loadName={examplesConfirming}
+                onAccept={this.handleExamplesConfirmed.bind(this)}
+                onCancel={this.closePanels.bind(this)}
+              />}
         </div>
       : null
 

@@ -117,6 +117,23 @@ export default class Editor extends React.PureComponent {
     }
   }
 
+  setUndo($undoStack, $redoStack, dirtyCounter) {
+    let undoManager = new ace.UndoManager()
+    let session = this.editor.getSession()
+
+    if (typeof $undoStack !== 'undefined'
+      && typeof $redoStack !== 'undefined'
+      && typeof dirtyCounter !== 'undefined'
+    ) {
+      undoManager.$doc = session
+      undoManager.$undoStack = $undoStack
+      undoManager.$redoStack = $redoStack
+      undoManager.dirtyCounter = dirtyCounter
+    }
+
+    session.setUndoManager(undoManager)
+  }
+
   render() {
     return <div ref='editor' className='Musika-Editor' />
   }
