@@ -4,6 +4,7 @@ $monospace-font = 14px 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-cod
 $sans-serif-font = 16px Arial, 'Helvetica Neue', Helvetica, sans-serif
 
 $lightest = #fbfbfb
+$lighter = #ebebeb
 $light = #cccccc
 $dark = #2d2d2d
 $darker = #181818
@@ -36,12 +37,6 @@ html, body, #container
   font $monospace-font
   overflow hidden
 
-a
-  color $light
-
-  &:hover:not(:active)
-    color $lightest
-
 select, input, button
   border none
   outline none
@@ -53,6 +48,21 @@ button
 
   i.fa:only-child
     vertical-align middle
+
+a
+  color $lightest
+
+  &:link
+    text-decoration none
+
+  &:hover
+    color $lighter
+
+  &:active
+    color $lightest
+
+li
+  line-height 1.3em
 
 for name, colors in $colors
   normal = colors[0]
@@ -250,9 +260,12 @@ for name, colors in $colors
     & select
       height 100%
 
-    a
+    .github
       height 100%
       font-size $bottomPanel-height
+      color $light
+      &:hover:not(:active)
+        color $lightest
       i
         vertical-align top
 
@@ -266,7 +279,7 @@ for name, colors in $colors
       position absolute
       left 0
       z-index -1
-      width 26.5em
+      width 30em
       height auto
       padding 0 1em (1em + $panel-bounce-padding) 1em
       color $lightest

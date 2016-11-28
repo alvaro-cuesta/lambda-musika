@@ -8,6 +8,8 @@ import { Icon, IconStack } from 'components/Icon'
 import compile from 'compile'
 import {Int16Stereo, makeWAVURL} from 'PCM'
 
+import EXAMPLE_SCRIPTS from 'examples'
+
 const DEFAULT_SCRIPT = require('!raw!examples/default')
 
 function ButtonWithPanel({panel, children, ...other}) {
@@ -27,6 +29,7 @@ export default class App extends React.Component {
       renderTime: undefined,
       newConfirming: false,
       loadConfirming: false,
+      examplesOpen: false,
     }
 
     this.audioCtx = new (window.AudioContext || window.webkitAudioContext)()
@@ -99,7 +102,7 @@ export default class App extends React.Component {
     }
     // Escape closes panels
     else if (!ctrlKey && !shiftKey && !altKey && keyCode === 27 /* Escape */) {
-      this.closeConfirmations()
+      this.closePanels()
     }
   }
 
@@ -113,6 +116,8 @@ export default class App extends React.Component {
     }
   }
 
+  /* Panels */
+
   handleNew() {
     this.setState({
       newConfirming: true,
@@ -123,7 +128,7 @@ export default class App extends React.Component {
   handleNewConfirmed() {
     this.refs.editor.new()
     this.handleUpdate()
-    this.closeConfirmations()
+    this.closePanels()
   }
 
   handleLoad() {
@@ -154,7 +159,7 @@ export default class App extends React.Component {
   handleLoadConfirmed() {
     this.refs.editor.new(this.state.loadConfirming.content)
     this.handleUpdate()
-    this.closeConfirmations()
+    this.closePanels()
   }
 
   handleSave() {
@@ -170,14 +175,25 @@ export default class App extends React.Component {
     URL.revokeObjectURL(url)
   }
 
-  handleDefault() {
-
+  handleExamples() {
+    this.setState({
+      examplesOpen: true,
+      examplesConfirming: false
+    })
   }
 
-  closeConfirmations() {
+  handleExamplesConfirmed() {
+    this.refs.editor.new(EXAMPLE_SCRIPTS[this.state.examplesConfirming])
+    this.handleUpdate()
+    this.closePanels()
+  }
+
+  closePanels() {
     this.setState({
       newConfirming: false,
       loadConfirming: false,
+      examplesOpen: false,
+      examplesConfirming: false,
     })
   }
 
@@ -188,11 +204,11 @@ export default class App extends React.Component {
       if (node.className === 'panel') return
     }
 
-    this.closeConfirmations()
+    this.closePanels()
   }
 
   render() {
-    let {fn, length, renderTime, newConfirming, loadConfirming} = this.state
+    let {fn, length, renderTime, newConfirming, loadConfirming, examplesOpen, examplesConfirming} = this.state
     let {bufferLength} = this.props
 
     //
@@ -217,7 +233,7 @@ export default class App extends React.Component {
           <p>Discard all changes?</p>
           <button onClick={this.handleNewConfirmed.bind(this)}>Accept</button>
           {' '}
-          <button onClick={this.closeConfirmations.bind(this)}>Cancel</button>
+          <button onClick={this.closePanels.bind(this)}>Cancel</button>
         </div>
       : null
 
@@ -231,7 +247,36 @@ export default class App extends React.Component {
           <p>Discard all changes and load «<em>{loadConfirming.name}</em>»?</p>
           <button onClick={this.handleLoadConfirmed.bind(this)}>Accept</button>
           {' '}
-          <button onClick={this.closeConfirmations.bind(this)}>Cancel</button>
+          <button onClick={this.closePanels.bind(this)}>Cancel</button>
+        </div>
+      : null
+
+    let examplesPanel = examplesOpen
+      ? <div>
+          <h1>Examples</h1>
+          {examplesConfirming === false
+            ? <ul>
+                {Object.keys(EXAMPLE_SCRIPTS).map(name => {
+                  let onClick = (e) => {
+                    this.setState({examplesConfirming: name})
+                    e.preventDefault()
+                  }
+
+                  return <li key={name}>
+                    <a href='' onClick={onClick}>{name}</a>
+                  </li>
+                })}
+              </ul>
+            : <div>
+                <p>
+                  This will delete everything, including your undo history.<br/>
+                  <b>It cannot be undone.</b>
+                </p>
+                <p>Discard all changes and load «<em>{examplesConfirming}</em>»?</p>
+                <button onClick={this.handleExamplesConfirmed.bind(this)}>Accept</button>
+                {' '}
+                <button onClick={this.closePanels.bind(this)}>Cancel</button>
+              </div>}
         </div>
       : null
 
@@ -258,6 +303,7 @@ export default class App extends React.Component {
           ]}
         />
       </ButtonWithPanel>
+
       <button onClick={this.handleSave.bind(this)}
         title='Save'
         aria-label='Save'
@@ -275,13 +321,14 @@ export default class App extends React.Component {
 
     //
 
-    let defaultControls = <div className='color-blue'>
-      <button onClick={this.handleDefault.bind(this)}
-        title='Default song'
-        aria-label='Default song'
+    let exampleControls = <div className='color-blue'>
+      <ButtonWithPanel onClick={this.handleExamples.bind(this)}
+        panel={examplesPanel}
+        title='Examples'
+        aria-label='Examples'
       >
         <Icon name='file-text' />
-      </button>
+      </ButtonWithPanel>
     </div>
 
     //
@@ -316,7 +363,7 @@ export default class App extends React.Component {
 
     //
 
-    let aboutControls = <a className='right'
+    let aboutControls = <a className='github right'
       href='https://www.github.com/alvaro-cuesta/lambda-musika'
       target="_blank"
     >
@@ -350,7 +397,7 @@ export default class App extends React.Component {
         <div className='Musika-bottomPanel'>
           {updateControls}
           {fileControls}
-          {defaultControls}
+          {exampleControls}
           {renderControls}
           {aboutControls}
         </div>
