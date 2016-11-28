@@ -4,7 +4,7 @@ import { Icon, IconStack } from 'components/Icon'
 
 import { toMinSecs } from 'components/util'
 
-const REWIND_FF_SECS = 10
+const REWIND_FF_SECS = 5
 const VERY_FF_SECS = 60
 
 export default class TimeSeeker extends React.PureComponent {
