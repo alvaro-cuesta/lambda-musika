@@ -7,7 +7,6 @@
 - `[BUG]` `[PLAYER]` Sound clicks on play/pause/update/seek
 - `[FEATURE]` `[EDITOR]` Allow right-click save-as on save button
 - `[FEATURE]` `[EDITOR]` Preserve code between reloads
-  - Add some way to reset to default song
   - Try to preserve Undo and other state between app loads
 - `[BUG]` `[COSMETIC]` Now that buttons don't have sr-only span, they went lower
 
@@ -68,6 +67,8 @@
 
 ### 1.0.0
 
+
+- `[FEATURE]` `[COSMETIC]` `[APP]` Some kind of help/README/intro/tutorial
 - `[COSMETIC]` `[APP]` Favicon(s)
 - `[TODO]` `[MUSIKA]` Documentation
   - Add missing comments
@@ -75,6 +76,8 @@
 
 ### 1.0.x
 
+- `[BUG]` `[APP]` Make app accessible (make sure to actually _try_ the app)
+- `[FEATURE]` `[RENDERER]` Render in background using web workers
 - `[BUG]` `[EDITOR]` Editor has a fixed size and can't be resized really small
 - `[TODO]` Build librar(y/ies) as UMD package(s) to be used outside of the DAW
     as a regular JavaScript library ([info]http://survivejs.com/webpack/loading-assets/formats-supported/)
@@ -117,6 +120,7 @@
   - Premaking buffers via Workers
   - Script tag
   - ...
+- `[COSMETIC]` `[APP]` Make responsive (adjust font size, element positions, etc.)
 - `[COSMETIC]` `[PLAYER]` https://reactify.github.io/react-player-controls/
 - `[COSMETIC]` `[EDITOR]` Custom scrollbars (https://github.com/ajaxorg/ace/issues/869)
 - `[FEATURE]` `[EDITOR]` REPL
