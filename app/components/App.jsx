@@ -34,6 +34,7 @@ export default class App extends React.Component {
       newConfirming: false,
       loadConfirming: false,
       examplesOpen: false,
+      changesMade: true,
     }
 
     this.audioCtx = new (window.AudioContext || window.webkitAudioContext)()
@@ -120,19 +121,30 @@ export default class App extends React.Component {
     }
   }
 
+  handleChange() {
+    if (this.state.changesMade === false) {
+      this.setState({changesMade: true})
+    }
+  }
+
   /* Panels */
 
   handleNew() {
-    this.setState({
-      newConfirming: true,
-      loadConfirming: false,
-    })
+    if (this.state.changesMade) {
+      this.setState({
+        newConfirming: true,
+        loadConfirming: false,
+      })
+    } else {
+      this.handleNewConfirmed()
+    }
   }
 
   handleNewConfirmed() {
     this.refs.editor.new()
     this.handleUpdate()
     this.closePanels()
+    this.setState({changesMade: false})
   }
 
   handleLoad() {
@@ -146,13 +158,16 @@ export default class App extends React.Component {
 
       let r = new FileReader()
       r.onload = ({target: {result}}) => {
-        this.setState({
-          newConfirming: false,
-          loadConfirming: {
-            name: f.name,
-            content: result,
-          }
-        })
+        this.setState(
+          {
+            newConfirming: false,
+            loadConfirming: {
+              name: f.name,
+              content: result,
+            }
+          },
+          !this.state.changesMade ? this.handleLoadConfirmed : null
+        )
       }
       r.readAsText(f)
     }
@@ -164,6 +179,7 @@ export default class App extends React.Component {
     this.refs.editor.new(this.state.loadConfirming.content.replace(/\r\n/g, '\n'))
     this.handleUpdate()
     this.closePanels()
+    this.setState({changesMade: false})
   }
 
   handleSave() {
@@ -177,6 +193,8 @@ export default class App extends React.Component {
     link.click()
 
     URL.revokeObjectURL(url)
+
+    this.setState({changesMade: false})
   }
 
   handleExamples() {
@@ -190,6 +208,7 @@ export default class App extends React.Component {
     this.refs.editor.new(EXAMPLE_SCRIPTS[this.state.examplesConfirming])
     this.handleUpdate()
     this.closePanels()
+    this.setState({changesMade: false})
   }
 
   closePanels() {
@@ -263,8 +282,11 @@ export default class App extends React.Component {
                 <ul>
                   {Object.keys(EXAMPLE_SCRIPTS).map(name => {
                     let onClick = (e) => {
-                      this.setState({examplesConfirming: name})
                       e.preventDefault()
+                      this.setState(
+                        {examplesConfirming: name},
+                        !this.state.changesMade ? this.handleExamplesConfirmed : null
+                      )
                     }
 
                     return <li key={name}>
@@ -398,7 +420,10 @@ export default class App extends React.Component {
         sampleRate={this.audioCtx.sampleRate}
       />
 
-      <Editor ref='editor' defaultValue={DEFAULT_SCRIPT} />
+      <Editor ref='editor'
+        defaultValue={DEFAULT_SCRIPT}
+        onChange={this.handleChange.bind(this)}
+      />
 
       <div className='panel-wrapper'>
         <div className='Musika-bottomPanel'>

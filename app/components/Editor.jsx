@@ -69,6 +69,10 @@ export default class Editor extends React.PureComponent {
       useElasticTabstops: true,
     })
 
+    if (this.props.onChange) {
+      editor.on('change', this.props.onChange)
+    }
+
     ace.acequire('ace/ext/keybinding_menu').init(editor)
 
     editor.focus()
