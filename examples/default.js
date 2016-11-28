@@ -158,7 +158,7 @@ return t => {
     let a = !SONG_TEMPO.isInBar(MELODY_ACCENT, MELODY_NOTE_VALUE, t)
       ? MELODY_NON_ACCENT_ATTENUATION
       : 1
-    let panning = left ? (1 - MELODY_PANNED_AMPLITUDE) : MELODY_PANNED_AMPLITUDE
+    let panning = left ? -MELODY_PANNED_AMPLITUDE : MELODY_PANNED_AMPLITUDE
 
     melody = Operator.panner(mono * a, panning)
   }
