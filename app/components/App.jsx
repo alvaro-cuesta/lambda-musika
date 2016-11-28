@@ -225,9 +225,9 @@ export default class App extends React.Component {
 
     let newConfirmPanel = newConfirming
       ? <div>
-          <h1>New file</h1>
+          <h1>New script</h1>
           <p>
-            This will delete everything, including your undo history.<br/>
+            This will delete <em>everything</em>, including your undo history.<br/>
             <b>It cannot be undone.</b>
           </p>
           <p>Discard all changes?</p>
@@ -255,18 +255,21 @@ export default class App extends React.Component {
       ? <div>
           <h1>Examples</h1>
           {examplesConfirming === false
-            ? <ul>
-                {Object.keys(EXAMPLE_SCRIPTS).map(name => {
-                  let onClick = (e) => {
-                    this.setState({examplesConfirming: name})
-                    e.preventDefault()
-                  }
+            ? <div>
+                <ul>
+                  {Object.keys(EXAMPLE_SCRIPTS).map(name => {
+                    let onClick = (e) => {
+                      this.setState({examplesConfirming: name})
+                      e.preventDefault()
+                    }
 
-                  return <li key={name}>
-                    <a href='' onClick={onClick}>{name}</a>
-                  </li>
-                })}
-              </ul>
+                    return <li key={name}>
+                      <a href='' onClick={onClick}>{name}</a>
+                    </li>
+                  })}
+                </ul>
+                <button onClick={this.closePanels.bind(this)}>Close</button>
+              </div>
             : <div>
                 <p>
                   This will delete everything, including your undo history.<br/>
