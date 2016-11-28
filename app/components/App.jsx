@@ -19,6 +19,10 @@ function ButtonWithPanel({panel, children, ...other}) {
   </div>
 }
 
+ButtonWithPanel.propType = {
+  panel: React.PropTypes.node,
+}
+
 export default class App extends React.Component {
   constructor(props) {
     super(props)
