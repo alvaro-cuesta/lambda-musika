@@ -161,7 +161,7 @@ export default class App extends React.Component {
   }
 
   handleLoadConfirmed() {
-    this.refs.editor.new(this.state.loadConfirming.content)
+    this.refs.editor.new(this.state.loadConfirming.content.replace(/\r\n/g, '\n'))
     this.handleUpdate()
     this.closePanels()
   }
