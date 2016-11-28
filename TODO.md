@@ -6,8 +6,7 @@
 
 - `[BUG]` `[PLAYER]` Sound clicks on play/pause/update/seek
 - `[FEATURE]` `[EDITOR]` Allow right-click save-as on save button
-- `[FEATURE]` `[EDITOR]` Preserve code between reloads
-  - Try to preserve Undo and other state between app loads
+- `[FEATURE]` `[EDITOR]` Try to preserve Undo and other state between app loads
 - `[BUG]` `[COSMETIC]` Now that buttons don't have sr-only span, they went lower
 
 ### 0.1.0

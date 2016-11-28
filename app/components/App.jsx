@@ -23,6 +23,9 @@ ButtonWithPanel.propType = {
   panel: React.PropTypes.node,
 }
 
+// HACK: Setting it as App.BACKUP_INTERVAL yields undefined inside component!?
+const BACKUP_INTERVAL = 1000
+
 export default class App extends React.Component {
   constructor(props) {
     super(props)
@@ -42,15 +45,19 @@ export default class App extends React.Component {
 
   componentDidMount() {
     this.handleUpdate()
+    this.backupInterval = setInterval(this.handleBackup.bind(this), BACKUP_INTERVAL)
   }
 
   componentWillUnmount() {
     this.audioCtx.close()
+    clearInterval(this.backupInterval)
   }
 
   handleUpdate() {
     let editor = this.refs.editor.editor
     let source = editor.getValue()
+
+    history.replaceState({source}, '')
 
     let {fn, length, error} = compile(source, this.audioCtx.sampleRate)
 
@@ -230,9 +237,21 @@ export default class App extends React.Component {
     this.closePanels()
   }
 
+  handleBackup() {
+    let source = this.refs.editor.editor.getValue()
+
+    if (history.state.source !== source) {
+      history.replaceState({source}, '')
+    }
+  }
+
   render() {
     let {fn, length, renderTime, newConfirming, loadConfirming, examplesOpen, examplesConfirming} = this.state
     let {bufferLength} = this.props
+
+    let initialScript = history.state && history.state.source !== 'undefined'
+      ? history.state.source
+      : DEFAULT_SCRIPT
 
     //
 
@@ -421,7 +440,7 @@ export default class App extends React.Component {
       />
 
       <Editor ref='editor'
-        defaultValue={DEFAULT_SCRIPT}
+        defaultValue={initialScript}
         onChange={this.handleChange.bind(this)}
       />
 
