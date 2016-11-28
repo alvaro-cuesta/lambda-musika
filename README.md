@@ -20,8 +20,7 @@ A Musika script is just regular JS program:
   range
 
 For now there is no static documentation available, just dive in the source code
-and learn form the [README examples](#examples), [default song](examples/default.js)
-and other [more complex examples](examples/).
+and learn form the [default song](examples/default.js) and other [examples](examples/).
 
 ##### - Available defines:
 
@@ -44,64 +43,6 @@ and other [more complex examples](examples/).
 const {Generator, Envelope, Filter, Operator, Music, Util} = Musika
 
 return t => [0, 0]
-```
-
-## Examples
-
-##### - Binaural beat
-
-```js
-const {Generator} = Musika
-
-const F = 79            // Base frequency
-const DF = 4            // Beat frequency
-const A = Math.SQRT1_2  // Amplitude
-
-const oscL = Generator.Sin(), oscR = Generator.Sin()
-
-return t => [oscL(F, t) * A, oscR(F + DF, t) * A]
-```
-
-##### - Filtered noise
-
-```js
-const {Filter} = Musika
-
-const NoiseGen = () => {
-  const A = Math.SQRT1_2  // Amplitude = 0.707
-  const COEFF = Filter.Biquad.LP(400/sampleRate, Math.SQRT1_2)  // Cutoff = 400Hz, Q = 0.707
-
-  const filter = Filter.Biquad()
-  return () => filter(COEFF, Generator.random() * A)
-}
-
-const noiseL = NoiseGen(), noiseR = NoiseGen()
-
-return () => [noiseL(), noiseR()]
-```
-
-##### - Simple sea
-
-```js
-const {Generator, Filter} = Musika
-
-const NoiseGen = () => {
-  const A = Math.SQRT1_2  // Amplitude = 0.707
-
-  const filter = Filter.Biquad()
-  return cutoff => {
-    let coeff = Filter.Biquad.LP(cutoff/sampleRate, Math.SQRT1_2)
-    return filter(coeff, Generator.random() * A)
-  }
-}
-
-const noiseL = NoiseGen(), noiseR = NoiseGen()
-const cutL = Generator.Sin(), cutR = Generator.Sin()
-
-return t => [
-  noiseL(300 + cutL(0.1, t) * 200),
-  noiseR(300 + cutR(0.08, t) * 200),
-]
 ```
 
 ## Development
