@@ -45,7 +45,7 @@ export default class Editor extends React.PureComponent {
       animatedScroll: false,
       showInvisibles: false,
       showPrintMargin: true,
-      printMarginColumn: 80,
+      printMarginColumn: 79,
       //printMargin
       fadeFoldWidgets: true,
       showFoldWidgets: true,
