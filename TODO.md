@@ -6,7 +6,6 @@
 
 - `[BUG]` `[PLAYER]` Sound clicks on play/pause/update/seek
 - `[FEATURE]` `[EDITOR]` Allow right-click save-as on save button
-- `[FEATURE]` `[EDITOR]` Try to preserve Undo and other state between app loads
 - `[BUG]` `[COSMETIC]` Now that buttons don't have sr-only span, they went lower
 
 ### 0.1.0
@@ -122,6 +121,9 @@
 - `[COSMETIC]` `[APP]` Make responsive (adjust font size, element positions, etc.)
 - `[COSMETIC]` `[PLAYER]` https://reactify.github.io/react-player-controls/
 - `[COSMETIC]` `[EDITOR]` Custom scrollbars (https://github.com/ajaxorg/ace/issues/869)
+- `[FEATURE]` `[EDITOR]` History state might have low storage limits, fall back
+  to `localStorage` with large files?
+  - Maybe limit undo length too?
 - `[FEATURE]` `[EDITOR]` REPL
 - `[FEATURE]` `[EDITOR]` Save/load code from Gist (+ link generation)
 - `[FEATURE]` `[EDITOR]` Enable ACE worker but with custom rules

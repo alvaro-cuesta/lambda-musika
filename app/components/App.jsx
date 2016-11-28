@@ -1,5 +1,7 @@
 import React from 'react'
 
+import ace from 'brace'
+
 import Player from 'components/Player'
 import CPULoad from 'components/CPULoad'
 import Editor from 'components/Editor'
@@ -44,6 +46,26 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
+    let editor = this.refs.editor.editor
+
+    if (history.state) {
+      let {$undoStack, $redoStack, dirtyCounter} = history.state
+      let undoManager = new ace.UndoManager()
+      let session = editor.getSession()
+
+      if (typeof $undoStack !== 'undefined'
+        && typeof $redoStack !== 'undefined'
+        && typeof dirtyCounter !== 'undefined'
+      ) {
+        undoManager.$doc = session
+        undoManager.$undoStack = $undoStack
+        undoManager.$redoStack = $redoStack
+        undoManager.dirtyCounter = dirtyCounter
+      }
+
+      session.setUndoManager(undoManager)
+    }
+
     this.handleUpdate()
     this.backupInterval = setInterval(this.handleBackup.bind(this), BACKUP_INTERVAL)
   }
@@ -53,11 +75,21 @@ export default class App extends React.Component {
     clearInterval(this.backupInterval)
   }
 
+  handleBackup() {
+    let editor = this.refs.editor.editor
+    let source = editor.getValue()
+
+    if (!history.state || history.state.source !== source) {
+      let {$undoStack, $redoStack, dirtyCounter} = editor.getSession().getUndoManager()
+      history.replaceState({source, $undoStack, $redoStack, dirtyCounter}, '')
+    }
+  }
+
   handleUpdate() {
     let editor = this.refs.editor.editor
     let source = editor.getValue()
 
-    history.replaceState({source}, '')
+    this.handleBackup()
 
     let {fn, length, error} = compile(source, this.audioCtx.sampleRate)
 
@@ -235,14 +267,6 @@ export default class App extends React.Component {
     }
 
     this.closePanels()
-  }
-
-  handleBackup() {
-    let source = this.refs.editor.editor.getValue()
-
-    if (history.state.source !== source) {
-      history.replaceState({source}, '')
-    }
   }
 
   render() {
