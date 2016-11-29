@@ -22,8 +22,7 @@ export default class Editor extends React.PureComponent {
     editor.$blockScrolling = Infinity;
 
     if (this.props.defaultValue) {
-      editor.setValue(this.props.defaultValue)
-      editor.gotoLine(0, 0, false)
+      editor.setValue(this.props.defaultValue, -1)
     }
     editor.getSession().setUndoManager(new ace.UndoManager())
     editor.setOptions({
@@ -83,8 +82,7 @@ export default class Editor extends React.PureComponent {
 
   new(content) {
     let editor = this.editor
-    editor.setValue(typeof content !== 'undefined' ? content : EMPTY_SCRIPT)
-    editor.gotoLine(0, 0, false)
+    editor.setValue(typeof content !== 'undefined' ? content : EMPTY_SCRIPT, -1)
     editor.getSession().setUndoManager(new ace.UndoManager())
     editor.focus()
   }
@@ -150,7 +148,7 @@ export default class Editor extends React.PureComponent {
     let editor = this.editor
 
     if (typeof source !== 'undefined') {
-      editor.setValue(source)
+      editor.setValue(source, -1)
     }
 
     if (cursor) {
