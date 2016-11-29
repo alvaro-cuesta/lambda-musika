@@ -2,10 +2,6 @@
 
 ## Milestones
 
-### 0.0.3
-
-- `[BUG]` `[PLAYER]` Sound clicks on play/pause/update/seek
-
 ### 0.1.0
 
 - `[DEV-FEATURE]` Deploy task: bump version, tag and publish to GH pages and NPM
@@ -21,6 +17,7 @@
 - `[BUG]` `[PLAYER]` TimeSeeker maxes at 23:59 (HH:MM)
 - `[FEATURE]` `[EDITOR]` Save as (allow right-click save-as on save button?)
 - `[FEATURE]` `[EDITOR]` Hotkeys for time seeking
+- `[FEATURE]` `[SCRIPTS]` Use strict mode?
 
 ### 0.2.0
 
@@ -44,6 +41,9 @@
 - `[API]` `[MUSIKA]` popping_wip example was bugged: since you can seek time,
   `t` is non-monotonic, which made the state invalid. Is this a flaw of the API?
   Should the user not assume `t` is monotonic? Maybe some kind of events?
+
+  Another instance: biquad filters became unstable because of `t` not being
+  monotonic.
 - `[API]` `[MUSIKA]` `[MUSIKA-UTIL]` Log-to-Linear function and viceversa (for
   linear parameters into freqs and such)
   - Also for amplitude? I.e. work with decibels
@@ -65,6 +65,7 @@
 
 ### 1.0.0
 
+- `[BUG]` `[PLAYER]` Sound clicks on play/pause/update/seek
 - `[FEATURE]` `[COSMETIC]` `[APP]` Some kind of help/README/intro/tutorial
 - `[FEATURE]` `[COSMETIC]` `[EDITOR]` Visual feedback after commit (annotation?)
 - `[COSMETIC]` `[APP]` Favicon(s)
