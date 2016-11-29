@@ -5,9 +5,6 @@
 ### 0.0.3
 
 - `[BUG]` `[PLAYER]` Sound clicks on play/pause/update/seek
-- `[FEATURE]` `[EDITOR]` Allow right-click save-as on save button
-- `[BUG]` `[EDITOR]` Error marks and cursor column differ when loading a song
-  with errors
 
 ### 0.1.0
 
@@ -22,6 +19,8 @@
 ### 0.1.x
 
 - `[BUG]` `[PLAYER]` TimeSeeker maxes at 23:59 (HH:MM)
+- `[FEATURE]` `[EDITOR]` Save as (allow right-click save-as on save button?)
+- `[FEATURE]` `[EDITOR]` Hotkeys for time seeking
 
 ### 0.2.0
 
@@ -66,8 +65,8 @@
 
 ### 1.0.0
 
-
 - `[FEATURE]` `[COSMETIC]` `[APP]` Some kind of help/README/intro/tutorial
+- `[FEATURE]` `[COSMETIC]` `[EDITOR]` Visual feedback after commit (annotation?)
 - `[COSMETIC]` `[APP]` Favicon(s)
 - `[TODO]` `[MUSIKA]` Documentation
   - Add missing comments
@@ -132,6 +131,7 @@
 - `[FEATURE]` `[EDITOR]` Work as a git repository, maybe even link with GitHub
 - `[FEATURE]` `[EDITOR]` [Enable ACE worker but with custom rules](https://github.com/ajaxorg/ace/blob/master/lib/ace/mode/javascript.js)
 - `[FEATURE]` `[EDITOR]` Detect tab settings from buffer
+- `[FEATURE]` `[EDITOR]` Remove trailing whitespace
 - `[FEATURE]` `[EDITOR]` [Continue comments](https://github.com/ajaxorg/ace/blob/master/lib/ace/mode/javascript.js)
 - `[FEATURE]` `[EDITOR]` `[COMPILER]` Multiple files/tabs
 - `[FEATURE]` `[APP]` `[EDITOR]` Slider when double-clicking numerical values in editor
