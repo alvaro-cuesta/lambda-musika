@@ -167,6 +167,18 @@ export default class Editor extends React.PureComponent {
     this.setUndo($undoStack, $redoStack, dirtyCounter)
   }
 
+  markDirty() {
+    this.editor.getSession().getUndoManager().dirtyCounter = NaN
+  }
+
+  markClean() {
+    this.editor.getSession().getUndoManager().markClean()
+  }
+
+  isClean() {
+    return this.editor.getSession().getUndoManager().isClean()
+  }
+
   render() {
     return <div ref='editor' className='Musika-Editor' />
   }

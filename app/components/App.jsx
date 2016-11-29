@@ -46,8 +46,9 @@ ButtonWithPanel.propTypes = {
   panel: React.PropTypes.node,
 }
 
-// HACK: Setting it as App.BACKUP_INTERVAL yields undefined inside component!?
+// HACK: Setting it as App.XXX_INTERVAL yields undefined inside component!?
 const BACKUP_INTERVAL = 1000
+const DIRTY_INTERVAL = 100
 
 export default class App extends React.Component {
   constructor(props) {
@@ -71,14 +72,21 @@ export default class App extends React.Component {
       this.refs.editor.setSerialState(history.state)
     }
 
+    // Mark state as never clean (always asks for confirmation)
+    this.refs.editor.markDirty()
+
     this.handleUpdate()
     this.backupInterval = setInterval(this.handleBackup.bind(this), BACKUP_INTERVAL)
+    this.dirtyInterval = setInterval(this.handleDirtyInterval.bind(this), DIRTY_INTERVAL)
   }
 
   componentWillUnmount() {
     this.audioCtx.close()
     clearInterval(this.backupInterval)
+    clearInterval(this.dirtyInterval)
   }
+
+  /* Autosave */
 
   handleBackup() {
     let serialState = this.refs.editor.getSerialState()
@@ -93,6 +101,21 @@ export default class App extends React.Component {
       history.replaceState(serialState, '')
     }
   }
+
+  /* Track document changes */
+
+  markClean() {
+    this.refs.editor.markClean()
+    this.setState({changesMade: false})
+  }
+
+  // HACK! This shouldn't be polled, but there seems to be no event emitted
+  //       after dirtyCounter changes
+  handleDirtyInterval() {
+    this.setState({changesMade: !this.refs.editor.isClean()})
+  }
+
+  /* Events */
 
   handleUpdate() {
     let editor = this.refs.editor.editor
@@ -169,12 +192,6 @@ export default class App extends React.Component {
     }
   }
 
-  handleChange() {
-    if (this.state.changesMade === false) {
-      this.setState({changesMade: true})
-    }
-  }
-
   /* Panels */
 
   handleNew() {
@@ -192,7 +209,7 @@ export default class App extends React.Component {
     this.refs.editor.new()
     this.handleUpdate()
     this.closePanels()
-    this.setState({changesMade: false})
+    this.markClean()
   }
 
   handleLoad() {
@@ -227,7 +244,7 @@ export default class App extends React.Component {
     this.refs.editor.new(this.state.loadConfirming.content.replace(/\r\n/g, '\n'))
     this.handleUpdate()
     this.closePanels()
-    this.setState({changesMade: false})
+    this.markClean()
   }
 
   handleSave() {
@@ -242,7 +259,7 @@ export default class App extends React.Component {
 
     URL.revokeObjectURL(url)
 
-    this.setState({changesMade: false})
+    this.markClean()
   }
 
   handleExamples() {
@@ -256,7 +273,7 @@ export default class App extends React.Component {
     this.refs.editor.new(EXAMPLE_SCRIPTS[this.state.examplesConfirming])
     this.handleUpdate()
     this.closePanels()
-    this.setState({changesMade: false})
+    this.markClean()
   }
 
   closePanels() {
@@ -456,10 +473,7 @@ export default class App extends React.Component {
         sampleRate={this.audioCtx.sampleRate}
       />
 
-      <Editor ref='editor'
-        defaultValue={initialScript}
-        onChange={this.handleChange.bind(this)}
-      />
+      <Editor ref='editor' defaultValue={initialScript} />
 
       <div className='panel-wrapper'>
         <div className='Musika-bottomPanel'>
