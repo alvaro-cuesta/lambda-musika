@@ -34,7 +34,7 @@
 
 - `[FEATURE]` `[RENDERER]` Quantization
   - More quantization methods (currently truncating)
-  - Dithering
+  - [Dithering](http://www.earlevel.com/main/category/digital-audio/dither-digital-audio/)
   - Clamping?
 - `[FEATURE]` `[RENDERER]` Float PCM output
 - `[FEATURE]` `[RENDERER]` Select bit-depth etc. when rendering
@@ -53,7 +53,7 @@
   envelopes
   - Linear
   - Hermite
-- `[API]` `[MUSIKA]` `[MUSIKA-ENVELOPE]` ADSR Envelope
+- `[API]` `[MUSIKA]` `[MUSIKA-ENVELOPE]` [ADSR Envelope](http://www.earlevel.com/main/category/digital-audio/oscillators/envelope-generators/?orderby=date&order=ASC)
 - `[API]` `[MUSIKA]` `[MUSIKA-ENVELOPE]` Should inv envelopes actually be
   logarithmic?
 - `[API]` `[MUSIKA]` `[MUSIKA-MUSIC]` Chordify signals (given an osc constructor,
@@ -77,10 +77,10 @@
 ### 1.0.x
 
 - `[BUG]` `[APP]` Make app accessible (make sure to actually _try_ the app)
-- `[FEATURE]` `[RENDERER]` Render in background using web workers
+- `[FEATURE]` `[RENDERER]` Render in background using web workers. Try [adapting
+  to the number of cores](https://developer.mozilla.org/en-US/docs/Web/API/NavigatorConcurrentHardware/hardwareConcurrency).
 - `[BUG]` `[EDITOR]` Editor has a fixed size and can't be resized really small
-- `[TODO]` Build librar(y/ies) as UMD package(s) to be used outside of the DAW
-    as a regular JavaScript library ([info]http://survivejs.com/webpack/loading-assets/formats-supported/)
+- `[TODO]` [Build librar(y/ies) as UMD package(s)](http://survivejs.com/webpack/loading-assets/formats-supported/#umd to be used outside of the DAW as a regular JavaScript library)
 
 ### 2.0.0
 
@@ -93,7 +93,8 @@
 
 ## Internal tasks
 
-- `[BUG]` Since Player is a PureComponent, hot reloading it stops the song
+- `[BUG]` Since Player/Editor are PureComponents, hot reloading stops the song
+  and re-renders the editor
   - Maybe the problem is HMR, try React Hot Loader 3
 - `[TODO]` http://survivejs.com/webpack/building-with-webpack/separating-css/#separating-application-code-and-styling
   - Extract theme, components and vendor CSS separately
@@ -105,12 +106,13 @@
 - `[COSMETIC]` "3D" box-shadow buttons Material Design style
 - `[FEATURE]` `[API]` `[APP]` `[...]` Microphone/MIDI/keyboard/mouse input
 - `[FEATURE]` `[APP]` Offline/AppCache
+- `[FEATURE]` `[APP]` Mobile app manifest
 - `[FEATURE]` `[APP]` `[API]` `[COMPILER]` Declare sliders and other controls in
   scripts, which the user can control to affect sound/constants in real time
 - `[FEATURE]` `[APP]` `[API]` `[COMPILER]` Static plots
   - Ability to plot arbitrary 2D data, formulas, etc.
   - Helpers for filter frequency response, FFT, etc.
-- `[FEATURE]` `[APP]` Visualization
+- `[FEATURE]` `[APP]` [Visualization](https://jsfiddle.net/fqgn632s/11/)
   - Wave
   - FFT
   - XY
@@ -128,11 +130,10 @@
   - Maybe limit undo length too?
 - `[FEATURE]` `[EDITOR]` REPL
 - `[FEATURE]` `[EDITOR]` Save/load code from Gist (+ link generation)
-- `[FEATURE]` `[EDITOR]` Enable ACE worker but with custom rules
-  - https://github.com/ajaxorg/ace/blob/master/lib/ace/mode/javascript.js
+- `[FEATURE]` `[EDITOR]` Work as a git repository, maybe even link with GitHub
+- `[FEATURE]` `[EDITOR]` [Enable ACE worker but with custom rules](https://github.com/ajaxorg/ace/blob/master/lib/ace/mode/javascript.js)
 - `[FEATURE]` `[EDITOR]` Detect tab settings from buffer
-- `[FEATURE]` `[EDITOR]` Continue comments
-  - https://github.com/ajaxorg/ace/blob/master/lib/ace/mode/javascript.js
+- `[FEATURE]` `[EDITOR]` [Continue comments](https://github.com/ajaxorg/ace/blob/master/lib/ace/mode/javascript.js)
 - `[FEATURE]` `[EDITOR]` `[COMPILER]` Multiple files/tabs
 - `[FEATURE]` `[APP]` `[EDITOR]` Slider when double-clicking numerical values in editor
 - `[FEATURE]` `[COMPILER]` Import Gists or other sources of functions (for custom
@@ -144,20 +145,32 @@
 - `[API]` `[MUSIKA]` Maybe use object options instead of parameters (for easier
   composition of functions)
   - Objects might be expensive, leave it to the user?
-- `[FEATURE]` `[MUSIKA]` Equalizer
+- `[FEATURE]` `[MUSIKA]` `[FILTER]` Equalizer
+- `[FEATURE]` `[MUSIKA]` `[FILTER]` Delay
+- `[FEATURE]` `[MUSIKA]` `[FILTER]` [Reverb](http://www.earlevel.com/main/1997/01/19/a-bit-about-reverb/)
+- `[FEATURE]` `[MUSIKA]` `[FILTER]` [Synth filters](http://www.earlevel.com/main/category/synthesizers/)
+- `[FEATURE]` `[MUSIKA]` `[FILTER]` [One pole filter](http://www.earlevel.com/main/2012/12/15/a-one-pole-filter/)
+- `[FEATURE]` `[MUSIKA]` `[FILTER]` [Windowed sinc filter](http://www.earlevel.com/main/category/digital-audio/filters/fir-filters/) (for oversampling)
+- `[FEATURE]` `[MUSIKA]` Buffers
+- `[FEATURE]` GLSL Backend
+- `[RESEARCH]` [Denormal numbers](http://cmc.music.columbia.edu/music-dsp/musicdspFAQ.html#denormals). Maybe move to integers? Or at least allow it. They
+  might be faster anyways.
+- `[RESEARCH]` [Ring modulation](http://cmc.music.columbia.edu/music-dsp/musicdspFAQ.html#ringmod)
 
 ### Internal
 
-- Move vendor libraries to CDN instead of `vendor` chunk
-  - Maybe alternative build mode?
-- Font Awesome is being used from CDN... Webpack it as vendor css/font? Include
-  locally but don't bundle? Leave it on CDN?
+- Google Closure optimization
+- Consider replacing Ace with Atom
+- CDN vs. vendor chunk
+  - Move vendor libraries to CDN instead of `vendor` chunk (maybe alternative
+    build mode?)
+  - Font Awesome is being used from CDN... Webpack it as vendor css/font?
+    Include locally but don't bundle? Leave it on CDN?
+- Babel Runtime + [Transform](https://babeljs.io/docs/plugins/transform-runtime/)
 - I'm importing the full Font Awesome instead of only the few icons I need
 - http://survivejs.com/webpack/building-with-webpack/eliminating-unused-css/
 - http://survivejs.com/webpack/building-with-webpack/analyzing-build-statistics/
-- http://survivejs.com/webpack/loading-assets/loading-styles/
-  - Stylus
-  - CSS modules
+- [CSS modules](http://survivejs.com/webpack/loading-assets/loading-styles/)
 - http://survivejs.com/webpack/advanced-techniques/linting/
 - http://survivejs.com/webpack/advanced-techniques/authoring-packages/
 - http://survivejs.com/webpack/advanced-techniques/configuring-react/
