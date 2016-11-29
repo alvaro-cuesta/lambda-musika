@@ -48,9 +48,6 @@ button
   color $lightest
   font $monospace-font
 
-  i.fa:only-child
-    vertical-align middle
-
 a
   color $lightest
 
@@ -258,9 +255,11 @@ for name, colors in $colors
       display inline-block
       height 100%
 
-    & button,
-    & select
+    button, select
       height 100%
+
+    button i.fa:only-child
+      vertical-align middle
 
     .github
       height 100%

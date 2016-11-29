@@ -6,7 +6,6 @@
 
 - `[BUG]` `[PLAYER]` Sound clicks on play/pause/update/seek
 - `[FEATURE]` `[EDITOR]` Allow right-click save-as on save button
-- `[BUG]` `[COSMETIC]` Now that buttons don't have sr-only span, they went lower
 - `[BUG]` `[EDITOR]` Error marks and cursor column differ when loading a song
   with errors
 
