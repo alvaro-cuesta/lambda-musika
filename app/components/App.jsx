@@ -55,7 +55,7 @@ export default class App extends React.Component {
     super(props)
 
     this.state = {
-      fn: () => [0, 0],
+      fn: undefined,
       length: 0,
       renderTime: undefined,
       newConfirming: false,
@@ -66,6 +66,16 @@ export default class App extends React.Component {
 
     this.audioCtx = new (window.AudioContext || window.webkitAudioContext)()
   }
+
+  new(source) {  // Throws
+    this.setState({fn: undefined, length: undefined})
+    this.refs.editor.new(source)
+    this.closePanels()
+    this.markClean()
+    this.handleUpdate()  // Throws
+  }
+
+  /* Lifecycle */
 
   componentDidMount() {
     if (history.state) {
@@ -207,10 +217,7 @@ export default class App extends React.Component {
   }
 
   handleNewConfirmed() {
-    this.refs.editor.new()
-    this.closePanels()
-    this.markClean()
-    this.handleUpdate()  // Throws
+    this.new()
   }
 
   handleLoad() {
@@ -242,10 +249,7 @@ export default class App extends React.Component {
   }
 
   handleLoadConfirmed() {
-    this.refs.editor.new(this.state.loadConfirming.content.replace(/\r\n/g, '\n'))
-    this.closePanels()
-    this.markClean()
-    this.handleUpdate()  // Throws
+    this.new(this.state.loadConfirming.content.replace(/\r\n/g, '\n'))
   }
 
   handleSave() {
@@ -271,10 +275,7 @@ export default class App extends React.Component {
   }
 
   handleExamplesConfirmed() {
-    this.refs.editor.new(EXAMPLE_SCRIPTS[this.state.examplesConfirming])
-    this.closePanels()
-    this.markClean()
-    this.handleUpdate()  // Throws
+    this.new(EXAMPLE_SCRIPTS[this.state.examplesConfirming])
   }
 
   closePanels() {

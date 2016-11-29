@@ -100,19 +100,26 @@ export default class Player extends React.PureComponent {
 
   render() {
     let {playing, lastFrame} = this.state
-    let {audioCtx: {sampleRate}, length} = this.props
+    let {audioCtx: {sampleRate}, fn, length} = this.props
 
     let title = `${playing ? 'Pause' : 'Play'} (CTRL-Space)`
+    let hasFn = typeof fn !== 'undefined'
 
     return <div className='Musika-Player'>
-      <button className='color-orange' onClick={this.togglePlay.bind(this)} title={title} aria-label={title}>
+      <button onClick={this.togglePlay.bind(this)}
+        className={hasFn ? 'color-orange' : 'color-grey'}
+        disabled={!hasFn}
+        title={title}
+        aria-label={title}
+      >
         <Icon name={playing ? 'pause' : 'play'} />
       </button>
 
-      {length
-        ? <TimeSlider length={length} value={lastFrame/sampleRate} onChange={this.handleTime.bind(this)} />
-        : <TimeSeeker value={lastFrame/sampleRate} onChange={this.handleTime.bind(this)} />
-      }
+      {hasFn
+        ? (length
+            ? <TimeSlider length={length} value={lastFrame/sampleRate} onChange={this.handleTime.bind(this)} />
+            : <TimeSeeker value={lastFrame/sampleRate} onChange={this.handleTime.bind(this)} />)
+        : null}
     </div>
   }
 }
@@ -120,7 +127,7 @@ export default class Player extends React.PureComponent {
 const AudioContext = window.AudioContext || window.webkitAudioContext
 Player.propTypes = {
   audioCtx: React.PropTypes.instanceOf(AudioContext).isRequired,
-  fn: React.PropTypes.func.isRequired,
+  fn: React.PropTypes.func,
   length: React.PropTypes.number,
   bufferLength: React.PropTypes.number,
   onPlayingChange: React.PropTypes.func,

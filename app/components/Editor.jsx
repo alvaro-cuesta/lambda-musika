@@ -108,9 +108,12 @@ export default class Editor extends React.PureComponent {
       let {name, message, row, column} = error
       let text = `${name}: ${message.replace(/\s+\(\d+:\d+\)$/, '')}`
 
-      session.setAnnotations([{ type: 'error', text, row, column }])
-      ace.acequire('ace/ext/error_marker').showErrorMarker(editor, 1)
-      editor.focus()
+      // HACK: Wait for next tick so this is done _after_ setSerialState
+      setTimeout(() => {
+        session.setAnnotations([{ type: 'error', text, row, column }])
+        ace.acequire('ace/ext/error_marker').showErrorMarker(editor, 1)
+        editor.focus()
+      }, 2)
 
       console.error(error)
       throw error.e
@@ -153,7 +156,7 @@ export default class Editor extends React.PureComponent {
 
     if (cursor) {
       let {row, column} = cursor
-      // Wait for next tick so resize works
+      // HACK: Wait for next tick so resize works
       setTimeout(() => {
         editor.resize()
         editor.gotoLine(row + 1, column, false)
