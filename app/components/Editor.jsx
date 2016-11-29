@@ -141,8 +141,6 @@ export default class Editor extends React.PureComponent {
     let cursor = editor.getCursorPosition()
     let {$undoStack, $redoStack, dirtyCounter} = editor.getSession().getUndoManager()
 
-    console.log(editor.getSelection())
-
     return {source, cursor, $undoStack, $redoStack, dirtyCounter}
   }
 
