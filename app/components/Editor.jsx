@@ -24,6 +24,7 @@ export default class Editor extends React.PureComponent {
     if (this.props.defaultValue) {
       editor.setValue(this.props.defaultValue)
       editor.gotoLine(0, 0, false)
+      editor.scrollToLine(0, false, false, function () {})
     }
     editor.getSession().setUndoManager(new ace.UndoManager())
     editor.setOptions({
@@ -167,16 +168,21 @@ export default class Editor extends React.PureComponent {
       editor.setValue(source)
     }
 
-    if (cursor) {
-      let {row, column} = cursor
-      // HACK: Wait for next tick so resize works
-      setTimeout(() => {
-        editor.resize()
+    // HACK: Wait for next tick so resize works
+    setTimeout(() => {
+      editor.resize()
+
+      if (cursor) {
+        let {row, column} = cursor
         editor.gotoLine(row + 1, column, false)
         editor.scrollToLine(row + 1, true, false, function () {})
-        editor.focus()
-      }, 1)
-    }
+      } else {
+        editor.gotoLine(0, 0, false)
+        editor.scrollToLine(0, false, false, function () {})
+      }
+
+      editor.focus()
+    }, 1)
 
     this.setUndo($undoStack, $redoStack, dirtyCounter)
   }
