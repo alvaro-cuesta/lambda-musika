@@ -134,6 +134,39 @@ export default class Editor extends React.PureComponent {
     session.setUndoManager(undoManager)
   }
 
+  getSerialState() {
+    let editor = this.editor
+
+    let source = editor.getValue()
+    let cursor = editor.getCursorPosition()
+    let {$undoStack, $redoStack, dirtyCounter} = editor.getSession().getUndoManager()
+
+    console.log(editor.getSelection())
+
+    return {source, cursor, $undoStack, $redoStack, dirtyCounter}
+  }
+
+  setSerialState({source, cursor, $undoStack, $redoStack, dirtyCounter}) {
+    let editor = this.editor
+
+    if (typeof source !== 'undefined') {
+      editor.setValue(source)
+    }
+
+    if (cursor) {
+      let {row, column} = cursor
+      // Wait for next tick so resize works
+      setTimeout(() => {
+        editor.resize()
+        editor.gotoLine(row + 1, column, false)
+        editor.scrollToLine(row + 1, true, false, function () {})
+        editor.focus()
+      }, 1)
+    }
+
+    this.setUndo($undoStack, $redoStack, dirtyCounter)
+  }
+
   render() {
     return <div ref='editor' className='Musika-Editor' />
   }

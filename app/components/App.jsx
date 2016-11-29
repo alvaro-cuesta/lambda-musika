@@ -68,8 +68,7 @@ export default class App extends React.Component {
 
   componentDidMount() {
     if (history.state) {
-      let {$undoStack, $redoStack, dirtyCounter} = history.state
-      this.refs.editor.setUndo($undoStack, $redoStack, dirtyCounter)
+      this.refs.editor.setSerialState(history.state)
     }
 
     this.handleUpdate()
@@ -82,12 +81,16 @@ export default class App extends React.Component {
   }
 
   handleBackup() {
-    let editor = this.refs.editor.editor
-    let source = editor.getValue()
+    let serialState = this.refs.editor.getSerialState()
+    let {source, cursor: {row, column}} = serialState
 
-    if (!history.state || history.state.source !== source) {
-      let {$undoStack, $redoStack, dirtyCounter} = editor.getSession().getUndoManager()
-      history.replaceState({source, $undoStack, $redoStack, dirtyCounter}, '')
+    if (!history.state
+      || history.state.source !== source
+      || !history.state.cursor
+      || history.state.cursor.row !== row
+      || history.state.cursor.column !== column
+    ) {
+      history.replaceState(serialState, '')
     }
   }
 
