@@ -176,10 +176,6 @@ export default class App extends React.Component {
     } catch (e) {/* IGNORE EXCEPTION! Let the player try to recover */}
   }
 
-  handleTogglePlay() {
-    this.refs.player.togglePlay()
-  }
-
   handleKeyDown(e) {
     let {ctrlKey, shiftKey, altKey, keyCode} = e
 
@@ -198,7 +194,7 @@ export default class App extends React.Component {
       if (keyCode === 83 /* S */ ) {
         this.handleUpdate()
       } else if (keyCode === 32 /* SPACE */) {
-        this.handleTogglePlay()
+        this.refs.player.togglePlay()
       }
     }
   }
