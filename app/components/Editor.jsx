@@ -98,7 +98,6 @@ export default class Editor extends React.PureComponent {
     session.setAnnotations()
     if (session.lineWidgets) {
       session.lineWidgets.forEach(w => {
-        console.log(w)
         session.widgetManager.removeLineWidget(w)
       })
     }

@@ -203,10 +203,7 @@ export default class App extends React.Component {
 
   handleNew() {
     if (this.state.changesMade) {
-      this.setState({
-        newConfirming: true,
-        loadConfirming: false,
-      })
+      this.setState({newConfirming: true})
     } else {
       this.handleNewConfirmed()
     }
@@ -229,7 +226,6 @@ export default class App extends React.Component {
       r.onload = ({target: {result}}) => {
         this.setState(
           {
-            newConfirming: false,
             loadConfirming: {
               name: f.name,
               content: result,
