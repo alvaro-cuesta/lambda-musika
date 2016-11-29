@@ -75,9 +75,10 @@ export default class App extends React.Component {
     // Mark state as never clean (always asks for confirmation)
     this.refs.editor.markDirty()
 
-    this.handleUpdate()
     this.backupInterval = setInterval(this.handleBackup.bind(this), BACKUP_INTERVAL)
     this.dirtyInterval = setInterval(this.handleDirtyInterval.bind(this), DIRTY_INTERVAL)
+
+    this.handleUpdate()  // Throws
   }
 
   componentWillUnmount() {
@@ -117,7 +118,7 @@ export default class App extends React.Component {
 
   /* Events */
 
-  handleUpdate() {
+  handleUpdate() {  // Throws
     let editor = this.refs.editor.editor
     let source = editor.getValue()
 
@@ -125,23 +126,23 @@ export default class App extends React.Component {
 
     let {fn, length, error} = compile(source, this.audioCtx.sampleRate)
 
-    this.refs.editor.maybeAddError(error) // Throws
+    this.refs.editor.maybeAddError(error)  // Throws
     this.setState({fn, length})
   }
 
-  handleRender() {
+  handleRender() {  // Throws
     this.refs.player.pause()
 
-    this.handleUpdate()
+    this.handleUpdate()  // Throws
 
     let source = this.refs.editor.editor.getValue()
     let sampleRate = this.refs.renderSampleRate.value
 
     let {fn, length, error: compileError} = compile(source, sampleRate)
-    this.refs.editor.maybeAddError(compileError) // Throws
+    this.refs.editor.maybeAddError(compileError)  // Throws
 
     let {buffer, error: runtimeError} = Int16Stereo(sampleRate, length, fn)
-    this.refs.editor.maybeAddError(runtimeError) // Throws
+    this.refs.editor.maybeAddError(runtimeError)  // Throws
 
     let link = document.createElement('a')
     link.download = 'render.wav'
@@ -207,9 +208,9 @@ export default class App extends React.Component {
 
   handleNewConfirmed() {
     this.refs.editor.new()
-    this.handleUpdate()
     this.closePanels()
     this.markClean()
+    this.handleUpdate()  // Throws
   }
 
   handleLoad() {
@@ -242,9 +243,9 @@ export default class App extends React.Component {
 
   handleLoadConfirmed() {
     this.refs.editor.new(this.state.loadConfirming.content.replace(/\r\n/g, '\n'))
-    this.handleUpdate()
     this.closePanels()
     this.markClean()
+    this.handleUpdate()  // Throws
   }
 
   handleSave() {
@@ -271,9 +272,9 @@ export default class App extends React.Component {
 
   handleExamplesConfirmed() {
     this.refs.editor.new(EXAMPLE_SCRIPTS[this.state.examplesConfirming])
-    this.handleUpdate()
     this.closePanels()
     this.markClean()
+    this.handleUpdate()  // Throws
   }
 
   closePanels() {
