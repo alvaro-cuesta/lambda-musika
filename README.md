@@ -29,13 +29,13 @@ and learn form the [default song](examples/default.js) and other [examples](exam
   - Used to seek using the time slider.
   - When omitted the time slider is disabled and the sound is played endlessly
     (useful for drone or procedural music).
-- `Musika`, the [Musika library](lib/):
-  - [Generator](lib/Generator.js) units
-  - [Envelope](lib/Generator.js) functions
-  - [Filter](lib/Filter/index.js) units
-  - [Operator](lib/Operator.js) functions
-  - [Music](lib/Music.js) helpers that aid with traditional composition.
-  - [Util](lib/Util.js)
+- `Musika`, the [Musika library](lib/Musika/):
+  - [Generator](lib/Musika/Generator.js) units
+  - [Envelope](lib/Musika/Generator.js) functions
+  - [Filter](lib/Musika/Filter/index.js) units
+  - [Operator](lib/Musika/Operator.js) functions
+  - [Music](lib/Musika/Music.js) helpers that aid with traditional composition.
+  - [Util](lib/Musika/Util.js)
 
 ##### - Script skeleton:
 
