@@ -74,6 +74,26 @@ export default class Editor extends React.PureComponent {
 
     ace.acequire('ace/ext/keybinding_menu').init(editor)
 
+    // HACK: This happens to fix magically the mispositioning of error markers
+    //       when loading the app for the first time
+    editor.renderer.on('resize', () => {
+      if (editor.getSession().getAnnotations().length > 0) {
+        ace.acequire('ace/ext/error_marker').showErrorMarker(editor, 1)
+      }
+    })
+
+    editor.getSession().on('changeAnnotation', () => {
+      // HACK: Wait for next tick so this is done _after_ setSerialState
+      //       Necessary because of setSerialState hack
+      setTimeout(() => {
+        editor.resize()
+        if (editor.getSession().getAnnotations().length > 0) {
+          ace.acequire('ace/ext/error_marker').showErrorMarker(editor, 1)
+          editor.focus()
+        }
+      }, 2)
+    })
+
     editor.focus()
 
     this.editor = editor
@@ -104,13 +124,7 @@ export default class Editor extends React.PureComponent {
     if (error) {
       let {name, message, row, column} = error
       let text = `${name}: ${message.replace(/\s+\(\d+:\d+\)$/, '')}`
-
-      // HACK: Wait for next tick so this is done _after_ setSerialState
-      setTimeout(() => {
-        session.setAnnotations([{ type: 'error', text, row, column }])
-        ace.acequire('ace/ext/error_marker').showErrorMarker(editor, 1)
-        editor.focus()
-      }, 2)
+      session.setAnnotations([{ type: 'error', text, row, column }])
 
       console.error(error)
       throw error.e
