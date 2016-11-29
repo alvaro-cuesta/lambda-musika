@@ -1,4 +1,6 @@
-# Lambda Musika - The functional DAW
+# Lambda Musika — The functional DAW
+
+https://alvaro-cuesta.github.io/lambda-musika/
 
 A JavaScript DAW that emphasizes functions as its core building block. In practice,
 a realtime audio scripting language and batteries-included DSP library, running
@@ -11,7 +13,7 @@ On the other hand, it runs in your browser.
 
 ## Usage
 
-A Musika script is just regular JS program:
+A Musika script is just a regular JS script:
 
 - interpreted client side
 - that returns a function `t => [l, r]`
@@ -47,7 +49,6 @@ return t => [0, 0]
 
 ## Development
 
-- [Open tasks](TODO.md)
 - Start a development server at `localhost:8888`:
 
 ```sh
@@ -59,6 +60,8 @@ npm run dev
 ```sh
 npm run build
 ```
+
+- See [open tasks](TODO.md)
 
 ## License
 
