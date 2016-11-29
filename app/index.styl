@@ -11,7 +11,7 @@ $darker = #181818
 $darkest = #000000
 
 $player-button-size = 2em
-$bottomPanel-height = 1.6em
+$BottomBar-height = 1.6em
 $panel-bounce-padding = 1em
 
 $colors = {
@@ -248,8 +248,8 @@ for name, colors in $colors
   flex-shrink 0
   z-index 0
 
-  .Musika-bottomPanel
-    height $bottomPanel-height
+  .Musika-BottomBar
+    height $BottomBar-height
     user-select none
     background-color $dark
 
@@ -264,7 +264,7 @@ for name, colors in $colors
 
     .github
       height 100%
-      font-size $bottomPanel-height
+      font-size $BottomBar-height
       color $light
       &:hover:not(:active)
         color $lightest
@@ -300,4 +300,4 @@ for name, colors in $colors
       from
         bottom -10em
       to
-        bottom ($bottomPanel-height - $panel-bounce-padding)
+        bottom ($BottomBar-height - $panel-bounce-padding)
