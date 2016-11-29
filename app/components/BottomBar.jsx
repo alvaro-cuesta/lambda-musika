@@ -51,6 +51,7 @@ export default class BottomBar extends React.Component {
       loadConfirming: false,
       examplesOpen: false,
       examplesConfirming: false,
+      renderSampleRate: 44100,
     }
   }
 
@@ -127,11 +128,15 @@ export default class BottomBar extends React.Component {
   }
 
   handleRender() {
-    this.props.onRender(this.refs.renderSampleRate.value)
+    this.props.onRender(this.state.renderSampleRate)
+  }
+
+  handleRenderSampleRate({target: {value}}) {
+    this.setState({renderSampleRate: value})
   }
 
   render() {
-    let {newConfirming, loadConfirming, examplesOpen, examplesConfirming} = this.state
+    let {newConfirming, loadConfirming, examplesOpen, examplesConfirming, renderSampleRate} = this.state
     let {isClean, showRenderControls} = this.props
 
     let updateControls = <button className='color-orange'
@@ -253,8 +258,8 @@ export default class BottomBar extends React.Component {
             <Icon name='download' /> .WAV
           </button>
 
-          <select ref='renderSampleRate'
-            defaultValue={44100}
+          <select onChange={this.handleRenderSampleRate.bind(this)}
+            value={renderSampleRate}
             title='Render sample rate'
             aria-label='Render sample rate'
           >
