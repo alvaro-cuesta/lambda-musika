@@ -41,6 +41,29 @@ const COMMON = merge(
 let config;
 
 switch(process.env.npm_lifecycle_event) {
+  case 'deploy:gh-pages':
+  case 'build:gh-pages':
+    process.env.BABEL_ENV = 'production'
+    config = merge(
+      COMMON,
+      {output: {publicPath: '/lambda-musika/'}},
+      parts.productionSourceMap(),
+      parts.productionEnv(),
+      parts.extractVendor([
+        'brace/mode/javascript',
+        'brace/theme/tomorrow_night_eighties',
+        'brace/ext/error_marker',
+        'brace/ext/searchbox',
+        'brace/ext/elastic_tabstops_lite',
+        'brace/ext/keybinding_menu',
+        'brace/ext/settings_menu'
+      ]),
+      parts.extractStyles({css: false, stylus: true}),
+      parts.clean(PATHS.build),
+      parts.minify()
+    );
+    break;
+
   case 'build':
     process.env.BABEL_ENV = 'production'
     config = merge(

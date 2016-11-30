@@ -23,10 +23,13 @@
   "main": "./lib/index.js",
   "scripts": {
     "build": "webpack --progress --profile --colors --bail",
+    "build:gh-pages": "webpack --progress --profile --colors --bail",
     "dev": "webpack-dev-server --progress --profile --colors",
     "watch": "webpack -w --progress --profile --colors",
-    "version": "npm run build",
-    "gh-pages": "npm run build && echo Deploy to GH pages",
+    "preversion": "npm run build",
+    "deploy": "npm run deploy:gh-pages",
+    "predeploy:gh-pages": "npm run build:gh-pages",
+    "deploy:gh-pages": "node ./bin/deploy-gh-pages.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
@@ -45,6 +48,7 @@
     "clean-webpack-plugin": "^0.1.14",
     "css-loader": "^0.26.0",
     "extract-text-webpack-plugin": "^1.0.1",
+    "gh-pages": "^0.12.0",
     "html-webpack-plugin": "^2.24.1",
     "raw-loader": "^0.5.1",
     "react-transform-hmr": "^1.0.4",

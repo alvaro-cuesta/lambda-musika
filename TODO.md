@@ -2,16 +2,6 @@
 
 ## Milestones
 
-### 0.1.0
-
-- `[DEV-FEATURE]` Deploy task: bump version, tag and publish to GH pages and NPM
-  - https://www.npmjs.com/package/gh-pages
-  - https://github.com/iamcco/gh-pages-webpack-plugin
-  - https://gist.github.com/cobyism/4730490
-  - https://github.com/bvaughn/react-virtualized/blob/master/package.json
-  - http://survivejs.com/webpack/building-with-webpack/hosting-on-github-pages/
-- `[TASK]` Bump version, push and deploy
-
 ### 0.1.x
 
 - `[BUG]` `[PLAYER]` TimeSeeker maxes at 23:59 (HH:MM)
@@ -80,6 +70,7 @@
   to the number of cores](https://developer.mozilla.org/en-US/docs/Web/API/NavigatorConcurrentHardware/hardwareConcurrency).
 - `[BUG]` `[EDITOR]` Editor has a fixed size and can't be resized really small
 - `[TODO]` [Build librar(y/ies) as UMD package(s)](http://survivejs.com/webpack/loading-assets/formats-supported/#umd to be used outside of the DAW as a regular JavaScript library)
+- `[TODO]` Publish to NPM
 
 ### 2.0.0
 
