@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import TimeSlider from 'components/TimeSlider'
 import TimeSeeker from 'components/TimeSeeker'
@@ -126,13 +127,13 @@ export default class Player extends React.PureComponent {
 
 const AudioContext = window.AudioContext || window.webkitAudioContext
 Player.propTypes = {
-  audioCtx: React.PropTypes.instanceOf(AudioContext).isRequired,
-  fn: React.PropTypes.func,
-  length: React.PropTypes.number,
-  bufferLength: React.PropTypes.number,
-  onPlayingChange: React.PropTypes.func,
-  onRenderTime: React.PropTypes.func,
-  onError: React.PropTypes.func,
+  audioCtx: PropTypes.instanceOf(AudioContext).isRequired,
+  fn: PropTypes.func,
+  length: PropTypes.number,
+  bufferLength: PropTypes.number,
+  onPlayingChange: PropTypes.func,
+  onRenderTime: PropTypes.func,
+  onError: PropTypes.func,
 }
 
 Player.defaultProps = {

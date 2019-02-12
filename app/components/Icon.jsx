@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 export function Icon({name, title}) {
   let hasTitle = typeof title !== 'undefined'
@@ -16,8 +17,8 @@ export function Icon({name, title}) {
 }
 
 Icon.propTypes = {
-  name: React.PropTypes.string.isRequired,
-  title: React.PropTypes.string,
+  name: PropTypes.string.isRequired,
+  title: PropTypes.string,
 }
 
 export function IconStack({icons, title, ...other}) {
@@ -39,13 +40,13 @@ export function IconStack({icons, title, ...other}) {
 }
 
 IconStack.propTypes = {
-  icons: React.PropTypes.arrayOf(React.PropTypes.shape({
-    name: React.PropTypes.string.isRequired,
-    className: React.PropTypes.string,
-    inverse: React.PropTypes.boolean,
-    style: React.PropTypes.object,
+  icons: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    className: PropTypes.string,
+    inverse: PropTypes.boolean,
+    style: PropTypes.object,
   })).isRequired,
-  title: React.PropTypes.string,
+  title: PropTypes.string,
 }
 
 export default Icon

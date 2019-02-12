@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import { toMinSecs } from 'components/util'
 
@@ -55,9 +56,9 @@ export default class TimeSlider extends React.PureComponent {
 }
 
 TimeSlider.propTypes = {
-  length: React.PropTypes.number,
-  value: React.PropTypes.number,
-  onChange: React.PropTypes.func,
+  length: PropTypes.number,
+  value: PropTypes.number,
+  onChange: PropTypes.func,
 }
 
 TimeSlider.defaultProps = {

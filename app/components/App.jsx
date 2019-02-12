@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import Player from 'components/Player'
 import CPULoad from 'components/CPULoad'
@@ -235,7 +236,7 @@ export default class App extends React.Component {
 }
 
 App.propTypes = {
-  bufferLength: React.PropTypes.number,
+  bufferLength: PropTypes.number,
 }
 
 App.defaultProps = {

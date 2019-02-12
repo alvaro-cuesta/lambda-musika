@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import ace from 'brace'
 import 'brace/mode/javascript'
@@ -205,6 +206,6 @@ export default class Editor extends React.PureComponent {
 }
 
 Editor.propTypes = {
-  defaultValue: React.PropTypes.string,
-  onLoad: React.PropTypes.func,
+  defaultValue: PropTypes.string,
+  onLoad: PropTypes.func,
 }

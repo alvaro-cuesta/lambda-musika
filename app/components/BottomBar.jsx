@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import { Icon, IconStack } from 'components/Icon'
 
@@ -21,10 +22,10 @@ function ConfirmPanel({title, loadName, onAccept, onCancel}) {
 }
 
 ConfirmPanel.propTypes = {
-  title: React.PropTypes.string,
-  loadName: React.PropTypes.string,
-  onAccept: React.PropTypes.func.isRequired,
-  onCancel: React.PropTypes.func.isRequired,
+  title: PropTypes.string,
+  loadName: PropTypes.string,
+  onAccept: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
 }
 
 //
@@ -37,7 +38,7 @@ function ButtonWithPanel({panel, children, ...other}) {
 }
 
 ButtonWithPanel.propTypes = {
-  panel: React.PropTypes.node,
+  panel: PropTypes.node,
 }
 
 //
@@ -299,10 +300,10 @@ export default class BottomBar extends React.Component {
 }
 
 BottomBar.propTypes = {
-  isClean: React.PropTypes.bool.isRequired,
-  showRenderControls: React.PropTypes.bool.isRequired,
-  onUpdate: React.PropTypes.func.isRequired,
-  onNew: React.PropTypes.func.isRequired,
-  onSave: React.PropTypes.func.isRequired,
-  onRender: React.PropTypes.func.isRequired,
+  isClean: PropTypes.bool.isRequired,
+  showRenderControls: PropTypes.bool.isRequired,
+  onUpdate: PropTypes.func.isRequired,
+  onNew: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
+  onRender: PropTypes.func.isRequired,
 }

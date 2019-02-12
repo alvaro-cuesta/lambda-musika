@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import { Icon, IconStack } from 'components/Icon'
 
@@ -106,8 +107,8 @@ export default class TimeSeeker extends React.PureComponent {
 }
 
 TimeSeeker.propTypes = {
-  value: React.PropTypes.number,
-  onChange: React.PropTypes.func,
+  value: PropTypes.number,
+  onChange: PropTypes.func,
 }
 
 TimeSeeker.defaultProps = {

@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 // CPU load visualization. Given a buffer length, and a sample rate, shows how
 // much of the max render time is being used.
@@ -22,7 +23,7 @@ export default function CPULoad({renderTime, bufferLength, sampleRate}) {
 }
 
 CPULoad.propTypes = {
-  renderTime: React.PropTypes.number,
-  bufferLength: React.PropTypes.number,
-  sampleRate: React.PropTypes.number,
+  renderTime: PropTypes.number,
+  bufferLength: PropTypes.number,
+  sampleRate: PropTypes.number,
 }
