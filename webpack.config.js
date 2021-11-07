@@ -46,7 +46,7 @@ switch(process.env.npm_lifecycle_event) {
     process.env.BABEL_ENV = 'production'
     config = merge(
       COMMON,
-      {output: {publicPath: '/lambda-musika/'}},
+      {output: {publicPath: '/'}},
       parts.productionSourceMap(),
       parts.productionEnv(),
       parts.extractVendor([
