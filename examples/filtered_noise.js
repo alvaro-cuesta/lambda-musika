@@ -1,4 +1,4 @@
-const {Generator, Filter} = Musika
+const { Generator, Filter } = Musika
 
 const NoiseGen = () => {
   const A = Math.SQRT1_2  // Amplitude = 0.707
@@ -10,4 +10,7 @@ const NoiseGen = () => {
 
 const noiseL = NoiseGen(), noiseR = NoiseGen()
 
-return () => [noiseL(), noiseR()]
+return () => [
+  noiseL(),
+  noiseR(),
+]

@@ -1,4 +1,4 @@
-const {Generator, Envelope, Filter, Operator, Music, Util} = Musika
+const { Generator, Envelope, Filter, Operator, Music, Util } = Musika
 
 const CHORD_LENGTH = 3
 const CHORDS = [
@@ -31,18 +31,18 @@ const Detune = (A, F) => {
 
 /* SONG */
 
-let detune = Detune(0.1, 0.4)
-let losc = Note(0.05)
-let rosc = Note(0.05)
+const detune = Detune(0.1, 0.4)
+const losc = Note(0.05)
+const rosc = Note(0.05)
 
 return t => {
-  let note_in_song = Math.floor(t / Note.LENGTH)
-  let chord_i = Math.floor(note_in_song / CHORD_LENGTH) % CHORDS.length
-  let note_i = note_in_song % CHORD_LENGTH
-  let f = Music.semitoneToFrequency(CHORDS[chord_i][note_i])
+  const note_in_song = Math.floor(t / Note.LENGTH)
+  const chord_i = Math.floor(note_in_song / CHORD_LENGTH) % CHORDS.length
+  const note_i = note_in_song % CHORD_LENGTH
+  const f = Music.semitoneToFrequency(CHORDS[chord_i][note_i])
 
-  let l = losc(f, t)
-  let r = rosc(f + detune(t), t)
-
-  return [l, r]
+  return [
+    losc(f, t),
+    rosc(f + detune(t), t)
+  ]
 }

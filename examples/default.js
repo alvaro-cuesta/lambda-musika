@@ -1,4 +1,4 @@
-const {Generator, Envelope, Filter, Operator, Music, Util} = Musika
+const { Generator, Envelope, Filter, Operator, Music, Util } = Musika
 
 
 /* CONFIG */
@@ -58,7 +58,7 @@ const SNARE_DECAY_POWER = 7
 
 /* INSTRUMENTS */
 
-function MelodyInstrument() {
+const MelodyInstrument = () => {
   const osc = Generator.Sin()
   const vibratoOsc = Generator.Sin()
 
@@ -71,7 +71,7 @@ function MelodyInstrument() {
   }
 }
 
-function BassInstrument() {
+const BassInstrument = () => {
   const osc = Generator.Sin()
 
   return (semitone, t) => osc(Music.semitoneToFrequency(semitone), t)
@@ -79,13 +79,13 @@ function BassInstrument() {
     * Envelope.release(BASS_NOTE_LENGTH, BASS_NOTE_LENGTH, t)
 }
 
-function DrumInstrument() {
+const DrumInstrument = () => {
   const bodyOsc = Generator.Sin()
   const popOsc = Generator.Sin()
 
   return t => {
-    let body = 0.67 * bodyOsc(Envelope.linear(DRUM_ENVELOPE, t), t)
-    let pop = 0.33 * popOsc(150 * Envelope.release(DRUM_NOTE_LENGTH - 0.0000001, DRUM_NOTE_LENGTH, t), t)
+    const body = 0.67 * bodyOsc(Envelope.linear(DRUM_ENVELOPE, t), t)
+    const pop = 0.33 * popOsc(150 * Envelope.release(DRUM_NOTE_LENGTH - 0.0000001, DRUM_NOTE_LENGTH, t), t)
 
     return (body + pop) * DRUM_AMPLITUDE
       * Envelope.attack(DRUM_ATTACK, t)
@@ -93,10 +93,9 @@ function DrumInstrument() {
   }
 }
 
-function snareInstrument(t) {
-  return Generator.random() * SNARE_AMPLITUDE
+const snareInstrument = (t) =>
+  Generator.random() * SNARE_AMPLITUDE
     * Envelope.release(SNARE_NOTE_LENGTH, SNARE_NOTE_LENGTH, SNARE_DECAY_POWER, t)
-}
 
 
 /* SONG */
@@ -111,9 +110,9 @@ let melodySemitones
 let chosenSemitone
 let left = Math.random() < 0.5
 
-let melodyInstrument = MelodyInstrument()
-let bassInstrument = BassInstrument()
-let drumInstrument = DrumInstrument()
+const melodyInstrument = MelodyInstrument()
+const bassInstrument = BassInstrument()
+const drumInstrument = DrumInstrument()
 
 return t => {
   if (t < SONG_IN_LENGTH) return [0, 0]
@@ -123,20 +122,16 @@ return t => {
 
   // Song
 
-  let songStructureIndex = Math.floor((SONG_TEMPO.currentBar(t) - 1) / SONG_BARS_REPEAT)
-  let {melodyKey, bassNote} = SONG_STRUCTURE[songStructureIndex % SONG_STRUCTURE.length]
+  const songStructureIndex = Math.floor((SONG_TEMPO.currentBar(t) - 1) / SONG_BARS_REPEAT)
+  const { melodyKey, bassNote } = SONG_STRUCTURE[songStructureIndex % SONG_STRUCTURE.length]
   if (songStructureIndex !== lastSongStructureIndex) {
-    melodySemitones = []
-    for (let o of MELODY_OCTAVES) {
-      Array.prototype.push.apply(melodySemitones, Music.extend(`${melodyKey}${o}`, MELODY_SCALE))
-    }
-
+    melodySemitones = MELODY_OCTAVES.flatMap(o => Music.extend(`${melodyKey}${o}`, MELODY_SCALE))
     lastSongStructureIndex = songStructureIndex
   }
 
   // Melody
 
-  let currentMelodyIndex = SONG_TEMPO.currentNoteInBar(MELODY_NOTE_VALUE, t)
+  const currentMelodyIndex = SONG_TEMPO.currentNoteInBar(MELODY_NOTE_VALUE, t)
   if (lastMelodyIndex !== currentMelodyIndex) {
     if (!chosenSemitone || Math.random() < MELODY_CHANGE_CHANCE) {
       chosenSemitone = Util.choose(melodySemitones)
@@ -151,35 +146,32 @@ return t => {
   let melody = [0, 0]
 
   if (melodyPlays) {
-    let mono = melodyInstrument(
+    const mono = melodyInstrument(
       chosenSemitone,
       SONG_TEMPO.timeInNote(MELODY_NOTE_VALUE, t)
     )
-    let a = !SONG_TEMPO.isInBar(MELODY_ACCENT, MELODY_NOTE_VALUE, t)
+    const a = !SONG_TEMPO.isInBar(MELODY_ACCENT, MELODY_NOTE_VALUE, t)
       ? MELODY_NON_ACCENT_ATTENUATION
       : 1
-    let panning = left ? -MELODY_PANNED_AMPLITUDE : MELODY_PANNED_AMPLITUDE
+    const panning = left ? -MELODY_PANNED_AMPLITUDE : MELODY_PANNED_AMPLITUDE
 
     melody = Operator.panner(mono * a, panning)
   }
 
   //
 
-  let bass = bassInstrument(
+  const bass = bassInstrument(
     Music.noteNameToSemitone[bassNote],
     SONG_TEMPO.timeInNote(BASS_NOTE_VALUE, t)
   )
 
-  let drum = SONG_TEMPO.isInBar(DRUM_PLAYS_IN, DRUM_NOTE_VALUE, t)
+  const drum = SONG_TEMPO.isInBar(DRUM_PLAYS_IN, DRUM_NOTE_VALUE, t)
     ? drumInstrument(SONG_TEMPO.timeInNote(DRUM_NOTE_VALUE, t))
     : 0
 
-  let snare = SONG_TEMPO.isInBar(SNARE_PLAYS_IN, SNARE_NOTE_VALUE, t)
+  const snare = SONG_TEMPO.isInBar(SNARE_PLAYS_IN, SNARE_NOTE_VALUE, t)
     ? snareInstrument(SONG_TEMPO.timeInNote(SNARE_NOTE_VALUE, t))
     : 0
 
-  return [
-    Operator.mixN(melody[0], bass, drum, snare),
-    Operator.mixN(melody[1], bass, drum, snare),
-  ]
+  return melody.map(c => Operator.mixN(c, bass, drum, snare))
 }
