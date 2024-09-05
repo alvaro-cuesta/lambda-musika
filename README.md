@@ -1,6 +1,6 @@
 # Lambda Musika — The functional DAW
 
-https://alvaro-cuesta.github.io/lambda-musika/
+https://lambda.cuesta.dev/
 
 A JavaScript DAW that emphasizes functions as its core building block. In practice,
 a realtime audio scripting language and batteries-included DSP library, running
