@@ -1,0 +1,84 @@
+@use 'sass:list';
+
+@use './styles/variables.scss' as variables;
+@use './styles/colors.scss' as colors;
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: colors.$dark;
+  color: colors.$light;
+  font: variables.$monospace-font;
+  overflow: hidden;
+}
+
+select,
+input,
+button {
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+button {
+  color: colors.$lightest;
+  font: variables.$monospace-font;
+}
+
+a {
+  color: colors.$lightest;
+
+  &:link {
+    text-decoration: none;
+  }
+
+  &:hover {
+    color: colors.$lighter;
+  }
+
+  &:active {
+    color: colors.$lightest;
+  }
+}
+
+li {
+  line-height: 1.3em;
+}
+
+// Color button variants
+@each $name, $colorset in colors.$colorsets {
+  $normal: list.nth($colorset, 1);
+  $hover: list.nth($colorset, 2);
+  $active: list.nth($colorset, 3);
+
+  button.color-#{'' + $name},
+  .color-#{'' + $name} button {
+    background-color: $normal;
+    .fa-inverse {
+      color: $normal;
+    }
+  }
+
+  button:hover:not(:active).color-#{'' + $name},
+  .color-#{'' + $name} button:hover:not(:active) {
+    background-color: $hover;
+    .fa-inverse {
+      color: $hover;
+    }
+  }
+
+  button:active.color-#{'' + $name},
+  .color-#{'' + $name} button:active {
+    background-color: $active;
+    .fa-inverse {
+      color: $active;
+    }
+  }
+}

@@ -1,21 +1,23 @@
 # Lambda Musika TODO
 
-## Milestones
+## 0.3.0
 
-### 0.1.x
+- `[PLAYER]` Replace `ScriptProcessor` with `AudioWorklet`
+- `[EDITOR]` Hotkeys for time-seeking
 
-- `[BUG]` `[PLAYER]` TimeSeeker maxes at 23:59 (HH:MM)
-- `[FEATURE]` `[EDITOR]` Save as (allow right-click save-as on save button?)
-- `[FEATURE]` `[EDITOR]` Hotkeys for time seeking
-- `[FEATURE]` `[SCRIPTS]` Use strict mode?
+## 0.4.0
 
-### 0.2.0
+- `[EDITOR]` Save as (allow right-click save-as on save button?)
+- `[PLAYER]` Volume slider
+- `[COSMETIC]` `[PLAYER]` VU meter
+- `[SCRIPTS]` Use strict mode?
+- `[API]` `[PLAYER]` `[RENDERER]` Musika scripts with Mono output
+- `[EDITOR]` Widgets like sliders inline in the editor
+- `[PLAYER]` TimeSeeker maxes at 23:59 (HH:MM)
+- `[CHORE]` `[EDITOR]` Replace Ace with Monaco?
+- `[FEATURE]` `[EDITOR]` Have IntelliSense for Musika library
 
-- `[FEATURE]` `[API]` `[PLAYER]` `[RENDERER]` Musika scripts with Mono output
-- `[FEATURE]` `[PLAYER]` Volume slider
-- `[FEATURE]` `[COSMETIC]` `[PLAYER]` VU meter
-
-### 0.2.x
+## 0.5.x
 
 - `[FEATURE]` `[RENDERER]` Quantization
   - More quantization methods (currently truncating)
@@ -26,7 +28,7 @@
 - `[?]` `[RENDERER]` Handle big/little endian architectures (I don't remember
   what I meant with this task)
 
-### 0.3.0
+## 0.6.0
 
 - `[API]` `[MUSIKA]` popping_wip example was bugged: since you can seek time,
   `t` is non-monotonic, which made the state invalid. Is this a flaw of the API?
@@ -34,6 +36,7 @@
 
   Another instance: biquad filters became unstable because of `t` not being
   monotonic.
+
 - `[API]` `[MUSIKA]` `[MUSIKA-UTIL]` Log-to-Linear function and viceversa (for
   linear parameters into freqs and such)
   - Also for amplitude? I.e. work with decibels
@@ -53,17 +56,16 @@
 - `[API]` `[MUSIKA]` `[MUSIKA-UTIL]` Memoization helper
 - `[API]` `[MUSIKA]` `[MUSIKA-UTIL]` Rate limiting helper (e.g. for control rates)
 
-### 1.0.0
+## 1.0.0
 
 - `[BUG]` `[PLAYER]` Sound clicks on play/pause/update/seek
 - `[FEATURE]` `[COSMETIC]` `[APP]` Some kind of help/README/intro/tutorial
 - `[FEATURE]` `[COSMETIC]` `[EDITOR]` Visual feedback after commit (annotation?)
-- `[COSMETIC]` `[APP]` Favicon(s)
 - `[TODO]` `[MUSIKA]` Documentation
   - Add missing comments
   - Static documentation generation
 
-### 1.0.x
+## 1.0.x
 
 - `[BUG]` `[APP]` Make app accessible (make sure to actually _try_ the app)
 - `[FEATURE]` `[RENDERER]` Render in background using web workers. Try [adapting
@@ -72,24 +74,13 @@
 - `[TODO]` [Build librar(y/ies) as UMD package(s)](http://survivejs.com/webpack/loading-assets/formats-supported/#umd to be used outside of the DAW as a regular JavaScript library)
 - `[TODO]` Publish to NPM
 
-### 2.0.0
+## 2.0.0
 
 - `[API]` `[PLAYER]` `[RENDERER]` Using `t` as DSP time variable is awkward
   - Abstraction is leaking everywhere (e.g. filters don't work with time, only
     samples)
   - Possible solution: work with samples and `dt` instead
   - Problem: `t` is still useful in other situations (e.g. envelopes)
-
-
-## Internal tasks
-
-- `[BUG]` Since Player/Editor are PureComponents, hot reloading stops the song
-  and re-renders the editor
-  - Maybe the problem is HMR, try React Hot Loader 3
-- `[TODO]` http://survivejs.com/webpack/building-with-webpack/separating-css/#separating-application-code-and-styling
-  - Extract theme, components and vendor CSS separately
-  - Check that vendor CSS hash doesn't change
-
 
 ## Ideas or possible research lines
 
@@ -106,12 +97,6 @@
   - Wave
   - FFT
   - XY
-- `[INTERNAL]` `[PLAYER]` Test alternate compiling/playing methods (if faster or
-  more responsive)
-  - `eval`
-  - Premaking buffers via Workers
-  - Script tag
-  - ...
 - `[COSMETIC]` `[APP]` Make responsive (adjust font size, element positions, etc.)
 - `[COSMETIC]` `[PLAYER]` https://reactify.github.io/react-player-controls/
 - `[COSMETIC]` `[EDITOR]` Custom scrollbars (https://github.com/ajaxorg/ace/issues/869)
@@ -147,24 +132,3 @@
 - `[RESEARCH]` [Denormal numbers](http://cmc.music.columbia.edu/music-dsp/musicdspFAQ.html#denormals). Maybe move to integers? Or at least allow it. They
   might be faster anyways.
 - `[RESEARCH]` [Ring modulation](http://cmc.music.columbia.edu/music-dsp/musicdspFAQ.html#ringmod)
-
-### Internal
-
-- Google Closure optimization
-- Consider replacing Ace with Atom
-- CDN vs. vendor chunk
-  - Move vendor libraries to CDN instead of `vendor` chunk (maybe alternative
-    build mode?)
-  - Font Awesome is being used from CDN... Webpack it as vendor css/font?
-    Include locally but don't bundle? Leave it on CDN?
-- Babel Runtime + [Transform](https://babeljs.io/docs/plugins/transform-runtime/)
-- I'm importing the full Font Awesome instead of only the few icons I need
-- http://survivejs.com/webpack/building-with-webpack/eliminating-unused-css/
-- http://survivejs.com/webpack/building-with-webpack/analyzing-build-statistics/
-- [CSS modules](http://survivejs.com/webpack/loading-assets/loading-styles/)
-- http://survivejs.com/webpack/advanced-techniques/linting/
-- http://survivejs.com/webpack/advanced-techniques/authoring-packages/
-- http://survivejs.com/webpack/advanced-techniques/configuring-react/
-  - react-lite
-  - TypeScript
-  - Flow

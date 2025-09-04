@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1"
+    />
+
+    <!-- Basic meta -->
+    <title>%PACKAGE_CONFIG_NAME%</title>
+    <meta
+      name="description"
+      content="%PACKAGE_CONFIG_DESCRIPTION%"
+    />
+    <meta
+      name="author"
+      content="%PACKAGE_CONFIG_AUTHOR%"
+    />
+
+    <!-- Icons -->
+    <link
+      rel="icon"
+      href="/favicon.ico"
+      sizes="any"
+    />
+    <link
+      rel="icon"
+      href="/favicon.svg"
+      type="image/svg+xml"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="/apple-touch-icon-180x180.png"
+    />
+    <meta
+      name="theme-color"
+      content="%PACKAGE_CONFIG_THEME_COLOR%"
+    />
+
+    <!-- OpenGraph -->
+    <meta
+      property="og:type"
+      content="website"
+    />
+    <meta
+      property="og:url"
+      content="%PACKAGE_CONFIG_URL%"
+    />
+    <meta
+      property="og:title"
+      content="%PACKAGE_CONFIG_NAME%"
+    />
+    <meta
+      property="og:description"
+      content="%PACKAGE_CONFIG_DESCRIPTION%"
+    />
+    <meta
+      property="og:image"
+      content="%PACKAGE_CONFIG_PUBLIC_URL_BASE%/lambda-musika-og-center.png"
+    />
+    <meta
+      name="og:image:alt"
+      content="%PACKAGE_CONFIG_NAME%"
+    />
+
+    <!-- Twitter -->
+    <meta
+      name="twitter:card"
+      content="summary"
+    />
+    <meta
+      property="twitter:url"
+      content="%PACKAGE_CONFIG_URL%"
+    />
+    <meta
+      name="twitter:title"
+      content="%PACKAGE_CONFIG_NAME%"
+    />
+    <meta
+      name="twitter:description"
+      content="%PACKAGE_CONFIG_DESCRIPTION%"
+    />
+    <meta
+      name="twitter:image"
+      content="%PACKAGE_CONFIG_PUBLIC_URL_BASE%/lambda-musika-twitter.png"
+    />
+    <meta
+      name="twitter:image:alt"
+      content="%PACKAGE_CONFIG_NAME%"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script
+      type="module"
+      src="/src/main.tsx"
+    ></script>
+  </body>
+</html>

@@ -1,0 +1,66 @@
+{
+  "extends": "./tsconfig.base.json",
+  "include": ["src"],
+  // This is needed because otherwise vitest force inclusion of Node types globally, which makes for example setTimeout
+  // return a NodeJS.Timeout instead of a number
+  "exclude": [
+    // Default excludes (not sure if I need to add these!)
+    "node_modules",
+    "bower_components",
+    "jspm_packages",
+
+    // See tsconfig.test.json
+    "**/*.test.js",
+    "**/*.test.jsx",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+
+    "**/*.test.cjs",
+    "**/*.test.cjsx",
+    "**/*.test.cts",
+    "**/*.test.ctsx",
+
+    "**/*.test.mjs",
+    "**/*.test.mjsx",
+    "**/*.test.mts",
+    "**/*.test.mtsx",
+
+    "**/*.test-d.js",
+    "**/*.test-d.jsx",
+    "**/*.test-d.ts",
+    "**/*.test-d.tsx",
+
+    "**/*.test-d.cjs",
+    "**/*.test-d.cjsx",
+    "**/*.test-d.cts",
+    "**/*.test-d.ctsx",
+
+    "**/*.test-d.mjs",
+    "**/*.test-d.mjsx",
+    "**/*.test-d.mts",
+    "**/*.test-d.mtsx",
+
+    "**/*.spec.js",
+    "**/*.spec.jsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+
+    "**/*.spec.cjs",
+    "**/*.spec.cjsx",
+    "**/*.spec.cts",
+    "**/*.spec.ctsx",
+
+    "**/*.spec.mjs",
+    "**/*.spec.mjsx",
+    "**/*.spec.mts",
+    "**/*.spec.mtsx"
+  ],
+
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx"
+  }
+}

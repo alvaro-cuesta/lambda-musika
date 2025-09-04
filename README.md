@@ -42,9 +42,9 @@ and learn form the [default song](examples/default.js) and other [examples](exam
 ##### - Script skeleton:
 
 ```js
-const {Generator, Envelope, Filter, Operator, Music, Util} = Musika
+const { Generator, Envelope, Filter, Operator, Music, Util } = Musika;
 
-return t => [0, 0]
+return (t) => [0, 0];
 ```
 
 ## Development

@@ -1,0 +1,52 @@
+@use 'sass:list';
+@use '../../styles/variables.scss' as variables;
+@use '../../styles/colors.scss' as colors;
+
+$panel-bounce-padding: 1em;
+
+.container {
+  // so the panel can anchor to this
+  position: relative;
+}
+
+.panel-container {
+  display: block;
+  position: absolute;
+  left: 0;
+  z-index: -1;
+  width: 30em;
+  height: auto;
+  padding: 0 1em calc(1em + #{$panel-bounce-padding}) 1em;
+  color: colors.$lightest;
+  font: variables.$sans-serif-font;
+  box-shadow: 0 0 26px 10px colors.$darker;
+  animation: slidein 0.3s cubic-bezier(0.675, -0.01, 0.68, 1.21) forwards;
+  cursor: default;
+
+  button {
+    padding: 0.4em 1em;
+    border: 1px solid rgba(colors.$lightest, 0.5);
+    font: variables.$sans-serif-font;
+    font-size: 14px;
+  }
+}
+
+@each $name, $colorset in colors.$colorsets {
+  $normal: list.nth($colorset, 1);
+  $hover: list.nth($colorset, 2);
+  $active: list.nth($colorset, 3);
+
+  :global(.color-#{'' + $name}) .panel-container,
+  :global(.color-#{'' + $name}) .container.open .button {
+    background-color: $hover;
+  }
+}
+
+@keyframes slidein {
+  from {
+    bottom: -10em;
+  }
+  to {
+    bottom: calc(#{variables.$BottomBar-height} - #{$panel-bounce-padding});
+  }
+}

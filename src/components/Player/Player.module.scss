@@ -1,0 +1,25 @@
+@use '../../styles/variables.scss' as variables;
+@use '../../styles/colors.scss' as colors;
+
+$player-button-size: 2em;
+
+.container {
+  display: flex;
+  gap: variables.$button-group-separation;
+
+  background-color: colors.$darkest;
+  user-select: none;
+  height: $player-button-size;
+  flex-shrink: 0;
+  cursor: default;
+
+  button {
+    width: $player-button-size;
+    height: $player-button-size;
+  }
+
+  input[type='range'] {
+    height: 0.8em;
+    cursor: pointer;
+  }
+}

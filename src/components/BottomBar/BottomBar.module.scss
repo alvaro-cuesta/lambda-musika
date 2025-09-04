@@ -1,0 +1,47 @@
+@use '../../styles/variables.scss' as variables;
+@use '../../styles/colors.scss' as colors;
+
+.panel-wrapper {
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.container {
+  display: flex;
+  gap: variables.$button-group-separation;
+
+  height: variables.$BottomBar-height;
+  user-select: none;
+  background-color: colors.$dark;
+
+  button,
+  select {
+    height: 100%;
+  }
+
+  button {
+    display: flex;
+    gap: 0.25em;
+    align-items: center;
+  }
+}
+
+.group {
+  display: flex;
+}
+
+.gap {
+  flex-grow: 1;
+}
+
+.github {
+  display: flex;
+  align-items: center;
+
+  font-size: calc(variables.$BottomBar-height - 0.2em);
+  color: colors.$light;
+
+  &:hover:not(:active) {
+    color: colors.$lightest;
+  }
+}

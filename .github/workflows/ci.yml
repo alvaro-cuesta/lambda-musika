@@ -1,0 +1,111 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'README.md'
+      - 'TODO.md'
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - 'README.md'
+      - 'TODO.md'
+
+jobs:
+  lint:
+    name: Lint ${{ matrix.linter.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        linter:
+          - { name: 'TypeScript', script: 'lint:tsc' }
+          - { name: 'ESLint', script: 'lint:eslint' }
+          - { name: 'Prettier', script: 'lint:prettier' }
+          - { name: 'Knip', script: 'lint:knip' }
+          - { name: 'Madge', script: 'lint:madge' }
+    steps:
+      - &checkout
+        name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - &setup
+        name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - &install_deps
+        name: Install dependencies
+        shell: bash
+        run: npm ci
+
+      - name: Run ${{ matrix.linter.name }}
+        run: npm run ${{ matrix.linter.script }}
+
+  build:
+    name: Build static files
+    needs: lint
+
+    runs-on: ubuntu-latest
+    steps:
+      - *checkout
+      - *setup
+      - *install_deps
+
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Get Node.js and NPM versions
+        id: get-versions
+        run: |
+          echo "node_version=$(node --version)" >> $GITHUB_OUTPUT
+          echo "npm_version=$(npm --version)" >> $GITHUB_OUTPUT
+
+      - name: Build static files
+        env:
+          BASE: ${{ steps.pages.outputs.base_path }}
+        run: |
+          set -o pipefail
+          npm run build > >(tee build-output.log) 2> >(tee -a build-output.log >&2)
+
+          {
+            echo "- **Node version:** ${{ steps.get-versions.outputs.node_version }}"
+            echo "- **NPM version:** ${{ steps.get-versions.outputs.npm_version }}"
+            echo ""
+            echo '```'
+            # Strip ANSI colors and escape any triple backticks in the output
+            sed 's/\x1b\[[0-9;]*m//g' build-output.log | sed 's/```/``\x60`/g'
+            echo '```'
+            echo ""
+          } >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload static files as artifact
+        id: deployment
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/
+
+  deploy:
+    if: github.repository == 'alvaro-cuesta/lambda-musika' && github.ref == 'refs/heads/main'
+    name: Deploy to GitHub Pages
+    needs: build
+
+    permissions:
+      pages: write # to deploy to Pages
+      id-token: write # to verify the deployment originates from an appropriate source
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
