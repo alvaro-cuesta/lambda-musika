@@ -81,6 +81,53 @@ type RenderResult<T> =
   | { type: 'success'; buffer: T }
   | { type: 'error'; error: ExceptionInfo };
 
+function renderMonoBuffer<T extends Uint8Array | Int16Array | Float32Array>(
+  BufferType: new (length: number) => T,
+  quantizer: (value: number) => number,
+  sampleRate: number,
+  length: number,
+  fn: MonoRenderer,
+): RenderResult<T> {
+  const channelLength = Math.floor(length * sampleRate);
+  const buffer = new BufferType(channelLength);
+
+  for (let i = 0; i < buffer.length; i++) {
+    const t = i / sampleRate;
+    try {
+      const y = fn(t);
+      buffer[i] = quantizer(y);
+    } catch (e) {
+      return { type: 'error', error: tryParseException(e) } as const;
+    }
+  }
+
+  return { type: 'success', buffer } as const;
+}
+
+function renderStereoBuffer<T extends Uint8Array | Int16Array | Float32Array>(
+  BufferType: new (length: number) => T,
+  quantizer: (value: number) => number,
+  sampleRate: number,
+  length: number,
+  fn: StereoRenderer,
+): RenderResult<T> {
+  const channelLength = Math.floor(length * sampleRate);
+  const buffer = new BufferType(2 * channelLength);
+
+  for (let i = 0; i < channelLength; i++) {
+    const t = i / sampleRate;
+    try {
+      const [l, r] = fn(t);
+      buffer[i * 2] = quantizer(l);
+      buffer[i * 2 + 1] = quantizer(r);
+    } catch (e) {
+      return { type: 'error', error: tryParseException(e) } as const;
+    }
+  }
+
+  return { type: 'success', buffer } as const;
+}
+
 /**
  * Create a mono audio buffer with 8-bit unsigned integer samples.
  *
@@ -94,21 +141,7 @@ export function Uint8Mono(
   length: number,
   fn: MonoRenderer,
 ): RenderResult<Uint8Array<ArrayBuffer>> {
-  const channelLength = Math.floor(length * sampleRate);
-  const buffer = new Uint8Array(channelLength);
-
-  for (let i = 0; i < buffer.length; i++) {
-    const t = i / sampleRate;
-    let y;
-    try {
-      y = fn(t);
-    } catch (e) {
-      return { type: 'error', error: tryParseException(e) } as const;
-    }
-    buffer[i] = quantizeUint8(y);
-  }
-
-  return { type: 'success', buffer } as const;
+  return renderMonoBuffer(Uint8Array, quantizeUint8, sampleRate, length, fn);
 }
 
 /**
@@ -124,22 +157,7 @@ export function Uint8Stereo(
   length: number,
   fn: StereoRenderer,
 ): RenderResult<Uint8Array<ArrayBuffer>> {
-  const channelLength = Math.floor(length * sampleRate);
-  const buffer = new Uint8Array(2 * channelLength);
-
-  for (let i = 0; i < channelLength; i++) {
-    const t = i / sampleRate;
-    let l, r;
-    try {
-      [l, r] = fn(t);
-    } catch (e) {
-      return { type: 'error' as const, error: tryParseException(e) };
-    }
-    buffer[i * 2] = quantizeUint8(l);
-    buffer[i * 2 + 1] = quantizeUint8(r);
-  }
-
-  return { type: 'success' as const, buffer };
+  return renderStereoBuffer(Uint8Array, quantizeUint8, sampleRate, length, fn);
 }
 
 /**
@@ -155,21 +173,7 @@ export function Int16Mono(
   length: number,
   fn: MonoRenderer,
 ): RenderResult<Int16Array<ArrayBuffer>> {
-  const channelLength = Math.floor(length * sampleRate);
-  const buffer = new Int16Array(channelLength);
-
-  for (let i = 0; i < channelLength; i++) {
-    const t = i / sampleRate;
-    let y;
-    try {
-      y = fn(t);
-    } catch (e) {
-      return { type: 'error' as const, error: tryParseException(e) };
-    }
-    buffer[i] = quantizeInt16(y);
-  }
-
-  return { type: 'success' as const, buffer };
+  return renderMonoBuffer(Int16Array, quantizeInt16, sampleRate, length, fn);
 }
 
 /**
@@ -185,22 +189,7 @@ export function Int16Stereo(
   length: number,
   fn: StereoRenderer,
 ): RenderResult<Int16Array<ArrayBuffer>> {
-  const channelLength = Math.floor(length * sampleRate);
-  const buffer = new Int16Array(2 * channelLength);
-
-  for (let i = 0; i < channelLength; i++) {
-    const t = i / sampleRate;
-    let l, r;
-    try {
-      [l, r] = fn(t);
-    } catch (e) {
-      return { type: 'error' as const, error: tryParseException(e) };
-    }
-    buffer[i * 2] = quantizeInt16(l);
-    buffer[i * 2 + 1] = quantizeInt16(r);
-  }
-
-  return { type: 'success' as const, buffer };
+  return renderStereoBuffer(Int16Array, quantizeInt16, sampleRate, length, fn);
 }
 
 /**
@@ -216,21 +205,13 @@ export function Float32Mono(
   length: number,
   fn: MonoRenderer,
 ): RenderResult<Float32Array<ArrayBuffer>> {
-  const channelLength = Math.floor(length * sampleRate);
-  const buffer = new Float32Array(channelLength);
-
-  for (let i = 0; i < channelLength; i++) {
-    const t = i / sampleRate;
-    let y;
-    try {
-      y = fn(t);
-    } catch (e) {
-      return { type: 'error' as const, error: tryParseException(e) };
-    }
-    buffer[i] = y;
-  }
-
-  return { type: 'success' as const, buffer };
+  return renderMonoBuffer(
+    Float32Array,
+    (v: number) => v,
+    sampleRate,
+    length,
+    fn,
+  );
 }
 
 /**
@@ -246,20 +227,11 @@ export function Float32Stereo(
   length: number,
   fn: StereoRenderer,
 ): RenderResult<Float32Array<ArrayBuffer>> {
-  const channelLength = Math.floor(length * sampleRate);
-  const buffer = new Float32Array(2 * channelLength);
-
-  for (let i = 0; i < channelLength; i++) {
-    const t = i / sampleRate;
-    let l, r;
-    try {
-      [l, r] = fn(t);
-    } catch (e) {
-      return { type: 'error' as const, error: tryParseException(e) };
-    }
-    buffer[i * 2] = l;
-    buffer[i * 2 + 1] = r;
-  }
-
-  return { type: 'success' as const, buffer };
+  return renderStereoBuffer(
+    Float32Array,
+    (v: number) => v,
+    sampleRate,
+    length,
+    fn,
+  );
 }
