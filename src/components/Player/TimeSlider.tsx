@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { toMinSecs } from '../../utils/time.js';
+import { toMinsSecs } from '../../utils/time.js';
 import styles from './TimeSlider.module.scss';
 
 type TimeSliderProps = {
@@ -51,7 +51,7 @@ export function TimeSlider({
 
   return (
     <div className={styles['container']}>
-      {toMinSecs(Math.floor(value))}
+      {toMinsSecs(Math.floor(value))}
 
       <input
         {...other}
@@ -65,7 +65,7 @@ export function TimeSlider({
         onMouseMove={handleMouseMove}
       />
 
-      {toMinSecs(length)}
+      {toMinsSecs(length)}
     </div>
   );
 }

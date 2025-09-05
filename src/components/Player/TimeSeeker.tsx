@@ -6,7 +6,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import cx from 'classnames';
 import React from 'react';
-import { toMinSecs } from '../../utils/time.js';
+import { toMinsSecs } from '../../utils/time.js';
 import styles from './TimeSeeker.module.scss';
 
 const REWIND_FF_SECS = 5;
@@ -75,7 +75,7 @@ export const TimeSeeker = ({ value = 0, onChange }: TimeSeekerProps) => {
       <input
         className={cx('color-yellow', styles['input-time'])}
         type="time"
-        value={toMinSecs(value)}
+        value={toMinsSecs(value)}
         required
         onChange={handleChange}
         title={timeLabel}

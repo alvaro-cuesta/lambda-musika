@@ -23,8 +23,7 @@
   - More quantization methods (currently truncating)
   - [Dithering](http://www.earlevel.com/main/category/digital-audio/dither-digital-audio/)
   - Clamping?
-- `[FEATURE]` `[RENDERER]` Float PCM output
-- `[FEATURE]` `[RENDERER]` Select bit-depth etc. when rendering
+- `[FEATURE]` `[RENDERER]` Dithering for quantization? Currently 8 bit is very noisy
 - `[?]` `[RENDERER]` Handle big/little endian architectures (I don't remember
   what I meant with this task)
 

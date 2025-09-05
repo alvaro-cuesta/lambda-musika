@@ -13,9 +13,15 @@ import {
   type CompileResult,
   type ExceptionInfo,
 } from '../lib/compile.js';
-import { Int16Stereo, makeWavBlob } from '../lib/PCM.js';
+import {
+  Float32Stereo,
+  Int16Stereo,
+  makeWavBlob,
+  Uint8Stereo,
+} from '../lib/PCM.js';
 import { isEditorSerialState } from '../utils/editor.js';
 import { downloadBlob } from '../utils/file.js';
+import { dateToSortableString, toMinsSecs } from '../utils/time.js';
 import styles from './App.module.scss';
 import { BottomBar } from './BottomBar/BottomBar.js';
 import { CPULoad } from './CPULoad.js';
@@ -178,7 +184,7 @@ export const App = ({ bufferLength = DEFAULT_BUFFER_LENGTH }: AppProps) => {
   }, [markClean]);
 
   const handleRender = useCallback(
-    (sampleRate: number) => {
+    (sampleRate: number, bitDepth: 8 | 16 | 32) => {
       if (!editorRef.current) return;
 
       playerRef.current?.pause();
@@ -198,11 +204,31 @@ export const App = ({ bufferLength = DEFAULT_BUFFER_LENGTH }: AppProps) => {
           throw new Error('Cannot render infinite-length script');
         }
         case 'with-length': {
-          const renderResult = Int16Stereo(
-            sampleRate,
-            compileResult.length,
-            compileResult.fn,
-          );
+          let renderResult: ReturnType<
+            typeof Uint8Stereo | typeof Int16Stereo | typeof Float32Stereo
+          >;
+          switch (bitDepth) {
+            case 8:
+              renderResult = Uint8Stereo(
+                sampleRate,
+                compileResult.length,
+                compileResult.fn,
+              );
+              break;
+            case 16:
+              renderResult = Int16Stereo(
+                sampleRate,
+                compileResult.length,
+                compileResult.fn,
+              );
+              break;
+            case 32:
+              renderResult = Float32Stereo(
+                sampleRate,
+                compileResult.length,
+                compileResult.fn,
+              );
+          }
           switch (renderResult.type) {
             case 'error': {
               editorRef.current.addError(renderResult.error);
@@ -210,7 +236,10 @@ export const App = ({ bufferLength = DEFAULT_BUFFER_LENGTH }: AppProps) => {
             }
             case 'success': {
               const blob = makeWavBlob(renderResult.buffer, 2, sampleRate);
-              downloadBlob('render.wav', blob);
+              downloadBlob(
+                `render-${dateToSortableString(new Date())}_${toMinsSecs(compileResult.length, '-')}_${sampleRate}-${bitDepth}b.wav`,
+                blob,
+              );
             }
           }
         }

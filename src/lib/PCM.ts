@@ -16,7 +16,10 @@ import { tryParseException, type ExceptionInfo } from './compile.js';
  * @returns A Blob containing the WAV audio data
  */
 export function makeWavBlob(
-  data: Uint8Array<ArrayBuffer> | Int16Array<ArrayBuffer>,
+  data:
+    | Uint8Array<ArrayBuffer>
+    | Int16Array<ArrayBuffer>
+    | Float32Array<ArrayBuffer>,
   numChannels: number,
   sampleRate: number,
   littleEndian = true,
@@ -35,12 +38,14 @@ export function makeWavBlob(
     ? 0x52494646 /*                               'RIFF' */
     : 0x52494658; /*                              'RIFX' */
 
+  const audioFormat = data instanceof Float32Array ? 3 : 1; // 3 = float, 1 = PCM
+
   dv.setUint32(0, chunkID, false); /*             ChunkID */
   dv.setUint32(4, dataSize + 36, true); /*        ChunkSize */
   dv.setUint32(8, 0x57415645, false); /*          Format ('WAVE') */
   dv.setUint32(12, 0x666d7420, false); /*         Subchunk1ID ('fmt ') */
   dv.setUint32(16, 16, true); /*                  Subchunk1Size */
-  dv.setUint16(20, 1, true); /*                   AudioFormat (1 = PCM) */
+  dv.setUint16(20, audioFormat, true); /*         AudioFormat */
   dv.setUint16(22, numChannels, true); /*         NumChannels */
   dv.setUint32(24, sampleRate, true); /*          SampleRate */
   dv.setUint32(28, byteRate, true); /*            ByteRate */
@@ -193,6 +198,67 @@ export function Int16Stereo(
     }
     buffer[i * 2] = quantizeInt16(l);
     buffer[i * 2 + 1] = quantizeInt16(r);
+  }
+
+  return { type: 'success' as const, buffer };
+}
+
+/**
+ * Create a mono audio buffer with 32-bit floating point samples.
+ *
+ * @param sampleRate - Audio sample rate (in Hz)
+ * @param length - Duration of the audio buffer (in seconds)
+ * @param fn - Function to generate the audio samples
+ * @returns A {@link RenderResult} containing the generated audio buffer, or error information
+ */
+export function Float32Mono(
+  sampleRate: number,
+  length: number,
+  fn: MonoRenderer,
+): RenderResult<Float32Array<ArrayBuffer>> {
+  const channelLength = Math.floor(length * sampleRate);
+  const buffer = new Float32Array(channelLength);
+
+  for (let i = 0; i < channelLength; i++) {
+    const t = i / sampleRate;
+    let y;
+    try {
+      y = fn(t);
+    } catch (e) {
+      return { type: 'error' as const, error: tryParseException(e) };
+    }
+    buffer[i] = y;
+  }
+
+  return { type: 'success' as const, buffer };
+}
+
+/**
+ * Create a stereo audio buffer with 32-bit floating point samples.
+ *
+ * @param sampleRate - Audio sample rate (in Hz)
+ * @param length - Duration of the audio buffer (in seconds)
+ * @param fn - Function to generate the audio samples
+ * @returns A {@link RenderResult} containing the generated audio buffer, or error information
+ */
+export function Float32Stereo(
+  sampleRate: number,
+  length: number,
+  fn: StereoRenderer,
+): RenderResult<Float32Array<ArrayBuffer>> {
+  const channelLength = Math.floor(length * sampleRate);
+  const buffer = new Float32Array(2 * channelLength);
+
+  for (let i = 0; i < channelLength; i++) {
+    const t = i / sampleRate;
+    let l, r;
+    try {
+      [l, r] = fn(t);
+    } catch (e) {
+      return { type: 'error' as const, error: tryParseException(e) };
+    }
+    buffer[i * 2] = l;
+    buffer[i * 2 + 1] = r;
   }
 
   return { type: 'success' as const, buffer };
