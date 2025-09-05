@@ -179,7 +179,7 @@ export const App = ({ bufferLength = DEFAULT_BUFFER_LENGTH }: AppProps) => {
     const blob = new Blob([source], {
       type: 'application/javascript;charset=utf-8',
     });
-    downloadBlob('script.musika', blob);
+    downloadBlob(`script-${dateToSortableString(new Date())}.musika`, blob);
     markClean();
   }, [markClean]);
 
