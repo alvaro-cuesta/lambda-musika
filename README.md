@@ -68,7 +68,7 @@ return (t) => [0, 0];
 
 ## Development
 
-- Start a development server at `localhost:8888`:
+- Start a development server at `localhost:5173`:
 
 ```sh
 npm run dev
