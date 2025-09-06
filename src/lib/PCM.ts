@@ -4,7 +4,7 @@
 
 import type { MonoRenderer, StereoRenderer } from './audio.js';
 import { tryParseException, type ExceptionInfo } from './compile.js';
-import { quantizeUint8, quantizeInt16 } from './quantizers.js';
+import { quantizeInt16, quantizeUint8 } from './quantizers.js';
 
 /**
  * Create a WAV blob from PCM data.
@@ -57,8 +57,6 @@ export function makeWavBlob(
 
   return new Blob([header, data], { type: 'audio/wav' });
 }
-
-
 
 type RenderResult<T> =
   | { type: 'success'; buffer: T }

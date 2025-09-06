@@ -3,36 +3,47 @@
 // Vitest globals
 declare const describe: (name: string, fn: () => void) => void;
 declare const it: (name: string, fn: () => void) => void;
-declare const expect: (actual: any) => {
-  toEqual: (expected: any) => void;
-  toBe: (expected: any) => void;
+declare const beforeEach: (fn: () => void) => void;
+declare const vitest: {
+  fn: <T extends (...args: unknown[]) => unknown>(
+    fn: T,
+  ) => T & {
+    mockClear: () => void;
+  };
+};
+declare const expectTypeOf: <T>(actual: T) => {
+  toEqualTypeOf: <U>() => void;
+};
+declare const expect: (actual: unknown) => {
+  toEqual: (expected: unknown) => void;
+  toBe: (expected: unknown) => void;
   toThrow: (expected?: string | RegExp) => void;
   toBeDefined: () => void;
   toBeUndefined: () => void;
   toBeTruthy: () => void;
   toBeFalsy: () => void;
+  toHaveBeenCalledTimes: (times: number) => void;
+  toHaveBeenCalledWith: (...args: unknown[]) => void;
 };
 
 // Web Worker types for tests
-declare const Worker: {
-  new (url: string | URL): Worker;
+declare const Worker: (url: string | URL) => Worker;
+
+type Worker = {
+  postMessage: (message: unknown, transfer?: Transferable[]) => void;
+  onmessage: ((this: Worker, ev: MessageEvent) => unknown) | null;
+  onerror: ((this: Worker, ev: ErrorEvent) => unknown) | null;
+  terminate: () => void;
 };
 
-interface Worker {
-  postMessage(message: any, transfer?: Transferable[]): void;
-  onmessage: ((this: Worker, ev: MessageEvent) => any) | null;
-  onerror: ((this: Worker, ev: ErrorEvent) => any) | null;
-  terminate(): void;
-}
-
-interface MessageEvent<T = any> {
+type MessageEvent<T = unknown> = {
   data: T;
-}
+};
 
-interface ErrorEvent {
+type ErrorEvent = {
   message: string;
   filename?: string;
   lineno?: number;
   colno?: number;
-  error?: any;
-}
+  error?: unknown;
+};

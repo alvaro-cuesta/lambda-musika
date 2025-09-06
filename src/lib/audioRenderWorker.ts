@@ -6,7 +6,7 @@
 
 import type { StereoRenderer } from './audio.js';
 import { tryParseException } from './compile.js';
-import { quantizeUint8, quantizeInt16 } from './quantizers.js';
+import { quantizeInt16, quantizeUint8 } from './quantizers.js';
 
 export type WorkerMessage = {
   type: 'render';
@@ -25,8 +25,6 @@ export type WorkerResponse = {
   buffer?: ArrayBuffer;
   error?: string;
 };
-
-
 
 function getQuantizer(type: string): (v: number) => number {
   switch (type) {
