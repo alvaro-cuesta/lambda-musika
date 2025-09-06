@@ -3,9 +3,12 @@
 ## Critical
 
 - `[PLAYER]` Replace `ScriptProcessor` with `AudioWorklet`
+- `[APP]` Bottom bar is too large in mobile now -- render probably needs a panel instead
+- `[PLAYER]` Input time is completely wrong and has AM/PM in english locales (lol)
 
 ## Features
 
+- `[APP]` Settings panel (e.g. editor font size, remember to store in `localStorage`!)
 - `[API]` `[EDITOR]` Widgets in scripts, which the user can control to affect sound/constants in real time
   - Slider
   - Spinner (like `<input type="number">`)

@@ -4,9 +4,22 @@
 
 $panel-bounce-padding: 1em;
 
-.container {
-  // so the panel can anchor to this
-  position: relative;
+// @todo Make this more reliable, it still goes off-screen sometimes
+@media screen and (max-width: variables.$mobile-breakpoint) {
+  .panel-container {
+    width: 100vw;
+  }
+}
+
+@media screen and (min-width: variables.$mobile-breakpoint) {
+  .container {
+    // so the panel can anchor to this
+    position: relative;
+  }
+
+  .panel-container {
+    width: 30em;
+  }
 }
 
 .panel-container {
@@ -14,7 +27,6 @@ $panel-bounce-padding: 1em;
   position: absolute;
   left: 0;
   z-index: -1;
-  width: 30em;
   height: auto;
   padding: 0 1em calc(1em + #{$panel-bounce-padding}) 1em;
   color: colors.$lightest;
