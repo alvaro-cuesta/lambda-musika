@@ -22,7 +22,7 @@ A **JavaScript DAW** that emphasizes **functions as its core building block**. I
 <p align="center">
   <a href="https://lambda.cuesta.dev"><img src="./public/pwa-192x192.png" alt="Lambda Musika" width="128" height="128" /></a>
   <br />
-  <b>Try it now on <a href="lambda://lambda.cuesta.dev">lambda.cuesta.dev</a>!</b>
+  <b>Try it now on <a href="https://lambda.cuesta.dev">lambda.cuesta.dev</a>!</b>
 </p>
 
 > [!IMPORTANT]
