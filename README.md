@@ -1,6 +1,6 @@
 <a id="lambda-musika-the-functional-daw"></a>
 
-<h1><a href="https://lambda.cuesta.dev"><img src="./public/pwa-64x64.png" width="24" height="24" /></a> Lambda Musika, the functional DAW</h1>
+<h1><a href="https://lambda.cuesta.dev"><img src="./public/favicon.svg" width="24" height="24" /></a> Lambda Musika, the functional DAW</h1>
 
 <p align="center">
   <a href="#lambda-musika-the-functional-daw">
@@ -20,7 +20,7 @@
 A **JavaScript DAW** that emphasizes **functions as its core building block**. In practice, a realtime audio scripting language and batteries-included DSP library, running on the web. Live-coding ready!
 
 <p align="center">
-  <a href="https://lambda.cuesta.dev"><img src="./public/pwa-192x192.png" alt="Lambda Musika" width="128" height="128" /></a>
+  <a href="https://lambda.cuesta.dev"><img src="./public/favicon.svg" alt="Lambda Musika" width="128" height="128" /></a>
   <br />
   <b>Try it now on <a href="https://lambda.cuesta.dev">lambda.cuesta.dev</a>!</b>
 </p>
