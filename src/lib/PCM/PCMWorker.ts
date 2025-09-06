@@ -3,12 +3,18 @@
  * This splits audio rendering across multiple web workers to avoid blocking the main thread.
  */
 
-import type { StereoRenderer, Time } from '../audio.js';
-import type { WorkerMessage, WorkerResponse } from '../audioRenderWorker.js';
+import type { MonoRenderer, StereoRenderer, Time } from '../audio.js';
+import type { WorkerMessage, WorkerResponse } from './renderPCMWorker.js';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: Vite worker import
 import type { ExceptionInfo } from '../compile.js';
 import AudioRenderWorker from './audioRenderWorker?worker';
+import {
+  renderPcmBufferMono,
+  renderPcmBufferStereo,
+  type BitDepth,
+  type BufferForBitDepth,
+} from './PCM.js';
 
 type RenderResult<T> =
   | { type: 'success'; buffer: T }

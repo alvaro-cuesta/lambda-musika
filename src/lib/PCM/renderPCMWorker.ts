@@ -1,12 +1,12 @@
 /**
- * @module audioRenderWorker
+ * @module
  * Web Worker for rendering audio buffer chunks in the background.
  * This prevents blocking the main thread during audio generation.
  */
 
-import type { StereoRenderer, Time } from './audio.js';
-import { tryParseException } from './compile.js';
-import { quantizeInt16, quantizeUint8 } from './PCM/quantizers.js';
+import type { StereoRenderer, Time } from '../audio.js';
+import { tryParseException } from '../compile.js';
+import { quantizeInt16, quantizeUint8 } from './quantizers.js';
 
 export type WorkerMessage = {
   type: 'render';

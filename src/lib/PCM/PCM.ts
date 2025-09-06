@@ -23,7 +23,7 @@ export const SUPPORTED_BIT_DEPTHS = [8, 16, 32] as const;
  */
 export type BitDepth = (typeof SUPPORTED_BIT_DEPTHS)[number];
 
-type BufferForBitDepth<Bd extends BitDepth> = Bd extends 8
+export type BufferForBitDepth<Bd extends BitDepth> = Bd extends 8
   ? Uint8Array<ArrayBuffer>
   : Bd extends 16
     ? Int16Array<ArrayBuffer>
@@ -94,7 +94,7 @@ export function makeWavBlob(
   return new Blob([header, data], { type: 'audio/wav' });
 }
 
-function initRendering<Bd extends BitDepth>(
+export function initRendering<Bd extends BitDepth>(
   bitDepth: Bd,
   length: number,
 ): {
@@ -106,7 +106,7 @@ function initRendering<Bd extends BitDepth>(
   const quantizer = getQuantizerForBitDepth(bitDepth);
   return { buffer, quantizer };
 }
-type RenderResult<T> =
+export type RenderResult<T> =
   | { type: 'success'; buffer: T }
   | { type: 'error'; error: ExceptionInfo };
 
