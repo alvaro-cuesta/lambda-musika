@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/restrict-template-expressions */
 /**
  * Worker-based PCM audio rendering utilities.
  * This splits audio rendering across multiple web workers to avoid blocking the main thread.
@@ -7,6 +6,7 @@
 import type { StereoRenderer } from './audio.js';
 import type { WorkerMessage, WorkerResponse } from './audioRenderWorker.js';
 import type { ExceptionInfo } from './compile.js';
+import AudioRenderWorker from './audioRenderWorker?worker';
 
 type RenderResult<T> =
   | { type: 'success'; buffer: T }
@@ -83,7 +83,7 @@ async function renderStereoBufferWithWorkers<
   const totalSamples = channelLength;
 
   // Check if web workers are available
-  if (typeof (globalThis as any).Worker === 'undefined') {
+  if (typeof Worker === 'undefined') {
     // Fallback to synchronous rendering
     return renderStereoBufferFallback(
       BufferType,
@@ -107,95 +107,6 @@ async function renderStereoBufferWithWorkers<
     // Convert function to string for transmission to workers
     const fnCode = fn.toString();
 
-    // Create worker URL with embedded code
-    const workerCode = `
-      // Embedded exception parsing (simplified version)
-      function tryParseException(e) {
-        return {
-          name: e.name || 'Error',
-          message: e.message || String(e),
-          fileName: '',
-          row: 0,
-          column: 0,
-          e: e
-        };
-      }
-      
-      function quantizeUint8(v) {
-        return Math.floor(((v + 1) / 2) * 0xff);
-      }
-      
-      function quantizeInt16(v) {
-        return Math.floor(((v + 1) / 2) * 0xffff - 0x8000);
-      }
-      
-      function getQuantizer(type) {
-        switch (type) {
-          case 'uint8': return quantizeUint8;
-          case 'int16': return quantizeInt16;
-          case 'none': return (v) => v;
-          default: throw new Error('Unknown quantizer type: ' + type);
-        }
-      }
-      
-      function getBufferType(type) {
-        switch (type) {
-          case 'Uint8Array': return Uint8Array;
-          case 'Int16Array': return Int16Array;
-          case 'Float32Array': return Float32Array;
-          default: throw new Error('Unknown buffer type: ' + type);
-        }
-      }
-      
-      self.onmessage = (event) => {
-        const { type, chunkIndex, startSample, endSample, sampleRate, fnCode, bufferType, quantizer } = event.data;
-        
-        if (type !== 'render') return;
-        
-        try {
-          const fn = eval('(' + fnCode + ')');
-          const BufferType = getBufferType(bufferType);
-          const quantize = getQuantizer(quantizer);
-          
-          const sampleCount = endSample - startSample;
-          const buffer = new BufferType(2 * sampleCount);
-          
-          for (let i = 0; i < sampleCount; i++) {
-            const t = (startSample + i) / sampleRate;
-            try {
-              const [l, r] = fn(t);
-              buffer[i * 2] = quantize(l);
-              buffer[i * 2 + 1] = quantize(r);
-            } catch (e) {
-              self.postMessage({
-                type: 'error',
-                chunkIndex,
-                error: 'Error at sample ' + (startSample + i) + ': ' + (e.message || e)
-              });
-              return;
-            }
-          }
-          
-          self.postMessage({
-            type: 'success',
-            chunkIndex,
-            buffer: buffer.buffer
-          }, [buffer.buffer]);
-        } catch (e) {
-          self.postMessage({
-            type: 'error',
-            chunkIndex,
-            error: 'Worker error: ' + (e.message || e)
-          });
-        }
-      };
-    `;
-
-    const workerBlob = new Blob([workerCode], {
-      type: 'application/javascript',
-    });
-    const workerUrl = URL.createObjectURL(workerBlob);
-
     // Start workers for each chunk
     for (let i = 0; i < numWorkers; i++) {
       const startSample = i * samplesPerWorker;
@@ -203,15 +114,15 @@ async function renderStereoBufferWithWorkers<
 
       if (startSample >= totalSamples) break; // No more work
 
-      const worker = new (globalThis as any).Worker(workerUrl);
+      const worker = new AudioRenderWorker();
       workers.push(worker);
 
       const promise = new Promise<WorkerResponse>((resolve, reject) => {
         worker.onmessage = (event: MessageEvent) => {
-          resolve(event.data);
+          resolve(event.data as WorkerResponse);
         };
-        worker.onerror = (error: any) => {
-          reject(new Error(`Worker error: ${error.message}`));
+        worker.onerror = (error: Event) => {
+          reject(new Error(`Worker error: ${error.type}`));
         };
       });
 
@@ -237,11 +148,10 @@ async function renderStereoBufferWithWorkers<
     // Wait for all workers to complete
     const results = await Promise.all(promises);
 
-    // Clean up workers and URL
+    // Clean up workers
     workers.forEach((worker) => {
-      (worker as any).terminate();
+      worker.terminate();
     });
-    URL.revokeObjectURL(workerUrl);
 
     // Check for errors
     const errorResult = results.find((result) => result.type === 'error');
@@ -288,7 +198,7 @@ async function renderStereoBufferWithWorkers<
   } catch (error) {
     // Clean up workers on error
     workers.forEach((worker) => {
-      (worker as any).terminate();
+      worker.terminate();
     });
 
     return {

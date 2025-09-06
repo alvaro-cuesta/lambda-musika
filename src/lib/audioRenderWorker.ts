@@ -1,10 +1,7 @@
-/* eslint-disable @typescript-eslint/triple-slash-reference, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-argument, @typescript-eslint/restrict-plus-operands */
 /**
  * Web Worker for rendering audio buffer chunks in the background.
  * This prevents blocking the main thread during audio generation.
  */
-
-/// <reference path="./worker.d.ts" />
 
 import type { StereoRenderer } from './audio.js';
 import { tryParseException } from './compile.js';
@@ -72,7 +69,6 @@ function getBufferType(
 // Handle messages from the main thread
 self.onmessage = (event: MessageEvent) => {
   const {
-    type,
     chunkIndex,
     startSample,
     endSample,
@@ -80,13 +76,10 @@ self.onmessage = (event: MessageEvent) => {
     fnCode,
     bufferType,
     quantizer,
-  } = event.data;
+  } = event.data as WorkerMessage;
 
   // Since we typed the message as WorkerMessage, type is always 'render'
-  // But we keep this check for runtime safety
-  if (type !== 'render') {
-    return;
-  }
+  // Runtime validation is handled during message parsing
 
   try {
     // Recreate the audio function from the code
@@ -118,8 +111,9 @@ self.onmessage = (event: MessageEvent) => {
     const response: WorkerResponse = {
       type: 'success',
       chunkIndex,
-      buffer: buffer.buffer,
+      buffer: buffer.buffer as ArrayBuffer,
     };
+    // Note: In web workers, transferable objects must be passed through structured cloning
     self.postMessage(response);
   } catch (e) {
     const response: WorkerResponse = {

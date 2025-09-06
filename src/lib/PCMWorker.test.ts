@@ -34,9 +34,9 @@ describe('PCM (Original Implementation)', () => {
         expect(result.buffer.length).toBe(2 * Math.floor(length * sampleRate));
 
         // Check that values are in the correct range for 8-bit
-        for (let i = 0; i < result.buffer.length; i++) {
-          expect(result.buffer[i]).toBeGreaterThanOrEqual(0);
-          expect(result.buffer[i]).toBeLessThanOrEqual(255);
+        for (const value of result.buffer) {
+          expect(value).toBeGreaterThanOrEqual(0);
+          expect(value).toBeLessThanOrEqual(255);
         }
       }
     });
@@ -62,9 +62,9 @@ describe('PCM (Original Implementation)', () => {
         expect(result.buffer.length).toBe(2 * Math.floor(length * sampleRate));
 
         // Check that values are in the correct range for 16-bit signed
-        for (let i = 0; i < result.buffer.length; i++) {
-          expect(result.buffer[i]).toBeGreaterThanOrEqual(-32768);
-          expect(result.buffer[i]).toBeLessThanOrEqual(32767);
+        for (const value of result.buffer) {
+          expect(value).toBeGreaterThanOrEqual(-32768);
+          expect(value).toBeLessThanOrEqual(32767);
         }
       }
     });
@@ -87,9 +87,9 @@ describe('PCM (Original Implementation)', () => {
         expect(result.buffer.length).toBe(2 * Math.floor(length * sampleRate));
 
         // Float values should be in the range [-1, 1] for audio
-        for (let i = 0; i < result.buffer.length; i++) {
-          expect(result.buffer[i]).toBeGreaterThanOrEqual(-1);
-          expect(result.buffer[i]).toBeLessThanOrEqual(1);
+        for (const value of result.buffer) {
+          expect(value).toBeGreaterThanOrEqual(-1);
+          expect(value).toBeLessThanOrEqual(1);
         }
       }
     });
