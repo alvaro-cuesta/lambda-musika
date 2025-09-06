@@ -6,6 +6,16 @@ import type { MonoRenderer, StereoRenderer, Time } from './audio.js';
 import { tryParseException, type ExceptionInfo } from './compile.js';
 
 /**
+ * Bit depths that are supported by Lambda Musika's PCM utilities.
+ */
+export const SUPPORTED_BIT_DEPTHS = [8, 16, 32] as const;
+
+/**
+ * Bit depths that are supported by Lambda Musika's PCM utilities.
+ */
+export type BitDepth = (typeof SUPPORTED_BIT_DEPTHS)[number];
+
+/**
  * Create a WAV blob from PCM data.
  *
  * @param data - PCM data (Uint8Array or Int16Array)

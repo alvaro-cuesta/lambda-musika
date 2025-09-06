@@ -18,6 +18,7 @@ import {
   Int16Stereo,
   makeWavBlob,
   Uint8Stereo,
+  type BitDepth,
 } from '../lib/PCM.js';
 import { isEditorSerialState } from '../utils/editor.js';
 import { downloadBlob } from '../utils/file.js';
@@ -184,7 +185,7 @@ export const App = ({ bufferLength = DEFAULT_BUFFER_LENGTH }: AppProps) => {
   }, [markClean]);
 
   const handleRender = useCallback(
-    (sampleRate: number, bitDepth: 8 | 16 | 32) => {
+    (sampleRate: number, bitDepth: BitDepth) => {
       if (!editorRef.current) return;
 
       playerRef.current?.pause();

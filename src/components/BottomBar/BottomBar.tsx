@@ -12,6 +12,7 @@ import cx from 'classnames';
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import EmptyScript from '../../examples/empty.musika?raw';
 import { EXAMPLE_SCRIPTS } from '../../examples/index.js';
+import { SUPPORTED_BIT_DEPTHS, type BitDepth } from '../../lib/PCM.js';
 import styles from './BottomBar.module.scss';
 import { ButtonWithPanel } from './ButtonWithPanel.js';
 import { ConfirmPanel } from './ConfirmPanel.js';
@@ -64,11 +65,14 @@ function panelReducer(state: PanelState, action: PanelAction): PanelState {
   }
 }
 
-const RENDER_FREQUENCIES = [
+const AVAILABLE_SAMPLE_RATES = [
   8000, 11025, 16000, 22500, 32000, 37800, 44100, 48000, 88200, 96000,
 ] as const;
 
-const RENDER_BIT_DEPTHS = [8, 16, 32] as const;
+type SampleRate = (typeof AVAILABLE_SAMPLE_RATES)[number];
+
+const DEFAULT_SAMPLE_RATE = 44100 satisfies SampleRate;
+const DEFAULT_BIT_RATE = 16 satisfies BitDepth;
 
 type BottomBarProps = {
   isClean: boolean;
@@ -76,10 +80,7 @@ type BottomBarProps = {
   onUpdate: () => void;
   onNew: (source: string) => void;
   onSave: () => void;
-  onRender: (
-    sampleRate: number,
-    bitDepth: (typeof RENDER_BIT_DEPTHS)[number],
-  ) => void;
+  onRender: (sampleRate: number, bitDepth: BitDepth) => void;
 };
 
 export const BottomBar = ({
@@ -91,9 +92,10 @@ export const BottomBar = ({
   onRender,
 }: BottomBarProps) => {
   const [panelState, dispatch] = useReducer(panelReducer, { state: null });
-  const [renderSampleRate, setRenderSampleRate] = useState(44100);
+  const [renderSampleRate, setRenderSampleRate] =
+    useState<SampleRate>(DEFAULT_SAMPLE_RATE);
   const [renderBitDepth, setRenderBitDepth] =
-    useState<(typeof RENDER_BIT_DEPTHS)[number]>(16);
+    useState<BitDepth>(DEFAULT_BIT_RATE);
 
   const closePanels = useCallback(() => {
     dispatch({ type: 'close' });
@@ -164,14 +166,12 @@ export const BottomBar = ({
   }
 
   function handleRenderSampleRate(e: React.ChangeEvent<HTMLSelectElement>) {
-    setRenderSampleRate(Number(e.target.value));
+    setRenderSampleRate(Number(e.target.value) as SampleRate);
   }
 
   function handleRenderBitDepth(e: React.ChangeEvent<HTMLSelectElement>) {
     // as is safe because options are fixed
-    setRenderBitDepth(
-      Number(e.target.value) as (typeof RENDER_BIT_DEPTHS)[number],
-    );
+    setRenderBitDepth(Number(e.target.value) as BitDepth);
   }
 
   // CTRL+S = onUpdate
@@ -348,7 +348,7 @@ export const BottomBar = ({
         title="Render sample rate"
         aria-label="Render sample rate"
       >
-        {RENDER_FREQUENCIES.map((f) => (
+        {AVAILABLE_SAMPLE_RATES.map((f) => (
           <option
             key={f}
             value={f}
@@ -364,7 +364,7 @@ export const BottomBar = ({
         title="Render bit depth"
         aria-label="Render bit depth"
       >
-        {RENDER_BIT_DEPTHS.map((b) => (
+        {SUPPORTED_BIT_DEPTHS.map((b) => (
           <option
             key={b}
             value={b}
