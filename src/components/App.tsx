@@ -13,12 +13,12 @@ import {
   type CompileResult,
   type ExceptionInfo,
 } from '../lib/compile.js';
-import { makeWavBlob, type BitDepth } from '../lib/PCM.js';
+import { makeWavBlob, type BitDepth } from '../lib/PCM/PCM.js';
 import {
   Float32StereoWorker,
   Int16StereoWorker,
   Uint8StereoWorker,
-} from '../lib/PCMWorker.js';
+} from '../lib/PCM/PCMWorker.js';
 import { isEditorSerialState } from '../utils/editor.js';
 import { downloadBlob } from '../utils/file.js';
 import { dateToSortableString, toMinsSecs } from '../utils/time.js';

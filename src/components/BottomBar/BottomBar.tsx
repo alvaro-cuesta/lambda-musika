@@ -4,7 +4,7 @@ import cx from 'classnames';
 import { useCallback, useReducer } from 'react';
 import EmptyScript from '../../examples/empty.musika?raw';
 import { EXAMPLE_SCRIPTS } from '../../examples/index.js';
-import { type BitDepth } from '../../lib/PCM.js';
+import { type BitDepth } from '../../lib/PCM/PCM.js';
 import styles from './BottomBar.module.scss';
 import { BottomBarCommit } from './BottomBarCommit.js';
 import { BottomBarExamples } from './BottomBarExamples.js';

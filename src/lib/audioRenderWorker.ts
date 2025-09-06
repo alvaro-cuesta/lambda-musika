@@ -6,7 +6,7 @@
 
 import type { StereoRenderer, Time } from './audio.js';
 import { tryParseException } from './compile.js';
-import { quantizeInt16, quantizeUint8 } from './quantizers.js';
+import { quantizeInt16, quantizeUint8 } from './PCM/quantizers.js';
 
 export type WorkerMessage = {
   type: 'render';

@@ -3,14 +3,15 @@
  */
 
 import type { Constructor, Tagged } from 'type-fest';
-import type {
-  MonoRenderer,
-  MonoSignal,
-  StereoRenderer,
-  Time,
-} from './audio.js';
-import { tryParseException, type ExceptionInfo } from './compile.js';
-import { quantizeInt16, quantizeUint8 } from './quantizers.js';
+import type { MonoRenderer, StereoRenderer, Time } from '../audio.js';
+import { tryParseException, type ExceptionInfo } from '../compile.js';
+import { getQuantizerForBitDepth } from './quantizers.js';
+
+export type Uint8 = Tagged<number, 'Uint8'>;
+
+export type Int16 = Tagged<number, 'Int16'>;
+
+export type Float32 = Tagged<number, 'Float32'>;
 
 /**
  * Bit depths that are supported by Lambda Musika's PCM utilities.
@@ -30,6 +31,20 @@ type BufferForBitDepth<Bd extends BitDepth> = Bd extends 8
       ? Float32Array<ArrayBuffer>
       : never;
 
+function getBufferTypeForBitDepth<Bd extends BitDepth>(
+  bitDepth: Bd,
+): Constructor<BufferForBitDepth<Bd>> {
+  switch (bitDepth) {
+    case 8:
+      return Uint8Array as unknown as Constructor<BufferForBitDepth<Bd>>;
+    case 16:
+      return Int16Array as unknown as Constructor<BufferForBitDepth<Bd>>;
+    case 32:
+      return Float32Array as unknown as Constructor<BufferForBitDepth<Bd>>;
+    default:
+      throw new Error(`Unsupported bit depth: ${bitDepth}`);
+  }
+}
 /**
  * Create a WAV blob from PCM data.
  *
@@ -77,54 +92,6 @@ export function makeWavBlob(
   dv.setUint32(40, dataSize, true); /*            Subchunk2Size */
 
   return new Blob([header, data], { type: 'audio/wav' });
-}
-
-type Quantizer = (v: MonoSignal) => number;
-
-type Float32 = Tagged<number, 'Float32'>;
-
-function clamp(v: number, min: number, max: number): number {
-  return Math.min(Math.max(v, min), max);
-}
-
-/**
- * Quantize a float value to a 32-bit float.
- *
- * @param v -1.0 to 1.0
- * @returns {@link Float32} -1.0 to 1.0
- */
-function quantizeFloat32(v: MonoSignal): Float32 {
-  v = clamp(v, -1, 1);
-  return v as Float32;
-}
-
-function getQuantizerForBitDepth(bitDepth: BitDepth): Quantizer {
-  switch (bitDepth) {
-    case 8:
-      return (v: MonoSignal) => quantizeUint8(clamp(v, -1, 1));
-    case 16:
-      return (v: MonoSignal) => quantizeInt16(clamp(v, -1, 1));
-    case 32:
-      return quantizeFloat32;
-    default:
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions -- this is a fallthrough
-      throw new Error(`Unsupported bit depth: ${bitDepth}`);
-  }
-}
-
-function getBufferTypeForBitDepth<Bd extends BitDepth>(
-  bitDepth: Bd,
-): Constructor<BufferForBitDepth<Bd>> {
-  switch (bitDepth) {
-    case 8:
-      return Uint8Array as unknown as Constructor<BufferForBitDepth<Bd>>;
-    case 16:
-      return Int16Array as unknown as Constructor<BufferForBitDepth<Bd>>;
-    case 32:
-      return Float32Array as unknown as Constructor<BufferForBitDepth<Bd>>;
-    default:
-      throw new Error(`Unsupported bit depth: ${bitDepth}`);
-  }
 }
 
 function initRendering<Bd extends BitDepth>(

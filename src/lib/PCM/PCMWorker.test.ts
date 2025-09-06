@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { StereoRenderer } from './audio.js';
+import type { StereoRenderer } from '../audio.js';
 import { renderPcmBufferStereo } from './PCM.js';
 import {
   Float32StereoWorker,
