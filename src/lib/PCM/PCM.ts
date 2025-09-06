@@ -141,7 +141,7 @@ export function renderPcmBufferStereo<Bd extends BitDepth>(
   const channelLength = Math.floor(length * sampleRate);
   const { buffer, quantizer } = initRendering(bitDepth, 2 * channelLength);
 
-  for (let i = 0; i < channelLength; i++) {
+  for (let i = 0; i < buffer.length; i++) {
     const t = (i / sampleRate) as Time;
     try {
       const [l, r] = fn(t);
