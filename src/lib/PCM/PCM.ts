@@ -3,13 +3,15 @@
  */
 
 import type { Constructor, Tagged } from 'type-fest';
-import type {
-  MonoRenderer,
-  MonoSignal,
-  StereoRenderer,
-  Time,
-} from './audio.js';
-import { tryParseException, type ExceptionInfo } from './compile.js';
+import type { MonoRenderer, StereoRenderer, Time } from '../audio.js';
+import { tryParseException, type ExceptionInfo } from '../compile.js';
+import { getQuantizerForBitDepth } from './quantizers.js';
+
+export type Uint8 = Tagged<number, 'Uint8'>;
+
+export type Int16 = Tagged<number, 'Int16'>;
+
+export type Float32 = Tagged<number, 'Float32'>;
 
 /**
  * Bit depths that are supported by Lambda Musika's PCM utilities.
@@ -21,7 +23,7 @@ export const SUPPORTED_BIT_DEPTHS = [8, 16, 32] as const;
  */
 export type BitDepth = (typeof SUPPORTED_BIT_DEPTHS)[number];
 
-type BufferForBitDepth<Bd extends BitDepth> = Bd extends 8
+export type BufferForBitDepth<Bd extends BitDepth> = Bd extends 8
   ? Uint8Array<ArrayBuffer>
   : Bd extends 16
     ? Int16Array<ArrayBuffer>
@@ -29,6 +31,20 @@ type BufferForBitDepth<Bd extends BitDepth> = Bd extends 8
       ? Float32Array<ArrayBuffer>
       : never;
 
+function getBufferTypeForBitDepth<Bd extends BitDepth>(
+  bitDepth: Bd,
+): Constructor<BufferForBitDepth<Bd>> {
+  switch (bitDepth) {
+    case 8:
+      return Uint8Array as unknown as Constructor<BufferForBitDepth<Bd>>;
+    case 16:
+      return Int16Array as unknown as Constructor<BufferForBitDepth<Bd>>;
+    case 32:
+      return Float32Array as unknown as Constructor<BufferForBitDepth<Bd>>;
+    default:
+      throw new Error(`Unsupported bit depth: ${bitDepth}`);
+  }
+}
 /**
  * Create a WAV blob from PCM data.
  *
@@ -78,81 +94,7 @@ export function makeWavBlob(
   return new Blob([header, data], { type: 'audio/wav' });
 }
 
-type Quantizer = (v: MonoSignal) => number;
-
-type Uint8 = Tagged<number, 'Uint8'>;
-
-type Int16 = Tagged<number, 'Int16'>;
-
-type Float32 = Tagged<number, 'Float32'>;
-
-function clamp(v: number, min: number, max: number): number {
-  return Math.min(Math.max(v, min), max);
-}
-
-/**
- * Quantize a float value to an 8-bit unsigned integer.
- *
- * @param v -1.0 to 1.0
- * @returns {@link Uint8} 0 to 255
- */
-function quantizeUint8(v: MonoSignal): Uint8 {
-  v = clamp(v, -1, 1);
-  return Math.floor(((v + 1) / 2) * 0xff) as Uint8;
-}
-
-/**
- * Quantize a float value to a 16-bit signed integer.
- *
- * @param v -1.0 to 1.0
- * @returns {@link Int16} -32768 to 32767
- */
-function quantizeInt16(v: MonoSignal): Int16 {
-  v = clamp(v, -1, 1);
-  return Math.floor(((v + 1) / 2) * 0xffff - 0x8000) as Int16;
-}
-
-/**
- * Quantize a float value to a 32-bit float.
- *
- * @param v -1.0 to 1.0
- * @returns {@link Float32} -1.0 to 1.0
- */
-function quantizeFloat32(v: MonoSignal): Float32 {
-  v = clamp(v, -1, 1);
-  return v as Float32;
-}
-
-function getQuantizerForBitDepth(bitDepth: BitDepth): Quantizer {
-  switch (bitDepth) {
-    case 8:
-      return quantizeUint8;
-    case 16:
-      return quantizeInt16;
-    case 32:
-      return quantizeFloat32;
-    default:
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions -- this is a fallthrough
-      throw new Error(`Unsupported bit depth: ${bitDepth}`);
-  }
-}
-
-function getBufferTypeForBitDepth<Bd extends BitDepth>(
-  bitDepth: Bd,
-): Constructor<BufferForBitDepth<Bd>> {
-  switch (bitDepth) {
-    case 8:
-      return Uint8Array as unknown as Constructor<BufferForBitDepth<Bd>>;
-    case 16:
-      return Int16Array as unknown as Constructor<BufferForBitDepth<Bd>>;
-    case 32:
-      return Float32Array as unknown as Constructor<BufferForBitDepth<Bd>>;
-    default:
-      throw new Error(`Unsupported bit depth: ${bitDepth}`);
-  }
-}
-
-function initRendering<Bd extends BitDepth>(
+export function initRendering<Bd extends BitDepth>(
   bitDepth: Bd,
   length: number,
 ): {
@@ -164,11 +106,19 @@ function initRendering<Bd extends BitDepth>(
   const quantizer = getQuantizerForBitDepth(bitDepth);
   return { buffer, quantizer };
 }
-
-type RenderResult<T> =
+export type RenderResult<T> =
   | { type: 'success'; buffer: T }
   | { type: 'error'; error: ExceptionInfo };
 
+/**
+ * Render a mono PCM audio buffer.
+ *
+ * @param bitDepth - The bit depth of the audio samples.
+ * @param sampleRate - The sample rate of the audio (in Hz)
+ * @param length - The length of the audio buffer (in seconds).
+ * @param fn - The {@link MonoRenderer} function that generates the audio samples.
+ * @returns A {@link RenderResult} containing the generated audio buffer, or error information
+ */
 export function renderPcmBufferMono<Bd extends BitDepth>(
   bitDepth: Bd,
   sampleRate: number,
@@ -191,6 +141,15 @@ export function renderPcmBufferMono<Bd extends BitDepth>(
   return { type: 'success' as const, buffer };
 }
 
+/**
+ * Render a stereo PCM audio buffer.
+ *
+ * @param bitDepth - The bit depth of the audio samples.
+ * @param sampleRate - The sample rate of the audio (in Hz)
+ * @param length - The length of the audio buffer (in seconds).
+ * @param fn - The {@link StereoRenderer} function that generates the audio samples.
+ * @returns A {@link RenderResult} containing the generated audio buffer, or error information
+ */
 export function renderPcmBufferStereo<Bd extends BitDepth>(
   bitDepth: Bd,
   sampleRate: number,

@@ -56,6 +56,6 @@
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.test.tsbuildinfo",
     "target": "ES2023",
-    "lib": ["ES2023"]
+    "lib": ["ES2023", "DOM", "DOM.Iterable"]
   }
 }
