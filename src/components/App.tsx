@@ -14,11 +14,13 @@ import {
   type ExceptionInfo,
 } from '../lib/compile.js';
 import {
-  Float32Stereo,
-  Int16Stereo,
   makeWavBlob,
-  Uint8Stereo,
 } from '../lib/PCM.js';
+import {
+  Float32StereoWorker,
+  Int16StereoWorker,
+  Uint8StereoWorker,
+} from '../lib/PCMWorker.js';
 import { isEditorSerialState } from '../utils/editor.js';
 import { downloadBlob } from '../utils/file.js';
 import { dateToSortableString, toMinsSecs } from '../utils/time.js';
@@ -184,7 +186,7 @@ export const App = ({ bufferLength = DEFAULT_BUFFER_LENGTH }: AppProps) => {
   }, [markClean]);
 
   const handleRender = useCallback(
-    (sampleRate: number, bitDepth: 8 | 16 | 32) => {
+    async (sampleRate: number, bitDepth: 8 | 16 | 32) => {
       if (!editorRef.current) return;
 
       playerRef.current?.pause();
@@ -204,26 +206,26 @@ export const App = ({ bufferLength = DEFAULT_BUFFER_LENGTH }: AppProps) => {
           throw new Error('Cannot render infinite-length script');
         }
         case 'with-length': {
-          let renderResult: ReturnType<
-            typeof Uint8Stereo | typeof Int16Stereo | typeof Float32Stereo
-          >;
+          let renderResult: Awaited<ReturnType<
+            typeof Uint8StereoWorker | typeof Int16StereoWorker | typeof Float32StereoWorker
+          >>;
           switch (bitDepth) {
             case 8:
-              renderResult = Uint8Stereo(
+              renderResult = await Uint8StereoWorker(
                 sampleRate,
                 compileResult.length,
                 compileResult.fn,
               );
               break;
             case 16:
-              renderResult = Int16Stereo(
+              renderResult = await Int16StereoWorker(
                 sampleRate,
                 compileResult.length,
                 compileResult.fn,
               );
               break;
             case 32:
-              renderResult = Float32Stereo(
+              renderResult = await Float32StereoWorker(
                 sampleRate,
                 compileResult.length,
                 compileResult.fn,
