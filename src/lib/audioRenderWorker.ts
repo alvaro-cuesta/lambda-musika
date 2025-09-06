@@ -1,12 +1,15 @@
+/* eslint-disable @typescript-eslint/triple-slash-reference, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-argument, @typescript-eslint/restrict-plus-operands */
 /**
  * Web Worker for rendering audio buffer chunks in the background.
  * This prevents blocking the main thread during audio generation.
  */
 
+/// <reference path="./worker.d.ts" />
+
 import type { StereoRenderer } from './audio.js';
 import { tryParseException } from './compile.js';
 
-export interface WorkerMessage {
+export type WorkerMessage = {
   type: 'render';
   chunkIndex: number;
   startSample: number;
@@ -15,14 +18,14 @@ export interface WorkerMessage {
   fnCode: string;
   bufferType: 'Uint8Array' | 'Int16Array' | 'Float32Array';
   quantizer: 'uint8' | 'int16' | 'none';
-}
+};
 
-export interface WorkerResponse {
+export type WorkerResponse = {
   type: 'success' | 'error';
   chunkIndex: number;
   buffer?: ArrayBuffer;
   error?: string;
-}
+};
 
 /**
  * Quantize a float value to an 8-bit unsigned integer.
@@ -51,7 +54,9 @@ function getQuantizer(type: string): (v: number) => number {
   }
 }
 
-function getBufferType(type: string): new (length: number) => Uint8Array | Int16Array | Float32Array {
+function getBufferType(
+  type: string,
+): new (length: number) => Uint8Array | Int16Array | Float32Array {
   switch (type) {
     case 'Uint8Array':
       return Uint8Array;
@@ -65,9 +70,20 @@ function getBufferType(type: string): new (length: number) => Uint8Array | Int16
 }
 
 // Handle messages from the main thread
-self.onmessage = (event: MessageEvent<WorkerMessage>) => {
-  const { type, chunkIndex, startSample, endSample, sampleRate, fnCode, bufferType, quantizer } = event.data;
+self.onmessage = (event: MessageEvent) => {
+  const {
+    type,
+    chunkIndex,
+    startSample,
+    endSample,
+    sampleRate,
+    fnCode,
+    bufferType,
+    quantizer,
+  } = event.data;
 
+  // Since we typed the message as WorkerMessage, type is always 'render'
+  // But we keep this check for runtime safety
   if (type !== 'render') {
     return;
   }
@@ -77,7 +93,7 @@ self.onmessage = (event: MessageEvent<WorkerMessage>) => {
     const fn = eval(`(${fnCode})`) as StereoRenderer;
     const BufferType = getBufferType(bufferType);
     const quantize = getQuantizer(quantizer);
-    
+
     const sampleCount = endSample - startSample;
     const buffer = new BufferType(2 * sampleCount); // stereo = 2 channels
 
@@ -104,7 +120,7 @@ self.onmessage = (event: MessageEvent<WorkerMessage>) => {
       chunkIndex,
       buffer: buffer.buffer,
     };
-    (self as any).postMessage(response, [buffer.buffer]);
+    self.postMessage(response);
   } catch (e) {
     const response: WorkerResponse = {
       type: 'error',

@@ -13,9 +13,7 @@ import {
   type CompileResult,
   type ExceptionInfo,
 } from '../lib/compile.js';
-import {
-  makeWavBlob,
-} from '../lib/PCM.js';
+import { makeWavBlob } from '../lib/PCM.js';
 import {
   Float32StereoWorker,
   Int16StereoWorker,
@@ -86,6 +84,7 @@ export const App = ({ bufferLength = DEFAULT_BUFFER_LENGTH }: AppProps) => {
     { type: 'error' }
   > | null>(null);
   const [renderTime, setRenderTime] = useState<number | null>(null);
+  const [isRendering, setIsRendering] = useState(false);
 
   const backupIntervalRef = useRef<number>(null);
 
@@ -186,66 +185,77 @@ export const App = ({ bufferLength = DEFAULT_BUFFER_LENGTH }: AppProps) => {
   }, [markClean]);
 
   const handleRender = useCallback(
-    async (sampleRate: number, bitDepth: 8 | 16 | 32) => {
-      if (!editorRef.current) return;
+    (sampleRate: number, bitDepth: 8 | 16 | 32) => {
+      void (async () => {
+        if (!editorRef.current) return;
 
-      playerRef.current?.pause();
+        setIsRendering(true);
+        try {
+          playerRef.current?.pause();
 
-      handleUpdate();
+          handleUpdate();
 
-      const source = editorRef.current.getValue();
-      if (source === null) return;
+          const source = editorRef.current.getValue();
+          if (source === null) return;
 
-      const compileResult = compile(source, sampleRate);
-      switch (compileResult.type) {
-        case 'error': {
-          editorRef.current.addError(compileResult.error);
-          return;
-        }
-        case 'infinite': {
-          throw new Error('Cannot render infinite-length script');
-        }
-        case 'with-length': {
-          let renderResult: Awaited<ReturnType<
-            typeof Uint8StereoWorker | typeof Int16StereoWorker | typeof Float32StereoWorker
-          >>;
-          switch (bitDepth) {
-            case 8:
-              renderResult = await Uint8StereoWorker(
-                sampleRate,
-                compileResult.length,
-                compileResult.fn,
-              );
-              break;
-            case 16:
-              renderResult = await Int16StereoWorker(
-                sampleRate,
-                compileResult.length,
-                compileResult.fn,
-              );
-              break;
-            case 32:
-              renderResult = await Float32StereoWorker(
-                sampleRate,
-                compileResult.length,
-                compileResult.fn,
-              );
-          }
-          switch (renderResult.type) {
+          const compileResult = compile(source, sampleRate);
+          switch (compileResult.type) {
             case 'error': {
-              editorRef.current.addError(renderResult.error);
+              editorRef.current.addError(compileResult.error);
               return;
             }
-            case 'success': {
-              const blob = makeWavBlob(renderResult.buffer, 2, sampleRate);
-              downloadBlob(
-                `render-${dateToSortableString(new Date())}_${toMinsSecs(compileResult.length, '-')}_${sampleRate}-${bitDepth}b.wav`,
-                blob,
-              );
+            case 'infinite': {
+              throw new Error('Cannot render infinite-length script');
+            }
+            case 'with-length': {
+              let renderResult: Awaited<
+                ReturnType<
+                  | typeof Uint8StereoWorker
+                  | typeof Int16StereoWorker
+                  | typeof Float32StereoWorker
+                >
+              >;
+              switch (bitDepth) {
+                case 8:
+                  renderResult = await Uint8StereoWorker(
+                    sampleRate,
+                    compileResult.length,
+                    compileResult.fn,
+                  );
+                  break;
+                case 16:
+                  renderResult = await Int16StereoWorker(
+                    sampleRate,
+                    compileResult.length,
+                    compileResult.fn,
+                  );
+                  break;
+                case 32:
+                  renderResult = await Float32StereoWorker(
+                    sampleRate,
+                    compileResult.length,
+                    compileResult.fn,
+                  );
+              }
+              switch (renderResult.type) {
+                case 'error': {
+                  editorRef.current.addError(renderResult.error);
+                  return;
+                }
+                case 'success': {
+                  const blob = makeWavBlob(renderResult.buffer, 2, sampleRate);
+                  downloadBlob(
+                    `render-${dateToSortableString(new Date())}_${toMinsSecs(compileResult.length, '-')}_${sampleRate}-${bitDepth}b.wav`,
+                    blob,
+                  );
+                }
+              }
             }
           }
+        } finally {
+          setIsRendering(false);
         }
-      }
+      })();
     },
     [handleUpdate],
   );
@@ -282,6 +292,7 @@ export const App = ({ bufferLength = DEFAULT_BUFFER_LENGTH }: AppProps) => {
       <BottomBar
         isClean={isClean}
         showRenderControls={!!compileResult?.length}
+        isRendering={isRendering}
         onUpdate={handleExplicitUpdate}
         onNew={handleNew}
         onSave={handleSave}

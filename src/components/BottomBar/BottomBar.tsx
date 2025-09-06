@@ -6,6 +6,7 @@ import {
   faFileArrowUp,
   faFileText,
   faShare,
+  faSpinner,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import cx from 'classnames';
@@ -73,6 +74,7 @@ const RENDER_BIT_DEPTHS = [8, 16, 32] as const;
 type BottomBarProps = {
   isClean: boolean;
   showRenderControls: boolean;
+  isRendering: boolean;
   onUpdate: () => void;
   onNew: (source: string) => void;
   onSave: () => void;
@@ -85,6 +87,7 @@ type BottomBarProps = {
 export const BottomBar = ({
   isClean,
   showRenderControls,
+  isRendering,
   onUpdate,
   onNew,
   onSave,
@@ -335,16 +338,21 @@ export const BottomBar = ({
       <button
         type="button"
         onClick={handleRender}
-        title="Render"
-        aria-label="Render"
+        disabled={isRendering}
+        title={isRendering ? 'Rendering audio...' : 'Render'}
+        aria-label={isRendering ? 'Rendering audio...' : 'Render'}
       >
-        <FontAwesomeIcon icon={faDownload} />
+        <FontAwesomeIcon
+          icon={isRendering ? faSpinner : faDownload}
+          spin={isRendering}
+        />
         .WAV
       </button>
 
       <select
         onChange={handleRenderSampleRate}
         value={renderSampleRate}
+        disabled={isRendering}
         title="Render sample rate"
         aria-label="Render sample rate"
       >
@@ -361,6 +369,7 @@ export const BottomBar = ({
       <select
         onChange={handleRenderBitDepth}
         value={renderBitDepth}
+        disabled={isRendering}
         title="Render bit depth"
         aria-label="Render bit depth"
       >

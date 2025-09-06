@@ -1,11 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/restrict-template-expressions */
 /**
  * Worker-based PCM audio rendering utilities.
  * This splits audio rendering across multiple web workers to avoid blocking the main thread.
  */
 
 import type { StereoRenderer } from './audio.js';
-import type { ExceptionInfo } from './compile.js';
 import type { WorkerMessage, WorkerResponse } from './audioRenderWorker.js';
+import type { ExceptionInfo } from './compile.js';
 
 type RenderResult<T> =
   | { type: 'success'; buffer: T }
@@ -14,7 +15,9 @@ type RenderResult<T> =
 /**
  * Fallback synchronous rendering when workers are not available
  */
-function renderStereoBufferFallback<T extends Uint8Array | Int16Array | Float32Array>(
+function renderStereoBufferFallback<
+  T extends Uint8Array | Int16Array | Float32Array,
+>(
   BufferType: new (length: number) => T,
   quantizerType: 'uint8' | 'int16' | 'none',
   sampleRate: number,
@@ -67,7 +70,9 @@ function renderStereoBufferFallback<T extends Uint8Array | Int16Array | Float32A
 /**
  * Render stereo audio buffer using web workers for background processing.
  */
-async function renderStereoBufferWithWorkers<T extends Uint8Array | Int16Array | Float32Array>(
+async function renderStereoBufferWithWorkers<
+  T extends Uint8Array | Int16Array | Float32Array,
+>(
   BufferType: new (length: number) => T,
   quantizerType: 'uint8' | 'int16' | 'none',
   sampleRate: number,
@@ -76,25 +81,32 @@ async function renderStereoBufferWithWorkers<T extends Uint8Array | Int16Array |
 ): Promise<RenderResult<T>> {
   const channelLength = Math.floor(length * sampleRate);
   const totalSamples = channelLength;
-  
+
   // Check if web workers are available
-  if (typeof Worker === 'undefined') {
+  if (typeof (globalThis as any).Worker === 'undefined') {
     // Fallback to synchronous rendering
-    return renderStereoBufferFallback(BufferType, quantizerType, sampleRate, length, fn);
+    return renderStereoBufferFallback(
+      BufferType,
+      quantizerType,
+      sampleRate,
+      length,
+      fn,
+    );
   }
-  
+
   // Get number of workers to use
-  const numWorkers = (typeof navigator !== 'undefined' && navigator.hardwareConcurrency) || 4;
+  const numWorkers =
+    (typeof navigator !== 'undefined' && navigator.hardwareConcurrency) || 4;
   const samplesPerWorker = Math.ceil(totalSamples / numWorkers);
-  
+
   // Create workers
   const workers: Worker[] = [];
   const promises: Promise<WorkerResponse>[] = [];
-  
+
   try {
     // Convert function to string for transmission to workers
     const fnCode = fn.toString();
-    
+
     // Create worker URL with embedded code
     const workerCode = `
       // Embedded exception parsing (simplified version)
@@ -178,31 +190,33 @@ async function renderStereoBufferWithWorkers<T extends Uint8Array | Int16Array |
         }
       };
     `;
-    
-    const workerBlob = new Blob([workerCode], { type: 'application/javascript' });
+
+    const workerBlob = new Blob([workerCode], {
+      type: 'application/javascript',
+    });
     const workerUrl = URL.createObjectURL(workerBlob);
-    
+
     // Start workers for each chunk
     for (let i = 0; i < numWorkers; i++) {
       const startSample = i * samplesPerWorker;
       const endSample = Math.min((i + 1) * samplesPerWorker, totalSamples);
-      
+
       if (startSample >= totalSamples) break; // No more work
-      
-      const worker = new Worker(workerUrl);
+
+      const worker = new (globalThis as any).Worker(workerUrl);
       workers.push(worker);
-      
+
       const promise = new Promise<WorkerResponse>((resolve, reject) => {
-        worker.onmessage = (event: MessageEvent<WorkerResponse>) => {
+        worker.onmessage = (event: MessageEvent) => {
           resolve(event.data);
         };
-        worker.onerror = (error) => {
+        worker.onerror = (error: any) => {
           reject(new Error(`Worker error: ${error.message}`));
         };
       });
-      
+
       promises.push(promise);
-      
+
       const message: WorkerMessage = {
         type: 'render',
         chunkIndex: i,
@@ -210,28 +224,33 @@ async function renderStereoBufferWithWorkers<T extends Uint8Array | Int16Array |
         endSample,
         sampleRate,
         fnCode,
-        bufferType: BufferType.name as 'Uint8Array' | 'Int16Array' | 'Float32Array',
+        bufferType: BufferType.name as
+          | 'Uint8Array'
+          | 'Int16Array'
+          | 'Float32Array',
         quantizer: quantizerType,
       };
-      
+
       worker.postMessage(message);
     }
-    
+
     // Wait for all workers to complete
     const results = await Promise.all(promises);
-    
+
     // Clean up workers and URL
-    workers.forEach(worker => worker.terminate());
+    workers.forEach((worker) => {
+      (worker as any).terminate();
+    });
     URL.revokeObjectURL(workerUrl);
-    
+
     // Check for errors
-    const errorResult = results.find(result => result.type === 'error');
+    const errorResult = results.find((result) => result.type === 'error');
     if (errorResult) {
       return {
         type: 'error',
         error: {
           name: 'WorkerError',
-          message: errorResult.error || 'Unknown worker error',
+          message: errorResult.error ?? 'Unknown worker error',
           fileName: '',
           row: 0,
           column: 0,
@@ -239,29 +258,39 @@ async function renderStereoBufferWithWorkers<T extends Uint8Array | Int16Array |
         },
       };
     }
-    
+
     // Sort results by chunk index and combine buffers
     const sortedResults = results
-      .filter((result): result is WorkerResponse & { type: 'success'; buffer: ArrayBuffer } => 
-        result.type === 'success' && result.buffer !== undefined)
+      .filter(
+        (
+          result,
+        ): result is WorkerResponse & {
+          type: 'success';
+          buffer: ArrayBuffer;
+        } => result.type === 'success' && result.buffer !== undefined,
+      )
       .sort((a, b) => a.chunkIndex - b.chunkIndex);
-    
+
     // Create final buffer and copy data from worker results
     const finalBuffer = new BufferType(2 * channelLength); // stereo = 2 channels
     let offset = 0;
-    
+
     for (const result of sortedResults) {
-      const chunkView = new (BufferType as any)(result.buffer);
+      const TypedArrayConstructor = BufferType as unknown as new (
+        buffer: ArrayBuffer,
+      ) => T;
+      const chunkView = new TypedArrayConstructor(result.buffer);
       finalBuffer.set(chunkView, offset);
       offset += chunkView.length;
     }
-    
+
     return { type: 'success', buffer: finalBuffer };
-    
   } catch (error) {
     // Clean up workers on error
-    workers.forEach(worker => worker.terminate());
-    
+    workers.forEach((worker) => {
+      (worker as any).terminate();
+    });
+
     return {
       type: 'error',
       error: {
@@ -284,7 +313,13 @@ export function Uint8StereoWorker(
   length: number,
   fn: StereoRenderer,
 ): Promise<RenderResult<Uint8Array<ArrayBuffer>>> {
-  return renderStereoBufferWithWorkers(Uint8Array, 'uint8', sampleRate, length, fn);
+  return renderStereoBufferWithWorkers(
+    Uint8Array,
+    'uint8',
+    sampleRate,
+    length,
+    fn,
+  );
 }
 
 /**
@@ -295,7 +330,13 @@ export function Int16StereoWorker(
   length: number,
   fn: StereoRenderer,
 ): Promise<RenderResult<Int16Array<ArrayBuffer>>> {
-  return renderStereoBufferWithWorkers(Int16Array, 'int16', sampleRate, length, fn);
+  return renderStereoBufferWithWorkers(
+    Int16Array,
+    'int16',
+    sampleRate,
+    length,
+    fn,
+  );
 }
 
 /**
@@ -306,5 +347,11 @@ export function Float32StereoWorker(
   length: number,
   fn: StereoRenderer,
 ): Promise<RenderResult<Float32Array<ArrayBuffer>>> {
-  return renderStereoBufferWithWorkers(Float32Array, 'none', sampleRate, length, fn);
+  return renderStereoBufferWithWorkers(
+    Float32Array,
+    'none',
+    sampleRate,
+    length,
+    fn,
+  );
 }
