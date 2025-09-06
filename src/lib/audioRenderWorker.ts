@@ -67,7 +67,7 @@ function getBufferType(
 }
 
 // Handle messages from the main thread
-self.onmessage = (event: MessageEvent) => {
+(self as unknown as Worker).onmessage = (event: MessageEvent) => {
   const {
     chunkIndex,
     startSample,
@@ -103,7 +103,7 @@ self.onmessage = (event: MessageEvent) => {
           chunkIndex,
           error: `Error at sample ${startSample + i}: ${tryParseException(e).message}`,
         };
-        self.postMessage(response);
+        (self as unknown as Worker).postMessage(response);
         return;
       }
     }
@@ -114,13 +114,13 @@ self.onmessage = (event: MessageEvent) => {
       buffer: buffer.buffer as ArrayBuffer,
     };
     // Note: In web workers, transferable objects must be passed through structured cloning
-    self.postMessage(response);
+    (self as unknown as Worker).postMessage(response);
   } catch (e) {
     const response: WorkerResponse = {
       type: 'error',
       chunkIndex,
       error: `Worker error: ${e instanceof Error ? e.message : String(e)}`,
     };
-    self.postMessage(response);
+    (self as unknown as Worker).postMessage(response);
   }
 };

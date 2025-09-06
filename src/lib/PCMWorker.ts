@@ -5,8 +5,8 @@
 
 import type { StereoRenderer } from './audio.js';
 import type { WorkerMessage, WorkerResponse } from './audioRenderWorker.js';
-import type { ExceptionInfo } from './compile.js';
 import AudioRenderWorker from './audioRenderWorker?worker';
+import type { ExceptionInfo } from './compile.js';
 
 type RenderResult<T> =
   | { type: 'success'; buffer: T }
