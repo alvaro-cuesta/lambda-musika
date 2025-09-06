@@ -2,6 +2,8 @@
  * @module Envelope functions.
  */
 
+import type { Time } from '../audio';
+
 /**
  * Attack function that grows quickly from `[0, 0]` to `[length, 1]` in a concave
  * shape.
@@ -19,16 +21,20 @@
  * @param t - The current time.
  * @return The envelope value at time `t`.
  */
-export function attack(length: number, t: number): number;
-export function attack(length: number, curve: number, t: number): number;
-export function attack(length: number, arg3: number, arg4?: number): number {
+export function attack(length: number, t: Time): number;
+export function attack(length: number, curve: number, t: Time): number;
+export function attack(
+  length: number,
+  arg3: Time | number,
+  arg4?: Time,
+): number {
   let curve: number;
-  let t: number;
+  let t: Time;
   if (typeof arg4 === 'undefined') {
     curve = 2;
-    t = arg3;
+    t = arg3 as Time;
   } else {
-    curve = arg3;
+    curve = arg3 as number;
     t = arg4;
   }
 
@@ -52,16 +58,20 @@ export function attack(length: number, arg3: number, arg4?: number): number {
  * @param t - The current time.
  * @return The envelope value at time `t`.
  */
-export function invAttack(length: number, t: number): number;
-export function invAttack(length: number, curve: number, t: number): number;
-export function invAttack(length: number, arg3: number, arg4?: number): number {
+export function invAttack(length: number, t: Time): number;
+export function invAttack(length: number, curve: number, t: Time): number;
+export function invAttack(
+  length: number,
+  arg3: Time | number,
+  arg4?: Time,
+): number {
   let curve: number;
-  let t: number;
+  let t: Time;
   if (typeof arg4 === 'undefined') {
     curve = 2;
-    t = arg3;
+    t = arg3 as Time;
   } else {
-    curve = arg3;
+    curve = arg3 as number;
     t = arg4;
   }
 
@@ -89,27 +99,27 @@ export function invAttack(length: number, arg3: number, arg4?: number): number {
 export function release(
   releaseTime: number,
   totalTime: number,
-  t: number,
+  t: Time,
 ): number;
 export function release(
   releaseTime: number,
   totalTime: number,
   curve: number,
-  t: number,
+  t: Time,
 ): number;
 export function release(
   releaseTime: number,
   totalTime: number,
-  arg3: number,
-  arg4?: number,
+  arg3: Time | number,
+  arg4?: Time,
 ): number {
   let curve: number;
-  let t: number;
+  let t: Time;
   if (typeof arg4 === 'undefined') {
     curve = 2;
-    t = arg3;
+    t = arg3 as Time;
   } else {
-    curve = arg3;
+    curve = arg3 as number;
     t = arg4;
   }
 
@@ -141,27 +151,27 @@ export function release(
 export function invRelease(
   releaseTime: number,
   totalTime: number,
-  t: number,
+  t: Time,
 ): number;
 export function invRelease(
   releaseTime: number,
   totalTime: number,
   curve: number,
-  t: number,
+  t: Time,
 ): number;
 export function invRelease(
   releaseTime: number,
   totalTime: number,
-  arg3: number,
-  arg4?: number,
+  arg3: Time | number,
+  arg4?: Time,
 ): number {
   let curve: number;
-  let t: number;
+  let t: Time;
   if (typeof arg4 === 'undefined') {
     curve = 2;
-    t = arg3;
+    t = arg3 as Time;
   } else {
-    curve = arg3;
+    curve = arg3 as number;
     t = arg4;
   }
 

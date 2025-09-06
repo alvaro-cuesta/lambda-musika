@@ -1,4 +1,4 @@
-import type { StereoRenderer } from './audio.js';
+import type { StereoRenderer, Time } from './audio.js';
 import { tryParseException, type ExceptionInfo } from './compile.js';
 
 export type OnPlayingChange = (playing: boolean) => void;
@@ -121,7 +121,7 @@ export class ScriptProcessorPlayer {
       start = performance.now();
     }
     for (let i = 0; i < buffer.length; i++) {
-      const t = (i + lastFrame) / sampleRate;
+      const t = ((i + lastFrame) / sampleRate) as Time;
       try {
         const [l, r] = fn(t);
         lChannel[i] = l;

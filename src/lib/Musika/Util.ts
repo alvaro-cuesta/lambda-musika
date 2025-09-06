@@ -2,6 +2,8 @@
  * @module Functional utilities.
  */
 
+import type { Time } from '../audio';
+
 // Helper type to generate all valid prefixes of a tuple
 type AllPrefixes<T extends readonly unknown[]> = T extends readonly []
   ? []
@@ -70,11 +72,11 @@ export function LimitRate<Fn extends (...args: never[]) => unknown>(
   fn: Fn,
   f: number,
 ) {
-  const period = 1 / f;
-  let nextUpdate: number | null = null;
+  const period = (1 / f) as Time;
+  let nextUpdate: Time | null = null;
   let cachedFn: () => ReturnType<Fn>;
 
-  return function (this: unknown, t: number) {
+  return function (this: unknown, t: Time) {
     nextUpdate ??= t;
 
     if (t < nextUpdate) {
@@ -85,7 +87,7 @@ export function LimitRate<Fn extends (...args: never[]) => unknown>(
       const v = fn.apply(this, args) as ReturnType<Fn>;
       cachedFn = () => v;
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we set nextUpdate to t above and nobody else could've modified it
-      nextUpdate = nextUpdate! + period;
+      nextUpdate = (nextUpdate! + period) as Time;
       return v;
     };
   };

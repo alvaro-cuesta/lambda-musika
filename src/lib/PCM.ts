@@ -2,7 +2,7 @@
  * @module PCM audio utilities.
  */
 
-import type { MonoRenderer, StereoRenderer } from './audio.js';
+import type { MonoRenderer, StereoRenderer, Time } from './audio.js';
 import { tryParseException, type ExceptionInfo } from './compile.js';
 
 /**
@@ -92,7 +92,7 @@ function renderMonoBuffer<T extends Uint8Array | Int16Array | Float32Array>(
   const buffer = new BufferType(channelLength);
 
   for (let i = 0; i < buffer.length; i++) {
-    const t = i / sampleRate;
+    const t = (i / sampleRate) as Time;
     try {
       const y = fn(t);
       buffer[i] = quantizer(y);
@@ -115,7 +115,7 @@ function renderStereoBuffer<T extends Uint8Array | Int16Array | Float32Array>(
   const buffer = new BufferType(2 * channelLength);
 
   for (let i = 0; i < channelLength; i++) {
-    const t = i / sampleRate;
+    const t = (i / sampleRate) as Time;
     try {
       const [l, r] = fn(t);
       buffer[i * 2] = quantizer(l);

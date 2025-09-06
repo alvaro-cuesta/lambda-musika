@@ -1,6 +1,6 @@
 import { parse, type Position } from 'acorn';
 import * as Musika from './Musika/index.js';
-import type { StereoRenderer, StereoSignal } from './audio.js';
+import type { StereoRenderer, Time } from './audio.js';
 
 const ACORN_ECMA_VERSION = 2023;
 
@@ -215,7 +215,7 @@ export function compile(source: string, sampleRate: number): CompileResult {
 
   // Run fn builder
   let length: number | null = null;
-  let fn: (t: number) => StereoSignal;
+  let fn: StereoRenderer;
   try {
     fn = builder(Musika, sampleRate, console, (l: number) => (length = l));
   } catch (e) {
@@ -224,13 +224,13 @@ export function compile(source: string, sampleRate: number): CompileResult {
 
   // Run fn dummy with t=0, t=length/2, t=length to check for basic errors
   try {
-    fn(0);
+    fn(0 as Time);
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive... length could be changed via setLength from builder
     if (length) {
-      fn(length / 2);
-      fn(length);
+      fn((length / 2) as Time);
+      fn(length as Time);
     } else {
-      fn(10); // Unknown length, try 10 just in case
+      fn(10 as Time); // Unknown length, try 10 just in case
     }
   } catch (e) {
     return { type: 'error' as const, error: tryParseException(e) };
