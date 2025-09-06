@@ -1,19 +1,19 @@
 import { faGithub } from '@fortawesome/free-brands-svg-icons/faGithub';
 import {
-  faDownload,
   faFile,
   faFileArrowDown,
   faFileArrowUp,
-  faFileText,
   faShare,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import cx from 'classnames';
-import React, { useCallback, useEffect, useReducer, useState } from 'react';
+import { useCallback, useEffect, useReducer } from 'react';
 import EmptyScript from '../../examples/empty.musika?raw';
 import { EXAMPLE_SCRIPTS } from '../../examples/index.js';
-import { SUPPORTED_BIT_DEPTHS, type BitDepth } from '../../lib/PCM.js';
+import { type BitDepth } from '../../lib/PCM.js';
 import styles from './BottomBar.module.scss';
+import { BottomBarExamples } from './BottomBarExamples.js';
+import { BottomBarRender } from './BottomBarRender.js';
 import { ButtonWithPanel } from './ButtonWithPanel.js';
 import { ConfirmPanel } from './ConfirmPanel.js';
 
@@ -65,15 +65,6 @@ function panelReducer(state: PanelState, action: PanelAction): PanelState {
   }
 }
 
-const AVAILABLE_SAMPLE_RATES = [
-  8000, 11025, 16000, 22500, 32000, 37800, 44100, 48000, 88200, 96000,
-] as const;
-
-type SampleRate = (typeof AVAILABLE_SAMPLE_RATES)[number];
-
-const DEFAULT_SAMPLE_RATE = 44100 satisfies SampleRate;
-const DEFAULT_BIT_RATE = 16 satisfies BitDepth;
-
 type BottomBarProps = {
   isClean: boolean;
   showRenderControls: boolean;
@@ -92,10 +83,6 @@ export const BottomBar = ({
   onRender,
 }: BottomBarProps) => {
   const [panelState, dispatch] = useReducer(panelReducer, { state: null });
-  const [renderSampleRate, setRenderSampleRate] =
-    useState<SampleRate>(DEFAULT_SAMPLE_RATE);
-  const [renderBitDepth, setRenderBitDepth] =
-    useState<BitDepth>(DEFAULT_BIT_RATE);
 
   const closePanels = useCallback(() => {
     dispatch({ type: 'close' });
@@ -152,28 +139,6 @@ export const BottomBar = ({
     onSave();
   }
 
-  function handleExamples() {
-    dispatch({ type: 'examplesOpen' });
-  }
-
-  function handleExamplesConfirmed(example: keyof typeof EXAMPLE_SCRIPTS) {
-    closePanels();
-    onNew(EXAMPLE_SCRIPTS[example]);
-  }
-
-  function handleRender() {
-    onRender(renderSampleRate, renderBitDepth);
-  }
-
-  function handleRenderSampleRate(e: React.ChangeEvent<HTMLSelectElement>) {
-    setRenderSampleRate(Number(e.target.value) as SampleRate);
-  }
-
-  function handleRenderBitDepth(e: React.ChangeEvent<HTMLSelectElement>) {
-    // as is safe because options are fixed
-    setRenderBitDepth(Number(e.target.value) as BitDepth);
-  }
-
   // CTRL+S = onUpdate
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -196,19 +161,16 @@ export const BottomBar = ({
     };
   }, [onUpdate]);
 
-  const updateControls = (
-    <div className={styles['group']}>
-      <button
-        type="button"
-        className="color-orange"
-        onClick={onUpdate}
-        title="CTRL-S"
-        aria-label="Commit (CTRL-S)"
-      >
-        <FontAwesomeIcon icon={faShare} />
-        Commit
-      </button>
-    </div>
+  const updateGroup = (
+    <button
+      type="button"
+      onClick={onUpdate}
+      title="CTRL-S"
+      aria-label="Commit (CTRL-S)"
+    >
+      <FontAwesomeIcon icon={faShare} />
+      Commit
+    </button>
   );
 
   const newConfirmPanel =
@@ -232,58 +194,8 @@ export const BottomBar = ({
       />
     ) : null;
 
-  const examplesPanel =
-    panelState.state === 'examplesOpen' ||
-    panelState.state === 'examplesConfirming' ? (
-      <div>
-        <h1>Examples</h1>
-        {panelState.state !== 'examplesConfirming' ? (
-          <div>
-            <ul>
-              {(
-                Object.keys(EXAMPLE_SCRIPTS) as (keyof typeof EXAMPLE_SCRIPTS)[]
-              ).map((name) => (
-                <li key={name}>
-                  <a
-                    href=""
-                    onClick={(e) => {
-                      e.preventDefault();
-                      if (isClean) {
-                        handleExamplesConfirmed(name);
-                      } else {
-                        dispatch({
-                          type: 'examplesConfirming',
-                          exampleName: name,
-                        });
-                      }
-                    }}
-                  >
-                    {name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-            <button
-              type="button"
-              onClick={closePanels}
-            >
-              Close
-            </button>
-          </div>
-        ) : (
-          <ConfirmPanel
-            loadName={panelState.exampleName}
-            onAccept={() => {
-              handleExamplesConfirmed(panelState.exampleName);
-            }}
-            onCancel={closePanels}
-          />
-        )}
-      </div>
-    ) : null;
-
-  const fileControls = (
-    <div className={cx('color-purple', styles['group'])}>
+  const fileGroup = (
+    <>
       <ButtonWithPanel
         onClick={handleNew}
         onClose={closePanels}
@@ -312,95 +224,66 @@ export const BottomBar = ({
       >
         <FontAwesomeIcon icon={faFileArrowDown} />
       </button>
-    </div>
+    </>
   );
 
-  const exampleControls = (
-    <div className={cx('color-blue', styles['group'])}>
-      <ButtonWithPanel
-        onClick={handleExamples}
-        onClose={closePanels}
-        panel={examplesPanel}
-        title="Examples"
-        aria-label="Examples"
-      >
-        <FontAwesomeIcon icon={faFileText} />
-        Examples
-      </ButtonWithPanel>
-    </div>
+  const examplesGroup = (
+    <BottomBarExamples
+      state={
+        panelState.state === 'examplesOpen'
+          ? { state: 'open' }
+          : panelState.state === 'examplesConfirming'
+            ? { state: 'confirming', exampleName: panelState.exampleName }
+            : { state: 'closed' }
+      }
+      onOpen={() => {
+        dispatch({ type: 'examplesOpen' });
+      }}
+      onClose={closePanels}
+      onLoad={(
+        example: keyof typeof EXAMPLE_SCRIPTS,
+        action: 'load' | 'confirm',
+      ) => {
+        if (isClean || action === 'confirm') {
+          closePanels();
+          onNew(EXAMPLE_SCRIPTS[example]);
+        } else {
+          dispatch({
+            type: 'examplesConfirming',
+            exampleName: example,
+          });
+        }
+      }}
+    />
   );
 
-  const renderControls = showRenderControls ? (
-    <div className={cx('color-red', styles['group'])}>
-      <button
-        type="button"
-        onClick={handleRender}
-        title="Render"
-        aria-label="Render"
-      >
-        <FontAwesomeIcon icon={faDownload} />
-        .WAV
-      </button>
-
-      <select
-        onChange={handleRenderSampleRate}
-        value={renderSampleRate}
-        title="Render sample rate"
-        aria-label="Render sample rate"
-      >
-        {AVAILABLE_SAMPLE_RATES.map((f) => (
-          <option
-            key={f}
-            value={f}
-          >
-            {f}Hz
-          </option>
-        ))}
-      </select>
-
-      <select
-        onChange={handleRenderBitDepth}
-        value={renderBitDepth}
-        title="Render bit depth"
-        aria-label="Render bit depth"
-      >
-        {SUPPORTED_BIT_DEPTHS.map((b) => (
-          <option
-            key={b}
-            value={b}
-          >
-            {b}bit
-          </option>
-        ))}
-      </select>
-    </div>
+  const renderGroup = showRenderControls ? (
+    <BottomBarRender onRender={onRender} />
   ) : null;
 
-  const aboutControls = (
-    <div className={styles['group']}>
-      <a
-        className={styles['github']}
-        href={import.meta.env.PACKAGE_CONFIG_REPOSITORY_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <FontAwesomeIcon
-          icon={faGithub}
-          title="alvaro-cuesta/lambda-musika at GitHub"
-        />
-      </a>
-    </div>
+  const aboutGroup = (
+    <a
+      className={styles['github']}
+      href={import.meta.env.PACKAGE_CONFIG_REPOSITORY_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <FontAwesomeIcon
+        icon={faGithub}
+        title="alvaro-cuesta/lambda-musika at GitHub"
+      />
+    </a>
   );
 
   return (
     <div className={styles['panel-wrapper']}>
       <div className={styles['container']}>
-        {updateControls}
-        {fileControls}
-        {exampleControls}
-        {renderControls}
+        <div className={cx(styles['group'], 'color-orange')}>{updateGroup}</div>
+        <div className={cx(styles['group'], 'color-purple')}>{fileGroup}</div>
+        <div className={cx(styles['group'], 'color-blue')}>{examplesGroup}</div>
+        <div className={cx(styles['group'], 'color-red')}>{renderGroup}</div>
         <div className={styles['gap']} />
-        {aboutControls}
+        <div className={styles['group']}>{aboutGroup}</div>
       </div>
     </div>
   );
