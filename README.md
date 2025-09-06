@@ -37,28 +37,19 @@ A Musika script is just a regular JS script:
 - interpreted client side
 - that returns a function `t => [l, r]`
 - where `t` is time
-- and `l` and `r` are output samples for the left and right channels in `[-1, 1]`
-  range
+- and `l` and `r` are output samples for the left and right channels in `[-1, 1]` range
 
-For now there is no static documentation available, just dive in the source code
-and learn form the [default song](examples/default.js) and other [examples](examples/).
+For now there is no static documentation available, just dive in the source code and learn form the [default song](examples/default.musika), other [examples](examples/), or just browse the [Musika library](src/lib/Musika/).
 
-##### - Available defines:
+### Available defines:
 
 - `sampleRate`, current audio device sample rate.
 - `setLength(secs)`, sets the total length of the song in seconds.
   - Used to seek using the time slider.
-  - When omitted the time slider is disabled and the sound is played endlessly
-    (useful for drone or procedural music).
-- `Musika`, the [Musika library](lib/Musika/):
-  - [Generator](lib/Musika/Generator.js) units
-  - [Envelope](lib/Musika/Generator.js) functions
-  - [Filter](lib/Musika/Filter/index.js) units
-  - [Operator](lib/Musika/Operator.js) functions
-  - [Music](lib/Musika/Music.js) helpers that aid with traditional composition.
-  - [Util](lib/Musika/Util.js)
+  - When omitted the time slider is disabled and the sound is played endlessly (useful for drone or endless procedural music).
+- `Musika`, the [Musika library](src/lib/Musika/)
 
-##### - Script skeleton:
+### Empty script skeleton:
 
 ```js
 const { Generator, Envelope, Filter, Operator, Music, Util } = Musika;
@@ -68,16 +59,44 @@ return (t) => [0, 0];
 
 ## Development
 
-- Start a development server at `localhost:5173`:
+Install [Node.js](https://nodejs.org), clone this repository and run this in the root of the project to install the required dependencies:
+
+```sh
+npm install
+```
+
+### Local development
+
+Just run this to start a local development server and follow the instructions:
 
 ```sh
 npm run dev
 ```
 
-- Build the application in the `build/` directory:
+### Lints
+
+You should periodically run linters to ensure the code passes some basic checks:
+
+```sh
+npm run lint:tsc
+npm run lint:eslint
+npm run lint:prettier
+# Or just let your IDE do the work with TypeScript/ESLint/Prettier integrations
+npm run lint:knip
+npm run lint:madge
+```
+
+These are automatically run as checks on GitHub Actions, but it's better if you keep lints up to date as you code!
+
+### Things to do
+
+- See [`TODO.md`](TODO.md) for outstanding general tasks.
+
+## Production build
+
+Run this to serve the application in production mode:
 
 ```sh
 npm run build
+npm run preview
 ```
-
-- See [open tasks](TODO.md)

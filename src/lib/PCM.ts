@@ -2,7 +2,13 @@
  * @module PCM audio utilities.
  */
 
-import type { MonoRenderer, StereoRenderer, Time } from './audio.js';
+import type { Constructor, Tagged } from 'type-fest';
+import type {
+  MonoRenderer,
+  MonoSignal,
+  StereoRenderer,
+  Time,
+} from './audio.js';
 import { tryParseException, type ExceptionInfo } from './compile.js';
 import { quantizeInt16, quantizeUint8 } from './quantizers.js';
 
@@ -16,6 +22,14 @@ export const SUPPORTED_BIT_DEPTHS = [8, 16, 32] as const;
  */
 export type BitDepth = (typeof SUPPORTED_BIT_DEPTHS)[number];
 
+type BufferForBitDepth<Bd extends BitDepth> = Bd extends 8
+  ? Uint8Array<ArrayBuffer>
+  : Bd extends 16
+    ? Int16Array<ArrayBuffer>
+    : Bd extends 32
+      ? Float32Array<ArrayBuffer>
+      : never;
+
 /**
  * Create a WAV blob from PCM data.
  *
@@ -27,10 +41,7 @@ export type BitDepth = (typeof SUPPORTED_BIT_DEPTHS)[number];
  * @returns A Blob containing the WAV audio data
  */
 export function makeWavBlob(
-  data:
-    | Uint8Array<ArrayBuffer>
-    | Int16Array<ArrayBuffer>
-    | Float32Array<ArrayBuffer>,
+  data: BufferForBitDepth<BitDepth>,
   numChannels: number,
   sampleRate: number,
   littleEndian = true,
@@ -49,7 +60,7 @@ export function makeWavBlob(
     ? 0x52494646 /*                               'RIFF' */
     : 0x52494658; /*                              'RIFX' */
 
-  const audioFormat = data instanceof Float32Array ? 3 : 1; // 3 = float, 1 = PCM
+  const audioFormat = data instanceof Float32Array ? 3 : 1; // 1 = PCM, 3 = 32-bit float
 
   dv.setUint32(0, chunkID, false); /*             ChunkID */
   dv.setUint32(4, dataSize + 36, true); /*        ChunkSize */
@@ -68,19 +79,82 @@ export function makeWavBlob(
   return new Blob([header, data], { type: 'audio/wav' });
 }
 
+type Quantizer = (v: MonoSignal) => number;
+
+type Uint8 = Tagged<number, 'Uint8'>;
+
+type Int16 = Tagged<number, 'Int16'>;
+
+type Float32 = Tagged<number, 'Float32'>;
+
+function clamp(v: number, min: number, max: number): number {
+  return Math.min(Math.max(v, min), max);
+}
+
+/**
+ * Quantize a float value to a 32-bit float.
+ *
+ * @param v -1.0 to 1.0
+ * @returns {@link Float32} -1.0 to 1.0
+ */
+function quantizeFloat32(v: MonoSignal): Float32 {
+  v = clamp(v, -1, 1);
+  return v as Float32;
+}
+
+function getQuantizerForBitDepth(bitDepth: BitDepth): Quantizer {
+  switch (bitDepth) {
+    case 8:
+      return (v: MonoSignal) => quantizeUint8(clamp(v, -1, 1));
+    case 16:
+      return (v: MonoSignal) => quantizeInt16(clamp(v, -1, 1));
+    case 32:
+      return quantizeFloat32;
+    default:
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions -- this is a fallthrough
+      throw new Error(`Unsupported bit depth: ${bitDepth}`);
+  }
+}
+
+function getBufferTypeForBitDepth<Bd extends BitDepth>(
+  bitDepth: Bd,
+): Constructor<BufferForBitDepth<Bd>> {
+  switch (bitDepth) {
+    case 8:
+      return Uint8Array as unknown as Constructor<BufferForBitDepth<Bd>>;
+    case 16:
+      return Int16Array as unknown as Constructor<BufferForBitDepth<Bd>>;
+    case 32:
+      return Float32Array as unknown as Constructor<BufferForBitDepth<Bd>>;
+    default:
+      throw new Error(`Unsupported bit depth: ${bitDepth}`);
+  }
+}
+
+function initRendering<Bd extends BitDepth>(
+  bitDepth: Bd,
+  length: number,
+): {
+  buffer: BufferForBitDepth<Bd>;
+  quantizer: (v: number) => number;
+} {
+  const BufferType = getBufferTypeForBitDepth(bitDepth);
+  const buffer = new BufferType(length);
+  const quantizer = getQuantizerForBitDepth(bitDepth);
+  return { buffer, quantizer };
+}
 type RenderResult<T> =
   | { type: 'success'; buffer: T }
   | { type: 'error'; error: ExceptionInfo };
 
-function renderMonoBuffer<T extends Uint8Array | Int16Array | Float32Array>(
-  BufferType: new (length: number) => T,
-  quantizer: (value: number) => number,
+export function renderPcmBufferMono<Bd extends BitDepth>(
+  bitDepth: Bd,
   sampleRate: number,
   length: number,
   fn: MonoRenderer,
-): RenderResult<T> {
+): RenderResult<BufferForBitDepth<Bd>> {
   const channelLength = Math.floor(length * sampleRate);
-  const buffer = new BufferType(channelLength);
+  const { buffer, quantizer } = initRendering(bitDepth, 1 * channelLength);
 
   for (let i = 0; i < buffer.length; i++) {
     const t = (i / sampleRate) as Time;
@@ -88,141 +162,32 @@ function renderMonoBuffer<T extends Uint8Array | Int16Array | Float32Array>(
       const y = fn(t);
       buffer[i] = quantizer(y);
     } catch (e) {
-      return { type: 'error', error: tryParseException(e) } as const;
+      return { type: 'error' as const, error: tryParseException(e) };
     }
   }
 
-  return { type: 'success', buffer } as const;
+  return { type: 'success' as const, buffer };
 }
 
-function renderStereoBuffer<T extends Uint8Array | Int16Array | Float32Array>(
-  BufferType: new (length: number) => T,
-  quantizer: (value: number) => number,
+export function renderPcmBufferStereo<Bd extends BitDepth>(
+  bitDepth: Bd,
   sampleRate: number,
   length: number,
   fn: StereoRenderer,
-): RenderResult<T> {
+): RenderResult<BufferForBitDepth<Bd>> {
   const channelLength = Math.floor(length * sampleRate);
-  const buffer = new BufferType(2 * channelLength);
+  const { buffer, quantizer } = initRendering(bitDepth, 2 * channelLength);
 
   for (let i = 0; i < channelLength; i++) {
     const t = (i / sampleRate) as Time;
     try {
       const [l, r] = fn(t);
-      buffer[i * 2] = quantizer(l);
+      buffer[i * 2 + 0] = quantizer(l);
       buffer[i * 2 + 1] = quantizer(r);
     } catch (e) {
-      return { type: 'error', error: tryParseException(e) } as const;
+      return { type: 'error' as const, error: tryParseException(e) };
     }
   }
 
-  return { type: 'success', buffer } as const;
-}
-
-/**
- * Create a mono audio buffer with 8-bit unsigned integer samples.
- *
- * @param sampleRate - Audio sample rate (in Hz)
- * @param length - Duration of the audio buffer (in seconds)
- * @param fn - Function to generate the audio samples
- * @returns A {@link RenderResult} containing the generated audio buffer, or error information
- */
-export function Uint8Mono(
-  sampleRate: number,
-  length: number,
-  fn: MonoRenderer,
-): RenderResult<Uint8Array<ArrayBuffer>> {
-  return renderMonoBuffer(Uint8Array, quantizeUint8, sampleRate, length, fn);
-}
-
-/**
- * Create a stereo audio buffer with 8-bit unsigned integer samples.
- *
- * @param sampleRate - Audio sample rate (in Hz)
- * @param length - Duration of the audio buffer (in seconds)
- * @param fn - Function to generate the audio samples
- * @returns A {@link RenderResult} containing the generated audio buffer, or error information
- */
-export function Uint8Stereo(
-  sampleRate: number,
-  length: number,
-  fn: StereoRenderer,
-): RenderResult<Uint8Array<ArrayBuffer>> {
-  return renderStereoBuffer(Uint8Array, quantizeUint8, sampleRate, length, fn);
-}
-
-/**
- * Create a mono audio buffer with 16-bit signed integer samples.
- *
- * @param sampleRate - Audio sample rate (in Hz)
- * @param length - Duration of the audio buffer (in seconds)
- * @param fn - Function to generate the audio samples
- * @returns A {@link RenderResult} containing the generated audio buffer, or error information
- */
-export function Int16Mono(
-  sampleRate: number,
-  length: number,
-  fn: MonoRenderer,
-): RenderResult<Int16Array<ArrayBuffer>> {
-  return renderMonoBuffer(Int16Array, quantizeInt16, sampleRate, length, fn);
-}
-
-/**
- * Create a stereo audio buffer with 16-bit signed integer samples.
- *
- * @param sampleRate - Audio sample rate (in Hz)
- * @param length - Duration of the audio buffer (in seconds)
- * @param fn - Function to generate the audio samples
- * @returns A {@link RenderResult} containing the generated audio buffer, or error information
- */
-export function Int16Stereo(
-  sampleRate: number,
-  length: number,
-  fn: StereoRenderer,
-): RenderResult<Int16Array<ArrayBuffer>> {
-  return renderStereoBuffer(Int16Array, quantizeInt16, sampleRate, length, fn);
-}
-
-/**
- * Create a mono audio buffer with 32-bit floating point samples.
- *
- * @param sampleRate - Audio sample rate (in Hz)
- * @param length - Duration of the audio buffer (in seconds)
- * @param fn - Function to generate the audio samples
- * @returns A {@link RenderResult} containing the generated audio buffer, or error information
- */
-export function Float32Mono(
-  sampleRate: number,
-  length: number,
-  fn: MonoRenderer,
-): RenderResult<Float32Array<ArrayBuffer>> {
-  return renderMonoBuffer(
-    Float32Array,
-    (v: number) => v,
-    sampleRate,
-    length,
-    fn,
-  );
-}
-
-/**
- * Create a stereo audio buffer with 32-bit floating point samples.
- *
- * @param sampleRate - Audio sample rate (in Hz)
- * @param length - Duration of the audio buffer (in seconds)
- * @param fn - Function to generate the audio samples
- * @returns A {@link RenderResult} containing the generated audio buffer, or error information
- */
-export function Float32Stereo(
-  sampleRate: number,
-  length: number,
-  fn: StereoRenderer,
-): RenderResult<Float32Array<ArrayBuffer>> {
-  return renderStereoBuffer(
-    Float32Array,
-    (v: number) => v,
-    sampleRate,
-    length,
-    fn,
-  );
+  return { type: 'success' as const, buffer };
 }
