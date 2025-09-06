@@ -81,7 +81,7 @@ export const Editor = ({ defaultValue, ref }: EditorProps) => {
     editor.setOptions(EDITOR_DEFAULT_OPTIONS);
 
     // Add margin so drop shadows don't overlap text
-    editor.renderer.setScrollMargin(8, 2, 0, 0);
+    editor.renderer.setScrollMargin(8, 8, 0, 0);
 
     aceExtKeybindingMenu.init(editor);
 
