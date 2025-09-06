@@ -281,7 +281,7 @@ export const App = ({ bufferLength = DEFAULT_BUFFER_LENGTH }: AppProps) => {
       <BottomBar
         isClean={isClean}
         showRenderControls={!!compileResult?.length}
-        onUpdate={handleExplicitUpdate}
+        onCommit={handleExplicitUpdate}
         onNew={handleNew}
         onSave={handleSave}
         onRender={handleRender}

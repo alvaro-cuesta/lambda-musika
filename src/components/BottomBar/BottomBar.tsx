@@ -1,21 +1,15 @@
 import { faGithub } from '@fortawesome/free-brands-svg-icons/faGithub';
-import {
-  faFile,
-  faFileArrowDown,
-  faFileArrowUp,
-  faShare,
-} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import cx from 'classnames';
-import { useCallback, useEffect, useReducer } from 'react';
+import { useCallback, useReducer } from 'react';
 import EmptyScript from '../../examples/empty.musika?raw';
 import { EXAMPLE_SCRIPTS } from '../../examples/index.js';
 import { type BitDepth } from '../../lib/PCM.js';
 import styles from './BottomBar.module.scss';
+import { BottomBarCommit } from './BottomBarCommit.js';
 import { BottomBarExamples } from './BottomBarExamples.js';
+import { BottomBarFiles } from './BottomBarFiles.js';
 import { BottomBarRender } from './BottomBarRender.js';
-import { ButtonWithPanel } from './ButtonWithPanel.js';
-import { ConfirmPanel } from './ConfirmPanel.js';
 
 type PanelState =
   | { state: 'newConfirming' }
@@ -68,7 +62,7 @@ function panelReducer(state: PanelState, action: PanelAction): PanelState {
 type BottomBarProps = {
   isClean: boolean;
   showRenderControls: boolean;
-  onUpdate: () => void;
+  onCommit: () => void;
   onNew: (source: string) => void;
   onSave: () => void;
   onRender: (sampleRate: number, bitDepth: BitDepth) => void;
@@ -77,7 +71,7 @@ type BottomBarProps = {
 export const BottomBar = ({
   isClean,
   showRenderControls,
-  onUpdate,
+  onCommit,
   onNew,
   onSave,
   onRender,
@@ -88,143 +82,40 @@ export const BottomBar = ({
     dispatch({ type: 'close' });
   }, []);
 
-  function handleNew() {
-    if (isClean) {
-      handleNewConfirmed();
-    } else {
-      dispatch({ type: 'newConfirming' });
-    }
-  }
-
-  function handleNewConfirmed() {
-    closePanels();
-    onNew(EmptyScript);
-  }
-
-  function handleLoad() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.musika,application/javascript';
-    input.onchange = () => {
-      const f = input.files?.[0];
-      if (!f) return;
-
-      const r = new FileReader();
-      r.onload = (e) => {
-        // as string is safe because we did readAsText
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- safe because it is never null
-        const content = e.target!.result as string;
-        if (isClean) {
-          handleLoadConfirmed(content);
-        } else {
-          dispatch({
-            type: 'loadConfirming',
-            fileName: f.name,
-            fileContent: content,
-          });
-        }
-      };
-      r.readAsText(f);
-    };
-    input.click();
-  }
-
-  function handleLoadConfirmed(source: string) {
-    onNew(source.replace(/\r\n/g, '\n'));
-    dispatch({ type: 'close' });
-  }
-
-  function handleSave() {
-    closePanels();
-    onSave();
-  }
-
-  // CTRL+S = onUpdate
-  useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      if (
-        e.ctrlKey &&
-        !e.shiftKey &&
-        !e.altKey &&
-        !e.metaKey &&
-        e.key === 's'
-      ) {
-        e.preventDefault();
-        onUpdate();
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [onUpdate]);
-
-  const updateGroup = (
-    <button
-      type="button"
-      onClick={onUpdate}
-      title="CTRL-S"
-      aria-label="Commit (CTRL-S)"
-    >
-      <FontAwesomeIcon icon={faShare} />
-      Commit
-    </button>
-  );
-
-  const newConfirmPanel =
-    panelState.state === 'newConfirming' ? (
-      <ConfirmPanel
-        title="New script"
-        onAccept={handleNewConfirmed}
-        onCancel={closePanels}
-      />
-    ) : null;
-
-  const loadConfirmPanel =
-    panelState.state === 'loadConfirming' ? (
-      <ConfirmPanel
-        title="Load file"
-        loadName={panelState.fileName}
-        onAccept={() => {
-          handleLoadConfirmed(panelState.fileContent);
-        }}
-        onCancel={closePanels}
-      />
-    ) : null;
+  const commitGroup = <BottomBarCommit onCommit={onCommit} />;
 
   const fileGroup = (
-    <>
-      <ButtonWithPanel
-        onClick={handleNew}
-        onClose={closePanels}
-        panel={newConfirmPanel}
-        title="New"
-        aria-label="New"
-      >
-        <FontAwesomeIcon icon={faFile} />
-      </ButtonWithPanel>
-
-      <ButtonWithPanel
-        onClick={handleLoad}
-        onClose={closePanels}
-        panel={loadConfirmPanel}
-        title="Load"
-        aria-label="Load"
-      >
-        <FontAwesomeIcon icon={faFileArrowUp} />
-      </ButtonWithPanel>
-
-      <button
-        type="button"
-        onClick={handleSave}
-        title="Save"
-        aria-label="Save"
-      >
-        <FontAwesomeIcon icon={faFileArrowDown} />
-      </button>
-    </>
+    <BottomBarFiles
+      state={
+        panelState.state === 'newConfirming'
+          ? { state: 'newConfirming' }
+          : panelState.state === 'loadConfirming'
+            ? {
+                state: 'loadConfirming',
+                fileName: panelState.fileName,
+                fileContent: panelState.fileContent,
+              }
+            : { state: 'closed' }
+      }
+      onNew={(force) => {
+        if (isClean || force) {
+          closePanels();
+          onNew(EmptyScript);
+        } else {
+          dispatch({ type: 'newConfirming' });
+        }
+      }}
+      onLoad={(fileName, fileContent, force) => {
+        if (isClean || force) {
+          closePanels();
+          onNew(fileContent);
+        } else {
+          dispatch({ type: 'loadConfirming', fileName, fileContent });
+        }
+      }}
+      onSave={onSave}
+      onClose={closePanels}
+    />
   );
 
   const examplesGroup = (
@@ -240,18 +131,12 @@ export const BottomBar = ({
         dispatch({ type: 'examplesOpen' });
       }}
       onClose={closePanels}
-      onLoad={(
-        example: keyof typeof EXAMPLE_SCRIPTS,
-        action: 'load' | 'confirm',
-      ) => {
-        if (isClean || action === 'confirm') {
+      onLoad={(example, force) => {
+        if (isClean || force) {
           closePanels();
           onNew(EXAMPLE_SCRIPTS[example]);
         } else {
-          dispatch({
-            type: 'examplesConfirming',
-            exampleName: example,
-          });
+          dispatch({ type: 'examplesConfirming', exampleName: example });
         }
       }}
     />
@@ -278,7 +163,7 @@ export const BottomBar = ({
   return (
     <div className={styles['panel-wrapper']}>
       <div className={styles['container']}>
-        <div className={cx(styles['group'], 'color-orange')}>{updateGroup}</div>
+        <div className={cx(styles['group'], 'color-orange')}>{commitGroup}</div>
         <div className={cx(styles['group'], 'color-purple')}>{fileGroup}</div>
         <div className={cx(styles['group'], 'color-blue')}>{examplesGroup}</div>
         <div className={cx(styles['group'], 'color-red')}>{renderGroup}</div>

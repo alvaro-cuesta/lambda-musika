@@ -12,10 +12,7 @@ type BottomBarExamplesProps = {
     | { state: 'confirming'; exampleName: keyof typeof EXAMPLE_SCRIPTS };
   onOpen(): void;
   onClose(): void;
-  onLoad(
-    example: keyof typeof EXAMPLE_SCRIPTS,
-    action: 'load' | 'confirm',
-  ): void;
+  onLoad(example: keyof typeof EXAMPLE_SCRIPTS, force?: boolean): void;
 };
 
 export function BottomBarExamples({
@@ -36,7 +33,7 @@ export function BottomBarExamples({
                 href=""
                 onClick={(e) => {
                   e.preventDefault();
-                  onLoad(name, 'load');
+                  onLoad(name);
                 }}
               >
                 {name}
@@ -55,7 +52,7 @@ export function BottomBarExamples({
       <ConfirmPanel
         loadName={state.exampleName}
         onAccept={() => {
-          onLoad(state.exampleName, 'confirm');
+          onLoad(state.exampleName, true);
         }}
         onCancel={onClose}
       />
