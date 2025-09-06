@@ -1,10 +1,12 @@
 /**
+ * @module audioRenderWorker
  * Web Worker for rendering audio buffer chunks in the background.
  * This prevents blocking the main thread during audio generation.
  */
 
 import type { StereoRenderer } from './audio.js';
 import { tryParseException } from './compile.js';
+import { quantizeUint8, quantizeInt16 } from './quantizers.js';
 
 export type WorkerMessage = {
   type: 'render';
@@ -24,19 +26,7 @@ export type WorkerResponse = {
   error?: string;
 };
 
-/**
- * Quantize a float value to an 8-bit unsigned integer.
- */
-function quantizeUint8(v: number): number {
-  return Math.floor(((v + 1) / 2) * 0xff);
-}
 
-/**
- * Quantize a float value to a 16-bit signed integer.
- */
-function quantizeInt16(v: number): number {
-  return Math.floor(((v + 1) / 2) * 0xffff - 0x8000);
-}
 
 function getQuantizer(type: string): (v: number) => number {
   switch (type) {
@@ -108,13 +98,14 @@ function getBufferType(
       }
     }
 
+    const arrayBuffer = buffer.buffer as ArrayBuffer;
     const response: WorkerResponse = {
       type: 'success',
       chunkIndex,
-      buffer: buffer.buffer as ArrayBuffer,
+      buffer: arrayBuffer,
     };
-    // Note: In web workers, transferable objects must be passed through structured cloning
-    (self as unknown as Worker).postMessage(response);
+    // Transfer the ArrayBuffer to avoid copying
+    (self as unknown as Worker).postMessage(response, [arrayBuffer]);
   } catch (e) {
     const response: WorkerResponse = {
       type: 'error',

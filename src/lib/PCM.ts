@@ -4,6 +4,7 @@
 
 import type { MonoRenderer, StereoRenderer } from './audio.js';
 import { tryParseException, type ExceptionInfo } from './compile.js';
+import { quantizeUint8, quantizeInt16 } from './quantizers.js';
 
 /**
  * Create a WAV blob from PCM data.
@@ -57,25 +58,7 @@ export function makeWavBlob(
   return new Blob([header, data], { type: 'audio/wav' });
 }
 
-/**
- * Quantize a float value to an 8-bit unsigned integer.
- *
- * @param v -1.0 to 1.0
- * @returns 0 to 255
- */
-function quantizeUint8(v: number) {
-  return Math.floor(((v + 1) / 2) * 0xff);
-}
 
-/**
- * Quantize a float value to a 16-bit signed integer.
- *
- * @param v -1.0 to 1.0
- * @returns -32768 to 32767
- */
-export function quantizeInt16(v: number) {
-  return Math.floor(((v + 1) / 2) * 0xffff - 0x8000);
-}
 
 type RenderResult<T> =
   | { type: 'success'; buffer: T }
