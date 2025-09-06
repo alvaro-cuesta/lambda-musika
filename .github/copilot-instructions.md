@@ -150,6 +150,68 @@ GitHub Actions workflow (`.github/workflows/ci.yml`):
 - Add tests for the existing functionality you're modifying to ensure no regressions
 - This helps document expected behavior and catch future issues
 
+## Refactoring and Code Quality
+
+### Refactoring Workflow:
+
+**Always include a post-step refactoring phase** after adding code:
+
+1. **Review for repetition**: Look for duplicated logic, copy-pasted code, or similar patterns
+2. **Identify clean code opportunities**: Consider readability, maintainability, and separation of concerns
+3. **Apply the 3-repetition rule**: If something appears 3 times, consider extraction - but avoid over-abstraction
+4. **Extract shared helpers**: Move duplicated utility functions to appropriate helper modules and import them
+
+### Anti-Patterns to Avoid:
+
+- **Over-abstraction**: Don't create giant functions with 2^n parameter combinations
+- **Copy-paste programming**: If you copy code from another file, extract it to a shared module instead
+- **Context loss**: Refactor immediately while context is fresh, not in later steps when details are forgotten
+- **Premature optimization**: Focus on clean, readable code over micro-optimizations
+
+### Abstraction Guidelines:
+
+- **Balanced extraction**: Extract repeated code to helpers, but keep functions focused and composable
+- **Prefer composition**: Build complex functionality by combining simple, pure functions
+- **Maintain single responsibility**: Each function should have one clear purpose
+- **Consider the call sites**: Ensure abstractions make the calling code cleaner, not more complex
+
+## Coding and Architectural Style
+
+Lambda Musika follows specific patterns that should be maintained:
+
+### Functional Programming Emphasis:
+
+- **Higher-order functions**: DSP functions return stateful functions (e.g., `Sin()` returns `(f, t) => signal`)
+- **Closures for state**: Audio generators use closures to maintain phase/state over time
+- **Pure functions**: Core audio processing functions are pure with no side effects
+- **Function composition**: Complex behaviors built by composing simple functions
+
+### TypeScript Patterns:
+
+- **Strong typing**: Comprehensive type definitions with complex generics where beneficial
+- **Discriminated unions**: Result types use tagged unions (e.g., `{type: 'error'} | {type: 'success'}`)
+- **Utility types**: Advanced TypeScript features for type safety (see `Util.ts` for examples)
+- **Null safety**: Careful null/undefined handling with explicit checks
+
+### React Architecture:
+
+- **Custom hooks**: Extract reusable stateful logic to custom hooks (`useInterval`, `useEditorCleanState`)
+- **Ref forwarding**: Component communication through imperative refs when needed
+- **CSS Modules**: Scoped styling with semantic class names
+- **Controlled components**: Clear data flow with explicit state management
+
+### Error Handling:
+
+- **Typed exceptions**: Structured error info with file/line details for debugging
+- **Graceful degradation**: Continue operation when possible, fail safely when not
+- **User-facing errors**: Parse and display compilation errors with context
+
+### Module Organization:
+
+- **Clear boundaries**: Separate UI (`components/`), logic (`lib/`), utilities (`utils/`), and hooks (`hooks/`)
+- **Single responsibility**: Each module has a focused purpose
+- **Minimal coupling**: Dependencies flow downward, avoid circular references
+
 ## Quick Reference
 
 **File Extensions**: Use `.js` in import statements (ES modules requirement)  
