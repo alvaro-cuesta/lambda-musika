@@ -16,7 +16,7 @@ Lambda Musika is a browser-based JavaScript Digital Audio Workstation (DAW) that
 
 ### Core Commands (in order of frequency):
 
-- **Development**: `npm run dev` → Starts Vite dev server on `http://localhost:5175/` (NOT port 8888 despite README)
+- **Development**: `npm run dev` → Starts Vite dev server on `http://localhost:5173/`
 - **Lint**: `npm run lint` → Runs all 5 linters (~10 seconds total)
 - **Test**: `npm test` → Runs Vitest with type checking (~1 second)
 - **Build**: `npm run build` → TypeScript compilation + Vite build (~14 seconds)
@@ -90,25 +90,37 @@ GitHub Actions workflow (`.github/workflows/ci.yml`):
 
 **Critical**: All lints must pass before build runs. Individual lint failures will fail the entire CI.
 
+### Lint Rules Policy:
+
+**Lint rules must NOT be disabled** except as a last resort when absolutely necessary. This includes:
+
+- Local file-level disable comments (e.g., `/* eslint-disable */`)
+- Line-level disable comments (e.g., `// eslint-disable-next-line`)
+- Global configuration changes
+
+**When disabling is necessary:**
+
+- Must include detailed comment explaining WHY the rule needs to be disabled
+- Must explain why there was no other way to fix the issue
+- Example: TypeScript `!` null assertions might be acceptable when you know the assertion is safe but TypeScript's automatic checks cannot determine this - but always explain why the assertion is safe
+
 ## Common Issues & Workarounds
 
 ### Known Technical Debt:
 
 - **Audio API Migration Needed**: Currently uses deprecated `ScriptProcessorNode`, needs migration to `AudioWorkletNode`
 - **Large Bundle Size**: Vendor chunk ~914KB triggers Vite warnings (expected behavior)
-- **Port Confusion**: README mentions localhost:8888 but dev server uses 5175+
+- **Additional Technical Debt**: See `TODO.md` for comprehensive list of planned improvements, bug fixes, and future work that may shape development approaches
 
 ### Development Gotchas:
 
-1. **TypeScript Type Complexity**: Complex exclude patterns in `tsconfig.app.json` for test files
-2. **ESLint Performance**: Takes ~7 seconds due to strict TypeScript checking
-3. **Build Timing**: Full build takes 14+ seconds due to TypeScript compilation + Vite bundling
-4. **Audio Context**: Web Audio requires user interaction - player won't start without user gesture
+1. **ESLint Performance**: Takes ~7 seconds due to strict TypeScript checking
+2. **Build Timing**: Full build takes 14+ seconds due to TypeScript compilation + Vite bundling
+3. **Audio Context**: Web Audio requires user interaction - player won't start without user gesture
 
 ### Error Patterns:
 
 - **Compilation Errors**: Check `src/lib/compile.ts` for how user script errors are parsed and displayed
-- **Audio Issues**: Usually related to ScriptProcessorNode deprecation warnings
 - **Import Issues**: Check file extensions (.js) in imports due to ES modules
 
 ## Validation Steps
@@ -121,10 +133,22 @@ GitHub Actions workflow (`.github/workflows/ci.yml`):
 
 ### Testing Changes:
 
-1. **Start dev server**: `npm run dev` and verify at `http://localhost:5175/`
+1. **Start dev server**: `npm run dev` and verify at `http://localhost:5173/`
 2. **Test audio functionality**: Create/modify .musika script in examples
 3. **Verify compilation**: Check error handling in script editor
 4. **Cross-browser**: Test in Chrome/Firefox (Web Audio API differences)
+
+### Testing Requirements for Development:
+
+**When developing new features:**
+
+1. **Tests MUST be added** that ensure the new feature works correctly
+2. **Tests MUST also be added** for related existing code to verify it continues working as expected and to enhance understanding of the codebase
+
+**When working on existing code:**
+
+- Add tests for the existing functionality you're modifying to ensure no regressions
+- This helps document expected behavior and catch future issues
 
 ## Quick Reference
 
@@ -134,4 +158,13 @@ GitHub Actions workflow (`.github/workflows/ci.yml`):
 **Dependencies**: Managed via npm, use `npm ci` for reproducible installs  
 **Audio Scripts**: JavaScript functions returning `(t) => [left, right]` samples
 
-Trust these instructions and only search the codebase if information here is incomplete or incorrect.
+## About These Instructions
+
+These instructions provide high-level context and serve as a quick reference for working with Lambda Musika. However, you are **strongly encouraged** to explore the codebase yourself to:
+
+- Gain deeper understanding of the project structure and implementation details
+- Verify that these instructions align with the current state of the project
+- Discover additional nuances not covered in this guide
+- Improve these instructions if you find anything lacking, outdated, or contradicting the actual codebase
+
+The goal is to give you a solid starting point while empowering you to become familiar with the project through direct exploration.
