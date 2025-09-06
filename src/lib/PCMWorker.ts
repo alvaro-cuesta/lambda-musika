@@ -3,8 +3,10 @@
  * This splits audio rendering across multiple web workers to avoid blocking the main thread.
  */
 
-import type { StereoRenderer } from './audio.js';
+import type { StereoRenderer, Time } from './audio.js';
 import type { WorkerMessage, WorkerResponse } from './audioRenderWorker.js';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore: Vite worker import
 import AudioRenderWorker from './audioRenderWorker?worker';
 import type { ExceptionInfo } from './compile.js';
 
@@ -46,7 +48,7 @@ function renderStereoBufferFallback<
     try {
       for (let i = 0; i < channelLength; i++) {
         const t = i / sampleRate;
-        const [l, r] = fn(t);
+        const [l, r] = fn(t as Time);
         buffer[i * 2] = quantize(l);
         buffer[i * 2 + 1] = quantize(r);
       }

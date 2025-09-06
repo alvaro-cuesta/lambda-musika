@@ -4,7 +4,7 @@
  * This prevents blocking the main thread during audio generation.
  */
 
-import type { StereoRenderer } from './audio.js';
+import type { StereoRenderer, Time } from './audio.js';
 import { tryParseException } from './compile.js';
 import { quantizeInt16, quantizeUint8 } from './quantizers.js';
 
@@ -82,7 +82,7 @@ function getBufferType(
     for (let i = 0; i < sampleCount; i++) {
       const t = (startSample + i) / sampleRate;
       try {
-        const [l, r] = fn(t);
+        const [l, r] = fn(t as Time);
         buffer[i * 2] = quantize(l);
         buffer[i * 2 + 1] = quantize(r);
       } catch (e) {

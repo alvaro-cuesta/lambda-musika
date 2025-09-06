@@ -28,6 +28,7 @@ describe('curry', () => {
 });
 
 describe('LimitRate', () => {
+  // @ts-expect-error - vitest types conflict between test setup and runtime
   const f = vitest.fn((x: number) => x + 1);
 
   beforeEach(() => {
