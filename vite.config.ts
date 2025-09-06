@@ -25,7 +25,36 @@ export default defineConfig(async ({ mode }): Promise<UserConfig> => {
     base,
     plugins: [
       ViteReact(),
-      ViteImageOptimizer(),
+      ViteImageOptimizer({
+        // This is almost the same as ViteImageOptimizer's SVGO_CONFIG...
+        svg: {
+          multipass: true,
+          plugins: [
+            {
+              name: 'preset-default',
+              params: {
+                overrides: {
+                  cleanupNumericValues: false,
+                  cleanupIds: {
+                    minify: false,
+                    remove: false,
+                  },
+                  convertPathData: false,
+                  // ...except we disable this one, since it was breaking `@media (prefers-color-scheme: dark)`
+                  inlineStyles: false,
+                },
+              },
+            },
+            'sortAttrs',
+            {
+              name: 'addAttributesToSVGElement',
+              params: {
+                attributes: [{ xmlns: 'http://www.w3.org/2000/svg' }],
+              },
+            },
+          ],
+        },
+      }),
       ViteMinifyPlugin(),
       ViteSvgr(),
     ],
