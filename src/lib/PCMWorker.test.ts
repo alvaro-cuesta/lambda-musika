@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { StereoRenderer } from './audio.js';
-import { Float32Stereo, Int16Stereo, Uint8Stereo } from './PCM.js';
+import { renderPcmBufferStereo } from './PCM.js';
 import {
   Float32StereoWorker,
   Int16StereoWorker,
@@ -26,7 +26,12 @@ describe('PCM (Original Implementation)', () => {
     it('should render stereo audio with 8-bit samples', () => {
       const sampleRate = 44100;
       const length = 0.1; // 100ms
-      const result = Uint8Stereo(sampleRate, length, testStereoRenderer);
+      const result = renderPcmBufferStereo(
+        8,
+        sampleRate,
+        length,
+        testStereoRenderer,
+      );
 
       expect(result.type).toBe('success');
       if (result.type === 'success') {
@@ -42,7 +47,7 @@ describe('PCM (Original Implementation)', () => {
     });
 
     it('should handle errors in the renderer function', () => {
-      const result = Uint8Stereo(44100, 0.1, errorStereoRenderer);
+      const result = renderPcmBufferStereo(8, 44100, 0.1, errorStereoRenderer);
       expect(result.type).toBe('error');
       if (result.type === 'error') {
         expect(result.error.message).toContain('Test error in audio rendering');
@@ -54,7 +59,12 @@ describe('PCM (Original Implementation)', () => {
     it('should render stereo audio with 16-bit samples', () => {
       const sampleRate = 44100;
       const length = 0.1;
-      const result = Int16Stereo(sampleRate, length, testStereoRenderer);
+      const result = renderPcmBufferStereo(
+        16,
+        sampleRate,
+        length,
+        testStereoRenderer,
+      );
 
       expect(result.type).toBe('success');
       if (result.type === 'success') {
@@ -70,7 +80,7 @@ describe('PCM (Original Implementation)', () => {
     });
 
     it('should handle errors in the renderer function', () => {
-      const result = Int16Stereo(44100, 0.1, errorStereoRenderer);
+      const result = renderPcmBufferStereo(16, 44100, 0.1, errorStereoRenderer);
       expect(result.type).toBe('error');
     });
   });
@@ -79,7 +89,12 @@ describe('PCM (Original Implementation)', () => {
     it('should render stereo audio with 32-bit float samples', () => {
       const sampleRate = 44100;
       const length = 0.1;
-      const result = Float32Stereo(sampleRate, length, testStereoRenderer);
+      const result = renderPcmBufferStereo(
+        32,
+        sampleRate,
+        length,
+        testStereoRenderer,
+      );
 
       expect(result.type).toBe('success');
       if (result.type === 'success') {
@@ -95,7 +110,7 @@ describe('PCM (Original Implementation)', () => {
     });
 
     it('should handle errors in the renderer function', () => {
-      const result = Float32Stereo(44100, 0.1, errorStereoRenderer);
+      const result = renderPcmBufferStereo(32, 44100, 0.1, errorStereoRenderer);
       expect(result.type).toBe('error');
     });
   });

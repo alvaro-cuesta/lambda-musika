@@ -81,10 +81,6 @@ export function makeWavBlob(
 
 type Quantizer = (v: MonoSignal) => number;
 
-type Uint8 = Tagged<number, 'Uint8'>;
-
-type Int16 = Tagged<number, 'Int16'>;
-
 type Float32 = Tagged<number, 'Float32'>;
 
 function clamp(v: number, min: number, max: number): number {

@@ -11,11 +11,11 @@ declare const vitest: {
     mockClear: () => void;
   };
 };
-// eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-unnecessary-type-parameters
+/* eslint-disable @typescript-eslint/no-unnecessary-type-parameters */
 declare const expectTypeOf: <T>(actual: T) => {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
-  toEqualTypeOf: <U>() => void;
+  toEqualTypeOf: <U>(expected?: U) => void;
 };
+/* eslint-enable @typescript-eslint/no-unnecessary-type-parameters */
 declare const expect: (actual: unknown) => {
   toEqual: (expected: unknown) => void;
   toBe: (expected: unknown) => void;

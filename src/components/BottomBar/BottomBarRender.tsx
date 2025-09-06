@@ -17,7 +17,10 @@ type BottomBarRenderProps = {
   onRender: (sampleRate: number, bitDepth: BitDepth) => void;
 };
 
-export function BottomBarRender({ isRendering = false, onRender }: BottomBarRenderProps) {
+export function BottomBarRender({
+  isRendering = false,
+  onRender,
+}: BottomBarRenderProps) {
   const [renderSampleRate, setRenderSampleRate] =
     useState<SampleRate>(DEFAULT_SAMPLE_RATE);
   const [renderBitDepth, setRenderBitDepth] =

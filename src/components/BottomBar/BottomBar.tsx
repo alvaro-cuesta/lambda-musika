@@ -145,7 +145,10 @@ export const BottomBar = ({
   );
 
   const renderGroup = showRenderControls ? (
-    <BottomBarRender isRendering={isRendering} onRender={onRender} />
+    <BottomBarRender
+      isRendering={isRendering}
+      onRender={onRender}
+    />
   ) : null;
 
   const aboutGroup = (
