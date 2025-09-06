@@ -110,6 +110,15 @@ type RenderResult<T> =
   | { type: 'success'; buffer: T }
   | { type: 'error'; error: ExceptionInfo };
 
+/**
+ * Render a mono PCM audio buffer.
+ *
+ * @param bitDepth - The bit depth of the audio samples.
+ * @param sampleRate - The sample rate of the audio (in Hz)
+ * @param length - The length of the audio buffer (in seconds).
+ * @param fn - The {@link MonoRenderer} function that generates the audio samples.
+ * @returns A {@link RenderResult} containing the generated audio buffer, or error information
+ */
 export function renderPcmBufferMono<Bd extends BitDepth>(
   bitDepth: Bd,
   sampleRate: number,
@@ -132,6 +141,15 @@ export function renderPcmBufferMono<Bd extends BitDepth>(
   return { type: 'success' as const, buffer };
 }
 
+/**
+ * Render a stereo PCM audio buffer.
+ *
+ * @param bitDepth - The bit depth of the audio samples.
+ * @param sampleRate - The sample rate of the audio (in Hz)
+ * @param length - The length of the audio buffer (in seconds).
+ * @param fn - The {@link StereoRenderer} function that generates the audio samples.
+ * @returns A {@link RenderResult} containing the generated audio buffer, or error information
+ */
 export function renderPcmBufferStereo<Bd extends BitDepth>(
   bitDepth: Bd,
   sampleRate: number,
