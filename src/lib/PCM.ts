@@ -2,9 +2,19 @@
  * @module PCM audio utilities.
  */
 
-import type { MonoRenderer, StereoRenderer } from './audio.js';
+import type { MonoRenderer, StereoRenderer, Time } from './audio.js';
 import { tryParseException, type ExceptionInfo } from './compile.js';
 import { quantizeInt16, quantizeUint8 } from './quantizers.js';
+
+/**
+ * Bit depths that are supported by Lambda Musika's PCM utilities.
+ */
+export const SUPPORTED_BIT_DEPTHS = [8, 16, 32] as const;
+
+/**
+ * Bit depths that are supported by Lambda Musika's PCM utilities.
+ */
+export type BitDepth = (typeof SUPPORTED_BIT_DEPTHS)[number];
 
 /**
  * Create a WAV blob from PCM data.
@@ -73,7 +83,7 @@ function renderMonoBuffer<T extends Uint8Array | Int16Array | Float32Array>(
   const buffer = new BufferType(channelLength);
 
   for (let i = 0; i < buffer.length; i++) {
-    const t = i / sampleRate;
+    const t = (i / sampleRate) as Time;
     try {
       const y = fn(t);
       buffer[i] = quantizer(y);
@@ -96,7 +106,7 @@ function renderStereoBuffer<T extends Uint8Array | Int16Array | Float32Array>(
   const buffer = new BufferType(2 * channelLength);
 
   for (let i = 0; i < channelLength; i++) {
-    const t = i / sampleRate;
+    const t = (i / sampleRate) as Time;
     try {
       const [l, r] = fn(t);
       buffer[i * 2] = quantizer(l);

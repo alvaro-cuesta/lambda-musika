@@ -1,15 +1,34 @@
-# Lambda Musika — The functional DAW
+<a id="lambda-musika-the-functional-daw"></a>
 
-https://lambda.cuesta.dev/
+<h1><a href="https://lambda.cuesta.dev"><img src="./public/favicon.svg" width="24" height="24" /></a> Lambda Musika, the functional DAW</h1>
 
-A JavaScript DAW that emphasizes functions as its core building block. In practice,
-a realtime audio scripting language and batteries-included DSP library, running
-on the web.
+<p align="center">
+  <a href="#lambda-musika-the-functional-daw">
+    <img src="https://img.shields.io/github/package-json/v/alvaro-cuesta/lambda-musika" alt="Version" /></a>
+  <a href="./LICENSE">
+    <img src="https://img.shields.io/github/license/alvaro-cuesta/lambda-musika" alt="License" /></a>
+  <a href="https://github.com/alvaro-cuesta/lambda-musika/actions/workflows/ci.yml">
+    <img src="https://github.com/alvaro-cuesta/lambda-musika/actions/workflows/ci.yml/badge.svg" alt="CI Status" /></a>
+  <a href="https://github.com/alvaro-cuesta/lambda-musika/issues">
+    <img src="https://img.shields.io/github/issues/alvaro-cuesta/lambda-musika" alt="Issues" /></a>
+  <a href="#development">
+    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome" /></a>
+  <a href="https://pr.new/alvaro-cuesta/lambda-musika" alt="Start new PR in StackBlitz Codeflow">
+    <img src="https://developer.stackblitz.com/img/start_pr_small.svg" /></a>
+</p>
 
-Keep in mind JavaScript is not the best language for CPU-intensive tasks, so
-performance will be limited.
+A **JavaScript DAW** that emphasizes **functions as its core building block**. In practice, a realtime audio scripting language and batteries-included DSP library, running on the web. Live-coding ready!
 
-On the other hand, it runs in your browser.
+<p align="center">
+  <a href="https://lambda.cuesta.dev"><img src="./public/favicon.svg" alt="Lambda Musika" width="128" height="128" /></a>
+  <br />
+  <b>Try it now on <a href="https://lambda.cuesta.dev">lambda.cuesta.dev</a>!</b>
+</p>
+
+> [!IMPORTANT]
+> Keep in mind JavaScript is _not_ the best language for CPU-intensive tasks, so performance will be limited.
+>
+> On the other hand, it runs in your browser!
 
 ## Usage
 
@@ -49,7 +68,7 @@ return (t) => [0, 0];
 
 ## Development
 
-- Start a development server at `localhost:8888`:
+- Start a development server at `localhost:5173`:
 
 ```sh
 npm run dev

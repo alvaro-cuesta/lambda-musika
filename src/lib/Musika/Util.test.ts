@@ -1,3 +1,4 @@
+import type { Time } from '../audio.js';
 import { curry, LimitRate } from './Util.js';
 
 describe('curry', () => {
@@ -35,7 +36,7 @@ describe('LimitRate', () => {
 
   it('calls the function immediately on the first call', () => {
     const limitedF = LimitRate(f, 2); // Limit to 2 calls per second
-    const result = limitedF(0.5)(1); // timestamp = 0.5s
+    const result = limitedF(0.5 as Time)(1); // timestamp = 0.5s
     expect(result).toBe(2);
     expect(f).toHaveBeenCalledTimes(1);
     expect(f).toHaveBeenCalledWith(1);
@@ -43,17 +44,17 @@ describe('LimitRate', () => {
 
   it('returns the last value if called again before the period', () => {
     const limitedF = LimitRate(f, 2); // Limit to 2 calls per second
-    limitedF(0.5)(1); // First call at timestamp = 0.5s
-    const result = limitedF(0.7)(2); // Second call at timestamp = 0.7s
+    limitedF(0.5 as Time)(1); // First call at timestamp = 0.5s
+    const result = limitedF(0.7 as Time)(2); // Second call at timestamp = 0.7s
     expect(result).toBe(2); // Should return last value (2)
     expect(f).toHaveBeenCalledTimes(1); // f should not be called again
   });
 
   it('calls the function again after the period has passed', () => {
     const limitedF = LimitRate(f, 2); // Limit to 2 calls per second
-    limitedF(0.5)(1); // First call at timestamp = 0.5s
-    limitedF(0.7)(2); // Second call at timestamp = 0.7s
-    const result = limitedF(1.0)(3); // Third call at timestamp = 1.0s
+    limitedF(0.5 as Time)(1); // First call at timestamp = 0.5s
+    limitedF(0.7 as Time)(2); // Second call at timestamp = 0.7s
+    const result = limitedF(1.0 as Time)(3); // Third call at timestamp = 1.0s
     expect(result).toBe(4); // Should call f again and return new value (4)
     expect(f).toHaveBeenCalledTimes(2); // f should be called twice now
     expect(f).toHaveBeenCalledWith(3);

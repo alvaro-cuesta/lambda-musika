@@ -13,7 +13,7 @@ import {
   type CompileResult,
   type ExceptionInfo,
 } from '../lib/compile.js';
-import { makeWavBlob } from '../lib/PCM.js';
+import { makeWavBlob, type BitDepth } from '../lib/PCM.js';
 import {
   Float32StereoWorker,
   Int16StereoWorker,
@@ -185,7 +185,7 @@ export const App = ({ bufferLength = DEFAULT_BUFFER_LENGTH }: AppProps) => {
   }, [markClean]);
 
   const handleRender = useCallback(
-    (sampleRate: number, bitDepth: 8 | 16 | 32) => {
+    (sampleRate: number, bitDepth: BitDepth) => {
       void (async () => {
         if (!editorRef.current) return;
 
@@ -293,7 +293,7 @@ export const App = ({ bufferLength = DEFAULT_BUFFER_LENGTH }: AppProps) => {
         isClean={isClean}
         showRenderControls={!!compileResult?.length}
         isRendering={isRendering}
-        onUpdate={handleExplicitUpdate}
+        onCommit={handleExplicitUpdate}
         onNew={handleNew}
         onSave={handleSave}
         onRender={handleRender}

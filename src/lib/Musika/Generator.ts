@@ -2,7 +2,7 @@
  * @module Audio signal generators.
  */
 
-import type { MonoSignal } from '../audio';
+import type { MonoSignal, Time } from '../audio';
 
 /**
  * Generates a stateful sine wave signal.
@@ -22,7 +22,7 @@ export function Sin() {
    * @param f - Frequency of the sine wave.
    * @param t - Time in seconds.
    */
-  return function sin(f: number, t: number): MonoSignal {
+  return function sin(f: number, t: Time): MonoSignal {
     phase += 2 * Math.PI * f * (t - lastT);
     phase %= 2 * Math.PI;
     lastT = t;
@@ -48,7 +48,7 @@ export function PositiveSaw() {
    * @param f - Frequency of the saw wave.
    * @param t - Time in seconds.
    */
-  return function positiveSaw(f: number, t: number): MonoSignal {
+  return function positiveSaw(f: number, t: Time): MonoSignal {
     phase += ((t - lastT) % (1 / f)) * f;
     phase %= 1;
     lastT = t;
@@ -73,7 +73,7 @@ export function Saw() {
    * @param f - Frequency of the saw wave.
    * @param t - Time in seconds.
    */
-  return function saw(f: number, t: number): MonoSignal {
+  return function saw(f: number, t: Time): MonoSignal {
     return osc(f, t) * 2 - 1;
   };
 }
@@ -96,16 +96,20 @@ export function PositiveSquare() {
    * @param pw - Pulse width (between 0 and 1). Defaults to 0.5.
    * @param t - Time in seconds.
    */
-  function positiveSquare(f: number, t: number): MonoSignal;
-  function positiveSquare(f: number, pw: number, t: number): MonoSignal;
-  function positiveSquare(f: number, arg3: number, arg4?: number): MonoSignal {
+  function positiveSquare(f: number, t: Time): MonoSignal;
+  function positiveSquare(f: number, pw: number, t: Time): MonoSignal;
+  function positiveSquare(
+    f: number,
+    arg3: Time | number,
+    arg4?: Time,
+  ): MonoSignal {
     let pw: number;
-    let t: number;
+    let t: Time;
     if (typeof arg4 === 'undefined') {
       pw = 0.5;
-      t = arg3;
+      t = arg3 as Time;
     } else {
-      pw = arg3;
+      pw = arg3 as number;
       t = arg4;
     }
 
@@ -133,16 +137,16 @@ export function Square() {
    * @param pw - Pulse width (between 0 and 1). Defaults to 0.5.
    * @param t - Time in seconds.
    */
-  function square(f: number, t: number): MonoSignal;
-  function square(f: number, pw: number, t: number): MonoSignal;
-  function square(f: number, arg3: number, arg4?: number): MonoSignal {
+  function square(f: number, t: Time): MonoSignal;
+  function square(f: number, pw: number, t: Time): MonoSignal;
+  function square(f: number, arg3: Time | number, arg4?: Time): MonoSignal {
     let pw: number;
-    let t: number;
+    let t: Time;
     if (typeof arg4 === 'undefined') {
       pw = 0.5;
-      t = arg3;
+      t = arg3 as Time;
     } else {
-      pw = arg3;
+      pw = arg3 as number;
       t = arg4;
     }
 
@@ -169,7 +173,7 @@ export function Tri() {
    * @param f - Frequency of the triangle wave.
    * @param t - Time in seconds.
    */
-  return function tri(f: number, t: number): MonoSignal {
+  return function tri(f: number, t: Time): MonoSignal {
     const pos = osc(f, t);
     return (pos <= 0.5 ? pos : 1 - pos) * 4 - 1;
   };
@@ -200,7 +204,7 @@ export function LFNoise(f: number) {
    * @param t - Time in seconds.
    * @returns The noise value at the given time.
    */
-  return (t: number): MonoSignal => {
+  return (t: Time): MonoSignal => {
     if (t > last_update + period) {
       y0 = y1;
       y1 = Math.random();
@@ -227,7 +231,7 @@ export function LFNoise2(f: number) {
    * @param t - Time in seconds.
    * @returns The noise value at the given time.
    */
-  return (t: number): MonoSignal => {
+  return (t: Time): MonoSignal => {
     return noise(t) * 2 - 1;
   };
 }

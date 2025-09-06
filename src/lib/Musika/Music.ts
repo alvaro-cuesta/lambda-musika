@@ -2,6 +2,8 @@
  * @module Built-in music utilities
  */
 
+import type { Time } from '../audio';
+
 /**
  * The number of semitones in an octave.
  */
@@ -112,11 +114,11 @@ export function Tempo(bpb: number, bv: number, bpm: number) {
   const beatLength = 60 / bpm;
   const barLength = bpb * beatLength;
 
-  function timeInBar(t: number) {
+  function timeInBar(t: Time) {
     return t % barLength;
   }
 
-  function currentBar(t: number) {
+  function currentBar(t: Time) {
     return 1 + Math.floor(t / barLength);
   }
 
@@ -124,25 +126,39 @@ export function Tempo(bpb: number, bv: number, bpm: number) {
     return (beatLength * bv) / noteValue;
   }
 
-  function timeInNote(noteValue: number, t: number) {
-    if (typeof t === 'undefined') {
-      t = noteValue;
+  function timeInNote(t: Time): number;
+  function timeInNote(noteValue: number, t: Time): number;
+  function timeInNote(arg1: Time | number, arg2?: Time): number {
+    let noteValue: number;
+    let t: Time;
+    if (arg2 === undefined) {
       noteValue = bv;
+      t = arg1 as Time;
+    } else {
+      noteValue = arg1 as number;
+      t = arg2;
     }
 
     return t % noteLength(noteValue);
   }
 
-  function currentNoteInBar(noteValue: number, t: number) {
-    if (typeof t === 'undefined') {
-      t = noteValue;
+  function currentNoteInBar(t: Time): number;
+  function currentNoteInBar(noteValue: number, t: Time): number;
+  function currentNoteInBar(arg1: Time | number, arg2?: Time): number {
+    let noteValue: number;
+    let t: Time;
+    if (arg2 === undefined) {
       noteValue = bv;
+      t = arg1 as Time;
+    } else {
+      noteValue = arg1 as number;
+      t = arg2;
     }
 
     return 1 + Math.floor(timeInBar(t) / noteLength(noteValue));
   }
 
-  function isInBar(which: number[], noteValue: number, t: number) {
+  function isInBar(which: number[], noteValue: number, t: Time) {
     return which.includes(currentNoteInBar(noteValue, t));
   }
 
