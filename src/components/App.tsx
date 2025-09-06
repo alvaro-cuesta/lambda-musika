@@ -14,10 +14,8 @@ import {
   type ExceptionInfo,
 } from '../lib/compile.js';
 import {
-  Float32Stereo,
-  Int16Stereo,
   makeWavBlob,
-  Uint8Stereo,
+  renderPcmBufferStereo,
   type BitDepth,
 } from '../lib/PCM.js';
 import { isEditorSerialState } from '../utils/editor.js';
@@ -205,31 +203,12 @@ export const App = ({ bufferLength = DEFAULT_BUFFER_LENGTH }: AppProps) => {
           throw new Error('Cannot render infinite-length script');
         }
         case 'with-length': {
-          let renderResult: ReturnType<
-            typeof Uint8Stereo | typeof Int16Stereo | typeof Float32Stereo
-          >;
-          switch (bitDepth) {
-            case 8:
-              renderResult = Uint8Stereo(
-                sampleRate,
-                compileResult.length,
-                compileResult.fn,
-              );
-              break;
-            case 16:
-              renderResult = Int16Stereo(
-                sampleRate,
-                compileResult.length,
-                compileResult.fn,
-              );
-              break;
-            case 32:
-              renderResult = Float32Stereo(
-                sampleRate,
-                compileResult.length,
-                compileResult.fn,
-              );
-          }
+          const renderResult = renderPcmBufferStereo(
+            bitDepth,
+            sampleRate,
+            compileResult.length,
+            compileResult.fn,
+          );
           switch (renderResult.type) {
             case 'error': {
               editorRef.current.addError(renderResult.error);
