@@ -103,7 +103,7 @@ export function makeWavBlob(
   return new Blob([header, ...data], { type: 'audio/wav' });
 }
 
-export function initRendering<Bd extends BitDepth>(
+function initRendering<Bd extends BitDepth>(
   bitDepth: Bd,
   length: number,
 ): {
@@ -119,7 +119,7 @@ export type RenderResult<Bd extends BitDepth> =
   | { type: 'success'; buffer: BufferForBitDepth<Bd> }
   | { type: 'error'; error: ExceptionInfo };
 
-export function renderPcmBufferMonoChunk<Bd extends BitDepth>(
+function renderPcmBufferMonoChunk<Bd extends BitDepth>(
   bitDepth: Bd,
   sampleRate: number,
   startSample: number,
