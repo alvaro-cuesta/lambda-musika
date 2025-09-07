@@ -51,11 +51,16 @@
     "**/*.spec.mts",
     "**/*.spec.mtsx",
 
+    // Include type definitions that are active in src because we want to import stuff in src to test it and we want
+    // the types to be available
+    "src/**/*.d.ts",
+
+    // And finally what we really want to include
     "test"
   ],
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.test.tsbuildinfo",
     "target": "ES2023",
-    "lib": ["ES2023"]
+    "lib": ["ES2023", "DOM", "DOM.Iterable"]
   }
 }

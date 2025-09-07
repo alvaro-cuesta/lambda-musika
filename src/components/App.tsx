@@ -13,11 +13,8 @@ import {
   type CompileResult,
   type ExceptionInfo,
 } from '../lib/compile.js';
-import {
-  makeWavBlob,
-  renderPcmBufferStereo,
-  type BitDepth,
-} from '../lib/PCM.js';
+import { renderPcmBufferStereoWithWorkers } from '../lib/PCM/PCM-with-workers.js';
+import { makeWavBlob, type BitDepth } from '../lib/PCM/PCM.js';
 import { isEditorSerialState } from '../utils/editor.js';
 import { downloadBlob } from '../utils/file.js';
 import { dateToSortableString, toMinsSecs } from '../utils/time.js';
@@ -83,6 +80,7 @@ export const App = ({ bufferLength = DEFAULT_BUFFER_LENGTH }: AppProps) => {
     { type: 'error' }
   > | null>(null);
   const [renderTime, setRenderTime] = useState<number | null>(null);
+  const [isRendering, setIsRendering] = useState(false);
 
   const backupIntervalRef = useRef<number>(null);
 
@@ -184,46 +182,53 @@ export const App = ({ bufferLength = DEFAULT_BUFFER_LENGTH }: AppProps) => {
 
   const handleRender = useCallback(
     (sampleRate: number, bitDepth: BitDepth) => {
-      if (!editorRef.current) return;
+      void (async () => {
+        if (!editorRef.current) return;
 
-      playerRef.current?.pause();
+        setIsRendering(true);
+        try {
+          playerRef.current?.pause();
 
-      handleUpdate();
+          handleUpdate();
 
-      const source = editorRef.current.getValue();
-      if (source === null) return;
+          const source = editorRef.current.getValue();
+          if (source === null) return;
 
-      const compileResult = compile(source, sampleRate);
-      switch (compileResult.type) {
-        case 'error': {
-          editorRef.current.addError(compileResult.error);
-          return;
-        }
-        case 'infinite': {
-          throw new Error('Cannot render infinite-length script');
-        }
-        case 'with-length': {
-          const renderResult = renderPcmBufferStereo(
-            bitDepth,
-            sampleRate,
-            compileResult.length,
-            compileResult.fn,
-          );
-          switch (renderResult.type) {
+          const compileResult = compile(source, sampleRate);
+          switch (compileResult.type) {
             case 'error': {
-              editorRef.current.addError(renderResult.error);
+              editorRef.current.addError(compileResult.error);
               return;
             }
-            case 'success': {
-              const blob = makeWavBlob(renderResult.buffer, 2, sampleRate);
-              downloadBlob(
-                `render-${dateToSortableString(new Date())}_${toMinsSecs(compileResult.length, '-')}_${sampleRate}-${bitDepth}b.wav`,
-                blob,
+            case 'infinite': {
+              throw new Error('Cannot render infinite-length script');
+            }
+            case 'with-length': {
+              const renderResult = await renderPcmBufferStereoWithWorkers(
+                bitDepth,
+                sampleRate,
+                compileResult.length,
+                source,
               );
+              switch (renderResult.type) {
+                case 'error': {
+                  editorRef.current.addError(renderResult.error);
+                  break;
+                }
+                case 'success': {
+                  const blob = makeWavBlob(renderResult.buffers, 2, sampleRate);
+                  downloadBlob(
+                    `render-${dateToSortableString(new Date())}_${toMinsSecs(compileResult.length, '-')}_${sampleRate}-${bitDepth}b.wav`,
+                    blob,
+                  );
+                }
+              }
             }
           }
+        } finally {
+          setIsRendering(false);
         }
-      }
+      })();
     },
     [handleUpdate],
   );
@@ -260,6 +265,7 @@ export const App = ({ bufferLength = DEFAULT_BUFFER_LENGTH }: AppProps) => {
       <BottomBar
         isClean={isClean}
         showRenderControls={!!compileResult?.length}
+        isRendering={isRendering}
         onCommit={handleExplicitUpdate}
         onNew={handleNew}
         onSave={handleSave}

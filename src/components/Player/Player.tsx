@@ -209,7 +209,7 @@ export const Player = ({
       <button
         type="button"
         onClick={togglePlay}
-        className={fn ? 'color-orange' : 'color-grey'}
+        className={'color-orange'}
         disabled={!fn}
         title={title}
         aria-label={title}
