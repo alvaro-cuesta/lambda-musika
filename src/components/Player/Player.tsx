@@ -10,12 +10,12 @@ import { TimeSeeker } from './TimeSeeker.js';
 import { TimeSlider } from './TimeSlider.js';
 
 import {
-  ScriptProcessorPlayer,
+  ScriptPlayer,
   type OnError,
   type OnFrame,
   type OnPlayingChange,
   type OnRenderTime,
-} from '../../lib/ScriptProcessorPlayer.js';
+} from '../../lib/ScriptPlayer.js';
 import type { StereoRenderer } from '../../lib/audio.js';
 import type { ExceptionInfo } from '../../lib/compile.js';
 
@@ -48,7 +48,7 @@ export const Player = ({
   onError,
   ref,
 }: PlayerProps) => {
-  const fnPlayerRef = useRef<ScriptProcessorPlayer>(null);
+  const fnPlayerRef = useRef<ScriptPlayer>(null);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [lastFrame, setLastFrame] = useState(0);
@@ -64,7 +64,7 @@ export const Player = ({
       onRenderTime: OnRenderTime | undefined,
       onError: OnError | undefined,
     ) => {
-      const fnPlayer = new ScriptProcessorPlayer(
+      const fnPlayer = new ScriptPlayer(
         audioCtx,
         bufferLength,
         fn,

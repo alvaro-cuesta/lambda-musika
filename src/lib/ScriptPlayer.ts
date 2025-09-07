@@ -6,7 +6,7 @@ export type OnFrame = (frame: number) => void;
 export type OnRenderTime = (ms: number) => void;
 export type OnError = (error: ExceptionInfo) => void;
 
-export class ScriptProcessorPlayer {
+export class ScriptPlayer {
   private readonly audioCtx: AudioContext;
   private readonly bufferLength: number;
 
