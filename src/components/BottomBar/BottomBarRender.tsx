@@ -1,7 +1,7 @@
-import { faDownload } from '@fortawesome/free-solid-svg-icons';
+import { faDownload, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
-import { SUPPORTED_BIT_DEPTHS, type BitDepth } from '../../lib/PCM';
+import { SUPPORTED_BIT_DEPTHS, type BitDepth } from '../../lib/PCM/PCM';
 
 const AVAILABLE_SAMPLE_RATES = [
   8000, 11025, 16000, 22500, 32000, 37800, 44100, 48000, 88200, 96000,
@@ -13,10 +13,14 @@ const DEFAULT_SAMPLE_RATE = 44100 satisfies SampleRate;
 const DEFAULT_BIT_RATE = 16 satisfies BitDepth;
 
 type BottomBarRenderProps = {
+  isRendering?: boolean;
   onRender: (sampleRate: number, bitDepth: BitDepth) => void;
 };
 
-export function BottomBarRender({ onRender }: BottomBarRenderProps) {
+export function BottomBarRender({
+  isRendering = false,
+  onRender,
+}: BottomBarRenderProps) {
   const [renderSampleRate, setRenderSampleRate] =
     useState<SampleRate>(DEFAULT_SAMPLE_RATE);
   const [renderBitDepth, setRenderBitDepth] =
@@ -41,16 +45,21 @@ export function BottomBarRender({ onRender }: BottomBarRenderProps) {
       <button
         type="button"
         onClick={handleRender}
-        title="Render"
-        aria-label="Render"
+        disabled={isRendering}
+        title={isRendering ? 'Rendering audio...' : 'Render'}
+        aria-label={isRendering ? 'Rendering audio...' : 'Render'}
       >
-        <FontAwesomeIcon icon={faDownload} />
+        <FontAwesomeIcon
+          icon={isRendering ? faSpinner : faDownload}
+          spin={isRendering}
+        />
         .WAV
       </button>
 
       <select
         onChange={handleChangeSampleRate}
         value={renderSampleRate}
+        disabled={isRendering}
         title="Render sample rate"
         aria-label="Render sample rate"
       >
@@ -67,6 +76,7 @@ export function BottomBarRender({ onRender }: BottomBarRenderProps) {
       <select
         onChange={handleChangeBitDepth}
         value={renderBitDepth}
+        disabled={isRendering}
         title="Render bit depth"
         aria-label="Render bit depth"
       >

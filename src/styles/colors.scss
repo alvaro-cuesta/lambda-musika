@@ -1,6 +1,7 @@
 $lightest: #fbfbfb;
 $lighter: #ebebeb;
 $light: #cccccc;
+$medium: #a1a1a1;
 $dark: #2d2d2d;
 $darker: #181818;
 $darkest: #000000;
@@ -42,8 +43,8 @@ $colorsets: (
     #76a9dc,
   ),
   grey: (
-    $light,
-    $light,
-    $light,
+    $medium,
+    $medium,
+    $medium,
   ),
 );

@@ -4,7 +4,7 @@ import cx from 'classnames';
 import { useCallback, useReducer } from 'react';
 import EmptyScript from '../../examples/empty.musika?raw';
 import { EXAMPLE_SCRIPTS } from '../../examples/index.js';
-import { type BitDepth } from '../../lib/PCM.js';
+import { type BitDepth } from '../../lib/PCM/PCM.js';
 import styles from './BottomBar.module.scss';
 import { BottomBarCommit } from './BottomBarCommit.js';
 import { BottomBarExamples } from './BottomBarExamples.js';
@@ -62,6 +62,7 @@ function panelReducer(state: PanelState, action: PanelAction): PanelState {
 type BottomBarProps = {
   isClean: boolean;
   showRenderControls: boolean;
+  isRendering: boolean;
   onCommit: () => void;
   onNew: (source: string) => void;
   onSave: () => void;
@@ -71,6 +72,7 @@ type BottomBarProps = {
 export const BottomBar = ({
   isClean,
   showRenderControls,
+  isRendering,
   onCommit,
   onNew,
   onSave,
@@ -143,7 +145,10 @@ export const BottomBar = ({
   );
 
   const renderGroup = showRenderControls ? (
-    <BottomBarRender onRender={onRender} />
+    <BottomBarRender
+      isRendering={isRendering}
+      onRender={onRender}
+    />
   ) : null;
 
   const aboutGroup = (

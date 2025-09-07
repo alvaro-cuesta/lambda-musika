@@ -1,4 +1,5 @@
 @use 'sass:list';
+@use 'sass:map';
 
 @use './styles/variables.scss' as variables;
 @use './styles/colors.scss' as colors;
@@ -58,27 +59,62 @@ li {
   $hover: list.nth($colorset, 2);
   $active: list.nth($colorset, 3);
 
-  button.color-#{'' + $name},
-  .color-#{'' + $name} button {
-    background-color: $normal;
+  button:not(:disabled) {
+    & {
+      &.color-#{'' + $name},
+      .color-#{'' + $name} & {
+        background-color: $normal;
+        .fa-inverse {
+          color: $normal;
+        }
+      }
+    }
+
+    &:hover:not(:active) {
+      &.color-#{'' + $name},
+      .color-#{'' + $name} & {
+        background-color: $hover;
+        .fa-inverse {
+          color: $hover;
+        }
+      }
+    }
+
+    &:active {
+      &.color-#{'' + $name},
+      .color-#{'' + $name} & {
+        background-color: $active;
+        .fa-inverse {
+          color: $active;
+        }
+      }
+    }
+  }
+}
+
+$disabled-normal: list.nth(map.get(colors.$colorsets, grey), 1);
+$disabled-hover: list.nth(map.get(colors.$colorsets, grey), 2);
+$disabled-active: list.nth(map.get(colors.$colorsets, grey), 3);
+
+button:disabled {
+  & {
+    background-color: $disabled-normal;
     .fa-inverse {
-      color: $normal;
+      color: $disabled-normal;
     }
   }
 
-  button:hover:not(:active).color-#{'' + $name},
-  .color-#{'' + $name} button:hover:not(:active) {
-    background-color: $hover;
+  &:hover:not(:active) {
+    background-color: $disabled-hover;
     .fa-inverse {
-      color: $hover;
+      color: $disabled-hover;
     }
   }
 
-  button:active.color-#{'' + $name},
-  .color-#{'' + $name} button:active {
-    background-color: $active;
+  &:active {
+    background-color: $disabled-active;
     .fa-inverse {
-      color: $active;
+      color: $disabled-active;
     }
   }
 }
