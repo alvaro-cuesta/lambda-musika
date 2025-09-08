@@ -91,6 +91,8 @@ These are automatically run as checks on GitHub Actions, but it's better if you 
 ### Things to do
 
 - See [`TODO.md`](TODO.md) for outstanding general tasks.
+- See [open issues](https://github.com/alvaro-cuesta/lambda-musika/issues).
+- Do a global search for `@todo` in the code.
 
 ## Production build
 

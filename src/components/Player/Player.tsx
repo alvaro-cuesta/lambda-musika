@@ -35,6 +35,29 @@ type PlayerProps = {
   ref?: React.Ref<PlayerRef> | undefined;
 };
 
+type Waitable<T> = {
+  get: Promise<T>;
+  store: (value: T) => void;
+};
+
+function useWaitableRef<T>() {
+  const ref = useRef<Waitable<T> | null>(null);
+  ref.current ??= (() => {
+    let store: (v: T) => void = () => {
+      throw new Error('Unexpected uninitialized useWaitableRef.store!');
+    };
+    const get = new Promise<T>((resolve) => {
+      store = resolve;
+    });
+    return { get, store };
+  })();
+
+  return {
+    get: ref.current.get,
+    store: ref.current.store,
+  };
+}
+
 export const Player = ({
   audioCtx,
   fnCode,
@@ -44,7 +67,7 @@ export const Player = ({
   onError,
   ref,
 }: PlayerProps) => {
-  const fnPlayerRef = useRef<ScriptPlayer>(null);
+  const fnPlayerRef = useWaitableRef<ScriptPlayer>();
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [lastFrame, setLastFrame] = useState(0);
@@ -84,20 +107,23 @@ export const Player = ({
   // Sync props with fnPlayer
   useEffect(() => {
     void (async () => {
-      fnPlayerRef.current = await makeFnPlayer(
-        fnCode,
-        handlePlayingChange,
-        handleFrame,
-        onRenderTime,
-        onError,
+      fnPlayerRef.store(
+        await makeFnPlayer(
+          fnCode,
+          handlePlayingChange,
+          handleFrame,
+          onRenderTime,
+          onError,
+        ),
       );
     })();
 
     return () => {
-      if (fnPlayerRef.current) {
-        void fnPlayerRef.current.destroy();
-        fnPlayerRef.current = null;
-      }
+      void fnPlayerRef.get.then(async (fnPlayer) => {
+        await fnPlayer.destroy();
+        // @todo Commented out for the new WaitableRef, but might be needed at some point
+        // fnPlayerRef.current = null;
+      });
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- @todo
   }, [makeFnPlayer]);
@@ -105,45 +131,43 @@ export const Player = ({
   // @todo isPlaying/length are completely ignored and only for show -- not synced (because we have 2 of those, one
   // here and another one in the AudioWorklet)
   useEffect(() => {
-    if (fnPlayerRef.current) {
-      void fnPlayerRef.current.setFn(fnCode);
-    }
-  }, [fnCode]);
+    void fnPlayerRef.get.then((fnPlayer) => fnPlayer.setFn(fnCode));
+  }, [fnCode, fnPlayerRef.get]);
   useEffect(() => {
-    if (fnPlayerRef.current) {
-      fnPlayerRef.current.onPlayingChange = handlePlayingChange;
-    }
-  }, [handlePlayingChange]);
+    void fnPlayerRef.get.then((fnPlayer) => {
+      fnPlayer.onPlayingChange = handlePlayingChange;
+    });
+  }, [handlePlayingChange, fnPlayerRef.get]);
   useEffect(() => {
-    if (fnPlayerRef.current) {
-      fnPlayerRef.current.onFrame = handleFrame;
-    }
-  }, [handleFrame]);
+    void fnPlayerRef.get.then((fnPlayer) => {
+      fnPlayer.onFrame = handleFrame;
+    });
+  }, [handleFrame, fnPlayerRef.get]);
   useEffect(() => {
-    if (fnPlayerRef.current) {
-      fnPlayerRef.current.onRenderTime = onRenderTime;
-    }
-  }, [onRenderTime]);
+    void fnPlayerRef.get.then((fnPlayer) => {
+      fnPlayer.onRenderTime = onRenderTime;
+    });
+  }, [onRenderTime, fnPlayerRef.get]);
   useEffect(() => {
-    if (fnPlayerRef.current) {
-      fnPlayerRef.current.onError = onError;
-    }
-  }, [onError]);
+    void fnPlayerRef.get.then((fnPlayer) => {
+      fnPlayer.onError = onError;
+    });
+  }, [onError, fnPlayerRef.get]);
 
   // Controls
   const togglePlay = useCallback(() => {
-    void fnPlayerRef.current?.togglePlay();
-  }, []);
+    void fnPlayerRef.get.then((fnPlayer) => fnPlayer.togglePlay());
+  }, [fnPlayerRef.get]);
 
   // @todo Completely remove this
   useImperativeHandle(
     ref,
     () => ({
       async pause() {
-        await fnPlayerRef.current?.pause();
+        await fnPlayerRef.get.then((fnPlayer) => fnPlayer.pause());
       },
     }),
-    [],
+    [fnPlayerRef.get],
   );
 
   // CTRL+Space = toggle play/pause
@@ -171,12 +195,10 @@ export const Player = ({
   const handleTime = useCallback(
     (time: number) => {
       const frame = time * audioCtx.sampleRate;
-      if (fnPlayerRef.current) {
-        void fnPlayerRef.current.setFrame(frame);
-      }
+      void fnPlayerRef.get.then((fnPlayer) => fnPlayer.setFrame(frame));
       setLastFrame(frame);
     },
-    [audioCtx.sampleRate],
+    [audioCtx.sampleRate, fnPlayerRef.get],
   );
 
   const sampleRate = audioCtx.sampleRate;
