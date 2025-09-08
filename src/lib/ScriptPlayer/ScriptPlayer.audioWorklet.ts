@@ -245,6 +245,6 @@ class ScriptPlayerProcessor extends AudioWorkletProcessor {
   }
 }
 
-// @todo currently this ignores the audio context's time and just continues where it left, whereas we might actually want to make the current frame be tied to the audio context's time instead (so it continues properly) -- note this also ties with pause etc.
+// @todo currently this ignores the audio context's time and just continues where it left off, whereas we might actually want to make the current frame be tied to the audio context's time instead (so it continues properly) -- note this also ties with pause etc.
 
 registerProcessor('ScriptPlayerProcessor', ScriptPlayerProcessor);
