@@ -15,7 +15,7 @@ export type ScriptPlayerRequest =
       frame: number;
     };
 
-export type ScriptPlayerResponse =
+type ScriptPlayerResponse =
   | {
       type: 'setFn-success';
       requestId: string;
