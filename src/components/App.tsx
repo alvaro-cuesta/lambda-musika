@@ -9,8 +9,8 @@ import {
 import { EXAMPLE_SCRIPTS } from '../examples/index.js';
 import { useInterval } from '../hooks/useInterval.js';
 import { compile, type CompileResult } from '../lib/compile.js';
-import { renderPcmBufferStereoWithWorkers } from '../lib/PCM/PCM-with-workers.js';
 import { makeWavBlob, type BitDepth } from '../lib/PCM/PCM.js';
+import { renderPcmBufferStereoWithBestEffort } from '../lib/PCM/renderWithBestEffort.js';
 import type {
   OnError,
   OnPlayingChange,
@@ -206,7 +206,7 @@ export const App = () => {
               throw new Error('Cannot render infinite-length script');
             }
             case 'with-length': {
-              const renderResult = await renderPcmBufferStereoWithWorkers(
+              const renderResult = await renderPcmBufferStereoWithBestEffort(
                 bitDepth,
                 sampleRate,
                 compileResult.length,

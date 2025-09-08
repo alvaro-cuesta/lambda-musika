@@ -7,7 +7,7 @@ import { initRendering, type BitDepth, type RenderResult } from './PCM';
 // @todo renderPcmBufferMonoWithWorkers
 
 /**
- * Render a stereo PCM audio buffer.
+ * Render a stereo PCM audio buffer using a {@link OfflineAudioContext}.
  *
  * @param bitDepth - The bit depth of the audio samples.
  * @param sampleRate - The sample rate of the audio (in Hz)

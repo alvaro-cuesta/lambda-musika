@@ -4,7 +4,7 @@ const config: KnipConfig = {
   entry: [
     'src/main.tsx',
     // this is meant to be a library exposed to the user, so it is potentially used
-    'src/lib/PCM/PCM.ts',
+    'src/lib/PCM/renderWithMainThread.ts',
     'src/lib/Musika/index.ts',
     // used by @vite-pwa/assets-generator
     'pwa-assets.config.ts',
