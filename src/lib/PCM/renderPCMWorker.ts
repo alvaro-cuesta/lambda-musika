@@ -39,52 +39,64 @@ export function launchRenderPCMWorker<Bd extends BitDepth>(
     { once: true },
   );
 
-  const promise = new Promise<BufferForBitDepth<Bd>>((resolve, reject) => {
-    worker.onmessage = (event: MessageEvent<RenderPCMWorkerResponse<Bd>>) => {
-      const response = event.data;
+  function sendMessage(message: RenderPCMWorkerRequest): void {
+    worker.postMessage(message);
+  }
 
-      switch (response.type) {
-        case 'compile-error': {
-          reject(
-            new RenderPCMWorkerError(
-              'Error while compiling rendering function',
-              response.error,
-            ),
-          );
-          return;
-        }
-        case 'render-result': {
-          switch (response.result.type) {
-            case 'success': {
-              resolve(response.result.buffer);
-              return;
-            }
-            case 'error': {
-              reject(
-                new RenderPCMWorkerError(
-                  'Error while rendering audio chunk',
-                  response.result.error,
-                ),
-              );
-              return;
+  const promise = new Promise<BufferForBitDepth<Bd>>((resolve, reject) => {
+    worker.addEventListener(
+      'message',
+      (event: MessageEvent<RenderPCMWorkerResponse<Bd>>) => {
+        const response = event.data;
+
+        switch (response.type) {
+          case 'compile-error': {
+            reject(
+              new RenderPCMWorkerError(
+                'Error while compiling rendering function',
+                response.error,
+              ),
+            );
+            return;
+          }
+          case 'render-result': {
+            switch (response.result.type) {
+              case 'success': {
+                resolve(response.result.buffer);
+                return;
+              }
+              case 'error': {
+                reject(
+                  new RenderPCMWorkerError(
+                    'Error while rendering audio chunk',
+                    response.result.error,
+                  ),
+                );
+                return;
+              }
             }
           }
         }
-      }
-    };
+      },
+      { once: true },
+    );
 
-    worker.onerror = (error: ErrorEvent) => {
-      // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors -- is there anything else I can do?
-      reject(error);
-    };
+    worker.addEventListener(
+      'error',
+      (error: ErrorEvent) => {
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors -- is there anything else I can do?
+        reject(error);
+      },
+      { once: true },
+    );
 
-    worker.postMessage({
+    sendMessage({
       bitDepth,
       sampleRate,
       startSample,
       endSample,
       fnCode,
-    } satisfies RenderPCMWorkerRequest);
+    });
   }).finally(() => {
     worker.terminate();
   });

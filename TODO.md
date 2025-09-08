@@ -2,7 +2,7 @@
 
 ## Critical
 
-- `[PLAYER]` Replace `ScriptProcessor` with `AudioWorklet`
+- `[API]` Module-based scripts
 - `[APP]` Bottom bar is too large in mobile now -- render probably needs a panel instead
 - `[PLAYER]` Input time is completely wrong and has AM/PM in english locales (lol)
 
@@ -94,6 +94,7 @@
 
 ## Ideas or possible research lines
 
+- `[RENDER]` Maybe use OfflineAudioContext or `<audio>`?
 - `[SCRIPTS]` Use strict mode?
 - `[COSMETIC]` "3D" box-shadow buttons Material Design style
 - `[FEATURE]` `[API]` `[APP]` `[...]` Microphone/MIDI/keyboard/mouse input
@@ -117,7 +118,7 @@
 - `[FEATURE]` `[EDITOR]` `[COMPILER]` Multiple files/tabs
 - `[FEATURE]` `[COMPILER]` Import Gists, JS modules by URL, or other sources of functions (for custom libraries)
 - `[FEATURE]` `[APP]` `[EDITOR]` Slider when double-clicking numerical values in editor
-- `[FEATURE]` `[RENDERER]` MP3/OGG
+- `[FEATURE]` `[RENDERER]` MP3/OGG/Opus/FLAC?
 - `[API]` `[MUSIKA]` Make the API more functional by taking Sin(), Constant(), etc. as parameters... i.e. take functions instead of values (easier composition)
   - Function calls might be expensive, leave it to the user?
 - `[API]` `[MUSIKA]` Maybe use object options instead of parameters (for easier composition of functions)

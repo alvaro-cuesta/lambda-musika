@@ -2,14 +2,11 @@
  * @module Audio quantization utilities for converting float samples to different bit depths.
  */
 
+import { clamp } from '../../utils/math';
 import type { MonoSignal } from '../audio';
 import type { BitDepth, Float32, Int16, Uint8 } from './PCM';
 
 type Quantizer = (v: MonoSignal) => number;
-
-function clamp(v: number, min: number, max: number): number {
-  return Math.min(Math.max(v, min), max);
-}
 
 /**
  * Quantize a float value to an 8-bit unsigned integer.

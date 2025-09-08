@@ -8,30 +8,30 @@ import {
 } from 'react';
 import { EXAMPLE_SCRIPTS } from '../examples/index.js';
 import { useInterval } from '../hooks/useInterval.js';
-import {
-  compile,
-  type CompileResult,
-  type ExceptionInfo,
-} from '../lib/compile.js';
+import { compile, type CompileResult } from '../lib/compile.js';
 import { renderPcmBufferStereoWithWorkers } from '../lib/PCM/PCM-with-workers.js';
 import { makeWavBlob, type BitDepth } from '../lib/PCM/PCM.js';
+import type {
+  OnError,
+  OnPlayingChange,
+  OnRenderTime,
+} from '../lib/ScriptPlayer/ScriptPlayer.js';
 import { isEditorSerialState } from '../utils/editor.js';
 import { downloadBlob } from '../utils/file.js';
 import { dateToSortableString, toMinsSecs } from '../utils/time.js';
 import styles from './App.module.scss';
 import { BottomBar } from './BottomBar/BottomBar.js';
-import { CPULoad } from './CPULoad.js';
+import {
+  CPULoad,
+  TIMING_HISTORY_LENGTH,
+  type RenderTiming,
+} from './CPULoad.js';
 import { Editor, type EditorRef } from './Editor.js';
 import { Player, type PlayerRef } from './Player/Player.js';
 
 const DEFAULT_SCRIPT = EXAMPLE_SCRIPTS.Default;
-const DEFAULT_BUFFER_LENGTH = 8192;
 
 const BACKUP_INTERVAL = 1000;
-
-type AppProps = {
-  bufferLength?: number;
-};
 
 function useAudioContext() {
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -72,14 +72,13 @@ function useEditorCleanState(editorRef: RefObject<EditorRef | null>) {
   };
 }
 
-export const App = ({ bufferLength = DEFAULT_BUFFER_LENGTH }: AppProps) => {
+export const App = () => {
   const audioCtx = useAudioContext();
 
-  const [compileResult, setCompileResult] = useState<Exclude<
-    CompileResult,
-    { type: 'error' }
-  > | null>(null);
-  const [renderTime, setRenderTime] = useState<number | null>(null);
+  const [compileResult, setCompileResult] = useState<
+    (Exclude<CompileResult, { type: 'error' }> & { fnCode: string }) | null
+  >(null);
+  const [renderTime, setRenderTime] = useState<RenderTiming | null>(null);
   const [isRendering, setIsRendering] = useState(false);
 
   const backupIntervalRef = useRef<number>(null);
@@ -101,7 +100,7 @@ export const App = ({ bufferLength = DEFAULT_BUFFER_LENGTH }: AppProps) => {
         return;
       case 'infinite':
       case 'with-length':
-        setCompileResult(compileResult);
+        setCompileResult({ ...compileResult, fnCode: source });
         return;
     }
   }, [audioCtx]);
@@ -142,15 +141,18 @@ export const App = ({ bufferLength = DEFAULT_BUFFER_LENGTH }: AppProps) => {
   }, [handleUpdate, handleBackup]);
 
   // Player events
-  const handlePlayingChange = useCallback((_playing: boolean) => {
+  const handlePlayingChange: OnPlayingChange = useCallback((_playing) => {
     setRenderTime(null);
   }, []);
 
-  const handleRenderTime = useCallback((renderTime: number) => {
-    setRenderTime(renderTime);
+  const handleRenderTime: OnRenderTime = useCallback((ms, bufferLength) => {
+    setRenderTime((prev) => ({
+      ms: [...(prev?.ms ?? []), ms].slice(-TIMING_HISTORY_LENGTH),
+      bufferLength,
+    }));
   }, []);
 
-  const handleError = useCallback((error: ExceptionInfo) => {
+  const handleError: OnError = useCallback((error) => {
     try {
       editorRef.current?.addError(error);
     } catch {
@@ -187,7 +189,7 @@ export const App = ({ bufferLength = DEFAULT_BUFFER_LENGTH }: AppProps) => {
 
         setIsRendering(true);
         try {
-          playerRef.current?.pause();
+          void playerRef.current?.pause();
 
           handleUpdate();
 
@@ -242,9 +244,8 @@ export const App = ({ bufferLength = DEFAULT_BUFFER_LENGTH }: AppProps) => {
       <Player
         ref={playerRef}
         // @todo Merge this into a single prop?
-        fn={compileResult?.fn ?? null}
+        fnCode={compileResult?.fnCode ?? null}
         length={compileResult?.length ?? null}
-        bufferLength={bufferLength}
         audioCtx={audioCtx}
         onPlayingChange={handlePlayingChange}
         onRenderTime={handleRenderTime}
@@ -252,8 +253,7 @@ export const App = ({ bufferLength = DEFAULT_BUFFER_LENGTH }: AppProps) => {
       />
 
       <CPULoad
-        renderTime={renderTime}
-        bufferLength={bufferLength}
+        renderTiming={renderTime}
         sampleRate={audioCtx.sampleRate}
       />
 
