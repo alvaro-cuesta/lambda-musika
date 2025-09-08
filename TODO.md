@@ -94,7 +94,6 @@
 
 ## Ideas or possible research lines
 
-- `[RENDER]` Maybe use OfflineAudioContext or `<audio>`?
 - `[SCRIPTS]` Use strict mode?
 - `[COSMETIC]` "3D" box-shadow buttons Material Design style
 - `[FEATURE]` `[API]` `[APP]` `[...]` Microphone/MIDI/keyboard/mouse input

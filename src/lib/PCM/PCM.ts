@@ -103,7 +103,7 @@ export function makeWavBlob(
   return new Blob([header, ...data], { type: 'audio/wav' });
 }
 
-function initRendering<Bd extends BitDepth>(
+export function initRendering<Bd extends BitDepth>(
   bitDepth: Bd,
   length: number,
 ): {
@@ -115,11 +115,12 @@ function initRendering<Bd extends BitDepth>(
   const quantizer = getQuantizerForBitDepth(bitDepth);
   return { buffer, quantizer };
 }
+
 export type RenderResult<Bd extends BitDepth> =
   | { type: 'success'; buffer: BufferForBitDepth<Bd> }
   | { type: 'error'; error: ExceptionInfo };
 
-function renderPcmBufferMonoChunk<Bd extends BitDepth>(
+export function renderPcmBufferMonoChunk<Bd extends BitDepth>(
   bitDepth: Bd,
   sampleRate: number,
   startSample: number,
@@ -162,42 +163,4 @@ export function renderPcmBufferStereoChunk<Bd extends BitDepth>(
   }
 
   return { type: 'success' as const, buffer };
-}
-
-/**
- * Render a mono PCM audio buffer.
- *
- * @param bitDepth - The bit depth of the audio samples.
- * @param sampleRate - The sample rate of the audio (in Hz)
- * @param length - The length of the audio buffer (in seconds).
- * @param fn - The {@link MonoRenderer} function that generates the audio samples.
- * @returns A {@link RenderResult} containing the generated audio buffer, or error information
- */
-export function renderPcmBufferMono<Bd extends BitDepth>(
-  bitDepth: Bd,
-  sampleRate: number,
-  length: number,
-  fn: MonoRenderer,
-): RenderResult<Bd> {
-  const channelLength = Math.floor(length * sampleRate);
-  return renderPcmBufferMonoChunk(bitDepth, sampleRate, 0, channelLength, fn);
-}
-
-/**
- * Render a stereo PCM audio buffer.
- *
- * @param bitDepth - The bit depth of the audio samples.
- * @param sampleRate - The sample rate of the audio (in Hz)
- * @param length - The length of the audio buffer (in seconds).
- * @param fn - The {@link StereoRenderer} function that generates the audio samples.
- * @returns A {@link RenderResult} containing the generated audio buffer, or error information
- */
-export function renderPcmBufferStereo<Bd extends BitDepth>(
-  bitDepth: Bd,
-  sampleRate: number,
-  length: number,
-  fn: StereoRenderer,
-): RenderResult<Bd> {
-  const channelLength = Math.floor(length * sampleRate);
-  return renderPcmBufferStereoChunk(bitDepth, sampleRate, 0, channelLength, fn);
 }
