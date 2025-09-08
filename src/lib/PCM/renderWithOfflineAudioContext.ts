@@ -1,7 +1,7 @@
 import { clamp } from '../../utils/math';
 import type { ExceptionInfo } from '../compile';
 import type { ScriptPlayerMessage } from '../ScriptPlayer/ScriptPlayer.audioWorklet';
-import scriptPlayerProcessorAudioWorkletUrl from '../ScriptPlayer/ScriptPlayer.audioWorklet.js?url';
+import scriptPlayerProcessorAudioWorkletUrl from '../ScriptPlayer/ScriptPlayer.audioWorklet.js?worker&url';
 import { initRendering, type BitDepth, type RenderResult } from './PCM';
 
 // @todo renderPcmBufferMonoWithWorkers
