@@ -36,10 +36,10 @@ self.onmessage = (event: MessageEvent<RenderPCMWorkerRequest>) => {
 
   switch (compileResult.type) {
     case 'error': {
-      self.postMessage({
+      sendMessage({
         type: 'compile-error',
         error: compileResult.error,
-      } satisfies RenderPCMWorkerResponse<typeof bitDepth>);
+      });
       return;
     }
     case 'infinite': {
@@ -58,14 +58,21 @@ self.onmessage = (event: MessageEvent<RenderPCMWorkerRequest>) => {
     compileResult.fn,
   );
 
-  self.postMessage(
+  sendMessage(
     {
       type: 'render-result',
       result: renderResult,
-    } satisfies RenderPCMWorkerResponse<typeof bitDepth>,
+    },
     {
       transfer:
         renderResult.type === 'success' ? [renderResult.buffer.buffer] : [],
     },
   );
 };
+
+function sendMessage(
+  message: RenderPCMWorkerResponse<BitDepth>,
+  options?: WindowPostMessageOptions,
+): void {
+  self.postMessage(message, options);
+}

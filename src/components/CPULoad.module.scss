@@ -18,14 +18,14 @@
   cursor: default;
 }
 
-.black {
+.black-overlay {
   position: absolute;
   right: 0;
   height: 100%;
   background-color: colors.$darker;
 }
 
-.overlay {
+.text-overlay {
   position: relative;
   display: flex;
   justify-content: space-between;

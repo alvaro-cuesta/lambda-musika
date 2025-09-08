@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/unbound-method -- false positive, not methods but React props */
 import { faFileText } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { EXAMPLE_SCRIPTS } from '../../examples';
-import { ButtonWithPanel } from './ButtonWithPanel';
-import { ConfirmPanel } from './ConfirmPanel';
+import { EXAMPLE_SCRIPTS } from '../../examples/index.js';
+import { ButtonWithPanel } from './ButtonWithPanel.jsx';
+import { ConfirmPanel } from './ConfirmPanel.jsx';
 
 type BottomBarExamplesProps = {
   state:

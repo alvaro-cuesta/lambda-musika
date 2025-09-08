@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { toMinsSecs } from './time';
+import { toMinsSecs } from './time.js';
 
 describe('toMinSecs', () => {
   it('converts seconds', () => {

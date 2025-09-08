@@ -4,10 +4,10 @@ Lambda Musika is a browser-based JavaScript Digital Audio Workstation (DAW) that
 
 ## Repository Overview
 
-**Purpose**: Web-based DAW with JavaScript scripting language for audio synthesis  
-**Size**: Medium (~39 TypeScript files, ~510 npm packages)  
-**Tech Stack**: TypeScript + React 19.1.1 + Vite 7.1.4 + Vitest + Web Audio API  
-**Target Runtime**: Modern browsers supporting Web Audio API  
+**Purpose**: Web-based DAW with JavaScript scripting language for audio synthesis
+**Size**: Medium (~39 TypeScript files, ~510 npm packages)
+**Tech Stack**: TypeScript + React 19.1.1 + Vite 7.1.4 + Vitest + Web Audio API
+**Target Runtime**: Modern browsers supporting Web Audio API
 **Node Version**: v22.18.0 (see `.nvmrc`)
 
 ## Build Instructions
@@ -48,27 +48,27 @@ Lambda Musika is a browser-based JavaScript Digital Audio Workstation (DAW) that
 
 ```
 src/
-├── main.tsx                 # Entry point
-├── components/              # React UI components
-│   ├── App.tsx             # Main application container
-│   ├── Editor.tsx          # ACE code editor wrapper
-│   ├── Player/             # Audio player controls
-│   └── BottomBar/          # Status and controls
-├── lib/                    # Core libraries
-│   ├── Musika/             # DSP library (Generator, Filter, Envelope, etc.)
-│   ├── compile.ts          # Script compilation & error handling
-│   ├── PCM.ts              # Audio data processing
-│   └── ScriptProcessorPlayer.ts  # Audio playback (legacy Web Audio)
-├── examples/               # Example .musika scripts
-├── utils/                  # Utility functions
-├── hooks/                  # React hooks
-└── styles/                 # SCSS stylesheets
+├── main.tsx           # Entry point
+├── components/        # React UI components
+│   ├── App.tsx        # Main application container
+│   ├── Editor.tsx     # ACE code editor wrapper
+│   ├── Player/        # Audio player controls
+│   └── BottomBar/     # Status and controls
+├── lib/               # Core libraries
+│   ├── Musika/        # DSP library (Generator, Filter, Envelope, etc.)
+│   ├── PCM/           # Audio data processing
+│   └── ScriptPlayer/  # Audio playback (legacy Web Audio)
+│   ├── compile.ts     # Script compilation & error handling
+├── examples/          # Example .musika scripts
+├── utils/             # Utility functions
+├── hooks/             # React hooks
+└── styles/            # SCSS stylesheets
 ```
 
 ### Key Components:
 
 - **Script Compilation**: `src/lib/compile.ts` - Parses user JS code, handles errors with line numbers
-- **Audio Engine**: `src/lib/ScriptProcessorPlayer.ts` - **LEGACY**: Uses deprecated ScriptProcessorNode (TODO: migrate to AudioWorkletNode)
+- **Audio Engine**: `src/lib/ScriptPlayer/` - Plays compiled Musika scripts using Web Audio API
 - **DSP Library**: `src/lib/Musika/` - Audio processing functions available to user scripts
 - **Code Editor**: ACE editor in `src/components/Editor.tsx` with custom JavaScript validation
 
@@ -214,10 +214,10 @@ Lambda Musika follows specific patterns that should be maintained:
 
 ## Quick Reference
 
-**File Extensions**: Use `.js` in import statements (ES modules requirement)  
-**Code Style**: Prettier with single quotes, 2-space indents  
-**Testing**: Vitest globals enabled, no explicit imports needed  
-**Dependencies**: Managed via npm, use `npm ci` for reproducible installs  
+**File Extensions**: Use `.js` in import statements (ES modules requirement)
+**Code Style**: Prettier with single quotes, 2-space indents
+**Testing**: Vitest globals enabled, no explicit imports needed
+**Dependencies**: Managed via npm, use `npm ci` for reproducible installs
 **Audio Scripts**: JavaScript functions returning `(t) => [left, right]` samples
 
 ## About These Instructions

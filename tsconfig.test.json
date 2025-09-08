@@ -53,6 +53,7 @@
 
     // Include type definitions that are active in src because we want to import stuff in src to test it and we want
     // the types to be available
+    // I think this is better solved by using "references" but I couldn't get that to work properly
     "src/**/*.d.ts",
 
     // And finally what we really want to include

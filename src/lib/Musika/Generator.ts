@@ -2,7 +2,7 @@
  * @module Audio signal generators.
  */
 
-import type { MonoSignal, Time } from '../audio';
+import type { MonoSignal, Time } from '../audio.js';
 
 /**
  * Generates a stateful sine wave signal.
