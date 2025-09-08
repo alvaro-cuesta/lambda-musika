@@ -1,7 +1,7 @@
 import { faDownload, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
-import { SUPPORTED_BIT_DEPTHS, type BitDepth } from '../../lib/PCM/PCM';
+import { SUPPORTED_BIT_DEPTHS, type BitDepth } from '../../lib/PCM/PCM.js';
 
 const AVAILABLE_SAMPLE_RATES = [
   8000, 11025, 16000, 22500, 32000, 37800, 44100, 48000, 88200, 96000,

@@ -1,4 +1,4 @@
-import { clamp } from '../utils/math';
+import { clamp } from '../utils/math.js';
 import styles from './CPULoad.module.scss';
 
 export type RenderTiming = {

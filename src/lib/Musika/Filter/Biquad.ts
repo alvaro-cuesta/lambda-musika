@@ -1,4 +1,4 @@
-import type { MonoSignal } from '../../audio';
+import type { MonoSignal } from '../../audio.js';
 
 export type BiquadCoefficients = [number, number, number, number, number];
 

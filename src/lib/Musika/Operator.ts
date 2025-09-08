@@ -2,7 +2,7 @@
  * @module Audio signal operators.
  */
 
-import type { MonoSignal, StereoSignal } from '../audio';
+import type { MonoSignal, StereoSignal } from '../audio.js';
 
 /**
  * Mixes two mono signals together.

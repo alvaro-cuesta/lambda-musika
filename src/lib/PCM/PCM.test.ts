@@ -1,5 +1,5 @@
-import type { StereoSignal, Time } from '../audio';
-import { makeWavBlob, renderPcmBufferStereo } from './PCM';
+import type { StereoSignal, Time } from '../audio.js';
+import { makeWavBlob, renderPcmBufferStereo } from './PCM.js';
 
 // Simple stereo renderer for testing
 const testStereoRenderer = (t: Time): StereoSignal => {

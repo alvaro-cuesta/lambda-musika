@@ -10,8 +10,8 @@ import { useEffect, useImperativeHandle, useRef, type Ref } from 'react';
 import packageJson from '../../package.json';
 import LambdaMusikaLogo from '../../public-src/lambda-musika-logo-no-color-change.svg?react';
 import EmptyScript from '../examples/empty.musika?raw';
-import type { ExceptionInfo } from '../lib/compile';
-import type { EditorSerialState } from '../utils/editor';
+import type { ExceptionInfo } from '../lib/compile.js';
+import type { EditorSerialState } from '../utils/editor.js';
 import styles from './Editor.module.scss';
 
 const EDITOR_DEFAULT_OPTIONS: Partial<Ace.EditorOptions> = {
