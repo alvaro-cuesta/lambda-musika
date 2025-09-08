@@ -1,6 +1,6 @@
 /**
  * @module
- * Type definitions for AudioWorkletProcessor and related interfaces. These are mising for some reason in TS's built-in
+ * Type definitions for AudioWorkletProcessor and related interfaces. These are missing for some reason in TS's built-in
  * DOM types.
  *
  * Taken from:
