@@ -6,11 +6,8 @@
 
 import { getRandomId } from '../../utils/random.js';
 import { compile, type ExceptionInfo } from '../compile.js';
-import {
-  renderPcmBufferStereo,
-  type BitDepth,
-  type BufferForBitDepth,
-} from './PCM.js';
+import { renderPcmBufferStereoWithOfflineAudioContext } from './PCM-with-OfflineAudioContext.js';
+import { type BitDepth, type BufferForBitDepth } from './PCM.js';
 import {
   launchRenderPCMWorker,
   RenderPCMWorkerError,
@@ -115,7 +112,9 @@ export async function renderPcmBufferStereoWithWorkers<Bd extends BitDepth>(
   length: number,
   fnCode: string,
 ): Promise<RenderWithWorkersResult<Bd>> {
-  // Fallback synchronous rendering when workers are not available
+  // Fallback to OfflineAudioContext rendering when workers are not available
+  // This fallback used to be a synchronous `renderPcmBufferStereo`, but that blocks the main thread for too long on
+  // large renders, while `OfflineAudioContext` is only _slightly_ slower (due to how we have to quantize its output)
   if (typeof Worker === 'undefined') {
     const compileResult = compile(fnCode, sampleRate);
     switch (compileResult.type) {
@@ -130,11 +129,11 @@ export async function renderPcmBufferStereoWithWorkers<Bd extends BitDepth>(
       }
     }
 
-    const renderResult = renderPcmBufferStereo(
+    const renderResult = await renderPcmBufferStereoWithOfflineAudioContext(
       bitDepth,
       sampleRate,
       length,
-      compileResult.fn,
+      fnCode,
     );
     switch (renderResult.type) {
       case 'success':

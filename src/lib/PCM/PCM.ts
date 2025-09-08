@@ -103,7 +103,7 @@ export function makeWavBlob(
   return new Blob([header, ...data], { type: 'audio/wav' });
 }
 
-function initRendering<Bd extends BitDepth>(
+export function initRendering<Bd extends BitDepth>(
   bitDepth: Bd,
   length: number,
 ): {
