@@ -103,7 +103,7 @@ export const Player = ({
   }, [makeFnPlayer]);
 
   // @todo isPlaying/length are completely ignored and only for show -- not synced (because we have 2 of those, one
-  // here and another one in the worker)
+  // here and another one in the AudioWorklet)
   useEffect(() => {
     if (fnPlayerRef.current) {
       void fnPlayerRef.current.setFn(fnCode);
