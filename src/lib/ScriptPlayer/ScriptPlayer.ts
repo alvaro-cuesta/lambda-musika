@@ -4,7 +4,7 @@ import type {
   ScriptPlayerMessage,
   ScriptPlayerRequest,
 } from './ScriptPlayer.audioWorklet.js';
-import scriptPlayerProcessorAudioWorkletUrl from './ScriptPlayer.audioWorklet.js?url';
+import scriptPlayerProcessorAudioWorkletUrl from './ScriptPlayer.audioWorklet.js?worker&url';
 
 export type OnPlayingChange = (playing: boolean) => void;
 export type OnFrame = (frame: number) => void;
