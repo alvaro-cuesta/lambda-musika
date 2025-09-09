@@ -2,8 +2,7 @@
 
 ## Critical
 
-- COMMIT should always generate a new build of the function
-- Binaural Beat seems broken
+- COMMIT should always generate a new build of the function (restarting random et al)
 - `[API]` Module-based scripts
 - `[APP]` Bottom bar is too large in mobile now -- render probably needs a panel instead
 - `[PLAYER]` Input time is completely wrong and has AM/PM in english locales (lol)
@@ -22,7 +21,6 @@
   - Maybe we should just `.round` to avoid DC bias towards -1 (but requires to first truncate to `[-1, +1]`)
   - [Dithering](http://www.earlevel.com/main/category/digital-audio/dither-digital-audio/)
   - Clamping?
-- `[RENDERER]` Render in background using web workers. Try [adapting to the number of cores](https://developer.mozilla.org/en-US/docs/Web/API/NavigatorConcurrentHardware/hardwareConcurrency).
 - `[PLAYER]` Hotkeys for time-seeking
 - `[PLAYER]` Volume slider
 - `[API]` `[PLAYER]` `[RENDERER]` Musika scripts with Mono output
