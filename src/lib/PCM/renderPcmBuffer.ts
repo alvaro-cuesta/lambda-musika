@@ -1,28 +1,12 @@
-import type { Constructor } from 'type-fest';
 import type { ExceptionInfo } from '../exception.js';
 import type { ScriptPlayerMessage } from '../ScriptPlayer/ScriptPlayer.audioWorklet.js';
 import scriptPlayerProcessorAudioWorkletUrl from '../ScriptPlayer/ScriptPlayer.audioWorklet.js?worker&url';
-import { type BitDepth, type BufferForBitDepth } from './PCM.js';
+import {
+  getBufferConstructorForBitDepth,
+  type BitDepth,
+  type BufferForBitDepth,
+} from './PCM.js';
 import { getQuantizerForBitDepth } from './quantizers.js';
-
-function getBufferTypeForBitDepth<Bd extends BitDepth>(
-  bitDepth: Bd,
-): Constructor<BufferForBitDepth<Bd>> {
-  switch (bitDepth) {
-    case 'uint8':
-      return Uint8Array as unknown as Constructor<BufferForBitDepth<Bd>>;
-    case 'int16':
-      return Int16Array as unknown as Constructor<BufferForBitDepth<Bd>>;
-    case 'int32':
-      return Int32Array as unknown as Constructor<BufferForBitDepth<Bd>>;
-    case 'float32':
-      return Float32Array as unknown as Constructor<BufferForBitDepth<Bd>>;
-    case 'float64':
-      return Float64Array as unknown as Constructor<BufferForBitDepth<Bd>>;
-    default:
-      throw new Error(`Unsupported bit depth: ${bitDepth}`);
-  }
-}
 
 // @todo renderPcmMonoBuffer
 
@@ -97,8 +81,10 @@ export async function renderPcmStereoBuffer<Bd extends BitDepth>(
   const right = audioBuffer.getChannelData(1);
 
   // Copy and quantize the audio data into the output buffer
-  const BufferType = getBufferTypeForBitDepth(bitDepth);
-  const outBuffer = new BufferType(2 * lengthSamples);
+  const BufferConstructor = getBufferConstructorForBitDepth(bitDepth);
+  const outBuffer = new BufferConstructor(
+    2 * lengthSamples,
+  ) as BufferForBitDepth<Bd>;
   const quantizer = getQuantizerForBitDepth(bitDepth);
 
   if (quantizer) {

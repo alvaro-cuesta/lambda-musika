@@ -42,6 +42,55 @@ export type BufferForBitDepth<Bd extends BitDepth> = Bd extends 'uint8'
           ? Float64Array<ArrayBuffer>
           : never;
 
+export type BufferConstructorForBitDepth<Bd extends BitDepth> =
+  Bd extends 'uint8'
+    ? Uint8ArrayConstructor
+    : Bd extends 'int16'
+      ? Int16ArrayConstructor
+      : Bd extends 'int32'
+        ? Int32ArrayConstructor
+        : Bd extends 'float32'
+          ? Float32ArrayConstructor
+          : Bd extends 'float64'
+            ? Float64ArrayConstructor
+            : never;
+
+export function getBufferConstructorForBitDepth<Bd extends BitDepth>(
+  bitDepth: Bd,
+): BufferConstructorForBitDepth<Bd> {
+  switch (bitDepth) {
+    case 'uint8':
+      return Uint8Array as BufferConstructorForBitDepth<Bd>;
+    case 'int16':
+      return Int16Array as BufferConstructorForBitDepth<Bd>;
+    case 'int32':
+      return Int32Array as BufferConstructorForBitDepth<Bd>;
+    case 'float32':
+      return Float32Array as BufferConstructorForBitDepth<Bd>;
+    case 'float64':
+      return Float64Array as BufferConstructorForBitDepth<Bd>;
+    default:
+      throw new Error(`Unsupported bit depth: ${bitDepth}`);
+  }
+}
+
+export function getBytesPerSampleForBitDepth(bitDepth: BitDepth): number {
+  return getBufferConstructorForBitDepth(bitDepth).BYTES_PER_ELEMENT;
+}
+
+export const RIFF_HEADER_SIZE = 44;
+
+export function getWavFileSize(
+  sampleRate: number,
+  bitDepth: BitDepth,
+  numChannels: number,
+  lengthSecs: number,
+): number {
+  const bytesPerSample = getBytesPerSampleForBitDepth(bitDepth);
+  const channelSize = sampleRate * bytesPerSample * lengthSecs;
+  return RIFF_HEADER_SIZE + channelSize * numChannels;
+}
+
 /**
  * Create a WAV blob from PCM data.
  *

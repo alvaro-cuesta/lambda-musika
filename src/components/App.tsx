@@ -292,7 +292,7 @@ export const App = ({ audioCtx, player }: AppProps) => {
 
       <BottomBar
         isClean={isClean}
-        showRenderControls={!!compileResult?.length}
+        lengthSecs={compileResult?.length ?? null}
         isRendering={isRendering}
         onCommit={handleSubmit}
         onNew={handleNew}

@@ -67,7 +67,7 @@ function panelReducer(state: PanelState, action: PanelAction): PanelState {
 
 type BottomBarProps = {
   isClean: boolean;
-  showRenderControls: boolean;
+  lengthSecs: number | null;
   isRendering: boolean;
   onCommit: () => void;
   onNew: (source: string) => void;
@@ -77,7 +77,7 @@ type BottomBarProps = {
 
 export const BottomBar = ({
   isClean,
-  showRenderControls,
+  lengthSecs,
   isRendering,
   onCommit,
   onNew,
@@ -150,17 +150,19 @@ export const BottomBar = ({
     />
   );
 
-  const renderGroup = showRenderControls ? (
-    <BottomBarRender
-      isOpen={panelState.state === 'renderOpen'}
-      onOpen={() => {
-        dispatch({ type: 'renderOpen' });
-      }}
-      onClose={closePanels}
-      isRendering={isRendering}
-      onRender={onRender}
-    />
-  ) : null;
+  const renderGroup =
+    lengthSecs !== null ? (
+      <BottomBarRender
+        lengthSecs={lengthSecs}
+        isOpen={panelState.state === 'renderOpen'}
+        onOpen={() => {
+          dispatch({ type: 'renderOpen' });
+        }}
+        onClose={closePanels}
+        isRendering={isRendering}
+        onRender={onRender}
+      />
+    ) : null;
 
   const aboutGroup = (
     <a

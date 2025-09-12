@@ -1,7 +1,12 @@
 import { faDownload, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import prettyBytes from 'pretty-bytes';
 import { useState } from 'react';
-import { SUPPORTED_BIT_DEPTHS, type BitDepth } from '../../lib/PCM/PCM.js';
+import {
+  getWavFileSize,
+  SUPPORTED_BIT_DEPTHS,
+  type BitDepth,
+} from '../../lib/PCM/PCM.js';
 import styles from './BottomBarRender.module.scss';
 import { ButtonWithPanel } from './ButtonWithPanel.js';
 import { Panel } from './Panel.js';
@@ -15,7 +20,22 @@ type SampleRate = (typeof AVAILABLE_SAMPLE_RATES)[number];
 const DEFAULT_SAMPLE_RATE = 44100 satisfies SampleRate;
 const DEFAULT_BIT_RATE = 'float32' satisfies BitDepth;
 
+function formatFileSize(bytes: number) {
+  return (
+    prettyBytes(bytes, {
+      locale: 'en',
+      space: false,
+      // Docs say not to use it for file sizes but turns out this is what matches FF and Chrome downloads
+      binary: true,
+    })
+      // `binary: true` ouputs MiB though, which is technically correct but not what people expect (and not what FF and
+      // Chrome show), so we replace it here
+      .replace(/iB$/g, 'B')
+  );
+}
+
 type BottomBarRenderProps = {
+  lengthSecs: number;
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
@@ -24,6 +44,7 @@ type BottomBarRenderProps = {
 };
 
 export function BottomBarRender({
+  lengthSecs,
   isOpen,
   onOpen,
   onClose,
@@ -34,6 +55,13 @@ export function BottomBarRender({
     useState<SampleRate>(DEFAULT_SAMPLE_RATE);
   const [renderBitDepth, setRenderBitDepth] =
     useState<BitDepth>(DEFAULT_BIT_RATE);
+
+  const fileSize = getWavFileSize(
+    renderSampleRate,
+    renderBitDepth,
+    2,
+    lengthSecs,
+  );
 
   function handleRender() {
     onRender(renderSampleRate, renderBitDepth);
@@ -59,7 +87,9 @@ export function BottomBarRender({
             onClick={handleRender}
             disabled={isRendering}
           >
-            {isRendering ? 'Rendering audio...' : 'Render and download'}
+            {isRendering
+              ? 'Rendering audio...'
+              : `Render (${formatFileSize(fileSize)})`}
           </button>
 
           <button
