@@ -3,6 +3,7 @@
 ## Critical
 
 - Syntax errors are sometimes still stuck when they have been backed up into history state
+- Gutter on Firefox does not flash on quick commits
 - `[API]` Module-based scripts
 - `[PLAYER]` Input time is completely wrong and has AM/PM in english locales (lol)
 
