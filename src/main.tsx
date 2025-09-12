@@ -8,6 +8,8 @@ const root = document.getElementById('root');
 if (!root) throw new Error('No #root element found');
 
 const audioCtx = new AudioContext();
+await audioCtx.suspend(); // Prevent autoplay during HMR
+
 const player = await ScriptPlayer.create(audioCtx); // Pre-create AudioContext and ScriptPlayer to avoid delay on first play
 
 const reactRoot = createRoot(root);
