@@ -28,7 +28,6 @@
 
 - `[PLAYER]` TimeSeeker maxes at 23:59 (HH:MM) due to using `<input type="time">`
 - `[PLAYER]` Sound clicks on play/pause/update/seek
-- `[EDITOR]` If there is a bug in the code and it's backed up, reloading the page will have the error shown permanently
 
 ## Cosmetic
 

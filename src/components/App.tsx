@@ -87,6 +87,7 @@ export const App = ({ audioCtx, player }: AppProps) => {
         return;
       case 'success':
         void player.setFn(source);
+        editorRef.current.clearErrors();
         setCompileResult({ ...compileResult, fnCode: source });
         return;
     }

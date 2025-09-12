@@ -51,6 +51,7 @@ export type EditorRef = {
   getValue: () => string | null;
   newScript: (content?: string) => void;
   addError: (error: ExceptionInfo) => void;
+  clearErrors: () => void;
   getSerialState: () => EditorSerialState | null;
   setSerialState: (state: EditorSerialState) => void;
   markClean: () => void;
@@ -113,9 +114,20 @@ export const Editor = ({ defaultValue, ref }: EditorProps) => {
 
   // Expose methods
   // @todo Imperative handle is probably a bad idea here -- ported straight from a class component
-  useImperativeHandle<EditorRef | null, EditorRef | null>(
-    ref,
-    () => ({
+  useImperativeHandle<EditorRef | null, EditorRef | null>(ref, () => {
+    function clearErrors() {
+      if (!editorRef.current) return;
+      const editor = editorRef.current;
+      const session = editor.getSession();
+      session.setAnnotations([]);
+      if (session.lineWidgets) {
+        session.lineWidgets.forEach((w) => {
+          session.widgetManager.removeLineWidget(w);
+        });
+      }
+    }
+
+    return {
       getValue() {
         if (!editorRef.current) return null;
         const editor = editorRef.current;
@@ -135,17 +147,18 @@ export const Editor = ({ defaultValue, ref }: EditorProps) => {
         if (!editorRef.current) return;
         const editor = editorRef.current;
         const session = editor.getSession();
-        session.setAnnotations([]);
-        if (session.lineWidgets) {
-          session.lineWidgets.forEach((w) => {
-            session.widgetManager.removeLineWidget(w);
-          });
-        }
+
+        clearErrors();
+
         const { name, message, row, column } = error;
-        const text = `${name}: ${message.replace(/\s+\(\d+:\d+\)$/, '')}`;
+        // Cleans stuff like `SyntaxError: Unexpected token (113:8)` to just `SyntaxError: Unexpected token`
+        const cleanMessage = message.replace(/\s+\(\d+:\d+\)$/, '');
+        const text = `${name}: ${cleanMessage}`;
         session.setAnnotations([{ type: 'error', text, row, column }]);
         console.error(error);
       },
+
+      clearErrors,
 
       getSerialState() {
         if (!editorRef.current) return null;
@@ -183,9 +196,8 @@ export const Editor = ({ defaultValue, ref }: EditorProps) => {
         const editor = editorRef.current;
         return editor.getSession().getUndoManager().isClean();
       },
-    }),
-    [],
-  );
+    };
+  }, []);
 
   return (
     <div className={styles['container']}>
