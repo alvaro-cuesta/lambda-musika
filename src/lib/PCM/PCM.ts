@@ -11,10 +11,12 @@ export type Int16 = Tagged<number, 'Int16'>;
 
 export type Float32 = Tagged<number, 'Float32'>;
 
+export type Float64 = Tagged<number, 'Float64'>;
+
 /**
  * Bit depths that are supported by Lambda Musika's PCM utilities.
  */
-export const SUPPORTED_BIT_DEPTHS = [8, 16, 32] as const;
+export const SUPPORTED_BIT_DEPTHS = [8, 16, 32, 64] as const;
 
 /**
  * Bit depths that are supported by Lambda Musika's PCM utilities.
@@ -27,7 +29,9 @@ export type BufferForBitDepth<Bd extends BitDepth> = Bd extends 8
     ? Int16Array<ArrayBuffer>
     : Bd extends 32
       ? Float32Array<ArrayBuffer>
-      : never;
+      : Bd extends 64
+        ? Float64Array<ArrayBuffer>
+        : never;
 
 function getBufferTypeForBitDepth<Bd extends BitDepth>(
   bitDepth: Bd,
@@ -39,6 +43,8 @@ function getBufferTypeForBitDepth<Bd extends BitDepth>(
       return Int16Array as unknown as Constructor<BufferForBitDepth<Bd>>;
     case 32:
       return Float32Array as unknown as Constructor<BufferForBitDepth<Bd>>;
+    case 64:
+      return Float64Array as unknown as Constructor<BufferForBitDepth<Bd>>;
     default:
       throw new Error(`Unsupported bit depth: ${bitDepth}`);
   }
@@ -82,7 +88,10 @@ export function makeWavBlob(
     ? 0x52494646 /*                               'RIFF' */
     : 0x52494658; /*                              'RIFX' */
 
-  const audioFormat = data[0] instanceof Float32Array ? 3 : 1; // 1 = PCM, 3 = 32-bit float
+  const audioFormat =
+    data[0] instanceof Float32Array || data[0] instanceof Float64Array
+      ? 3 // IEEE float, little-endian only
+      : 1; // PCM, 8-bit always unsigned, ≥16-bit signed little-endian
 
   dv.setUint32(0, chunkID, false); /*             ChunkID */
   dv.setUint32(4, dataSize + 36, true); /*        ChunkSize */

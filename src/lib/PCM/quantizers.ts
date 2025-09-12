@@ -4,7 +4,7 @@
 
 import { clamp } from '../../utils/math.js';
 import type { MonoSignal } from '../audio.js';
-import type { BitDepth, Float32, Int16, Uint8 } from './PCM.js';
+import type { BitDepth, Float32, Float64, Int16, Uint8 } from './PCM.js';
 
 type Quantizer = (v: MonoSignal) => number;
 
@@ -41,6 +41,17 @@ function quantizeFloat32(v: MonoSignal): Float32 {
   return v as Float32;
 }
 
+/**
+ * Quantize a float value to a 64-bit float.
+ *
+ * @param v -1.0 to 1.0
+ * @returns {@link Float64} -1.0 to 1.0
+ */
+function quantizeFloat64(v: MonoSignal): Float64 {
+  v = clamp(v, -1, 1);
+  return v as Float64;
+}
+
 export function getQuantizerForBitDepth(bitDepth: BitDepth): Quantizer {
   switch (bitDepth) {
     case 8:
@@ -49,6 +60,8 @@ export function getQuantizerForBitDepth(bitDepth: BitDepth): Quantizer {
       return quantizeInt16;
     case 32:
       return quantizeFloat32;
+    case 64:
+      return quantizeFloat64;
     default:
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions -- this is a fallthrough
       throw new Error(`Unsupported bit depth: ${bitDepth}`);
