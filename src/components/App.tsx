@@ -10,7 +10,7 @@ import { EXAMPLE_SCRIPTS } from '../examples/index.js';
 import { useInterval } from '../hooks/useInterval.js';
 import { compile, type CompileResult } from '../lib/compile.js';
 import { makeWavBlob, type BitDepth } from '../lib/PCM/PCM.js';
-import { renderPcmBufferStereoWithBestEffort } from '../lib/PCM/renderWithBestEffort.js';
+import { renderPcmStereoBuffer } from '../lib/PCM/renderPcmBuffer.js';
 import type {
   ScriptPlayer,
   ScriptPlayerEvents,
@@ -214,7 +214,7 @@ export const App = ({ audioCtx, player }: AppProps) => {
                 throw new Error('Cannot render infinite-length script');
               }
 
-              const renderResult = await renderPcmBufferStereoWithBestEffort(
+              const renderResult = await renderPcmStereoBuffer(
                 bitDepth,
                 sampleRate,
                 compileResult.length,
@@ -226,7 +226,11 @@ export const App = ({ audioCtx, player }: AppProps) => {
                   break;
                 }
                 case 'success': {
-                  const blob = makeWavBlob(renderResult.buffers, 2, sampleRate);
+                  const blob = makeWavBlob(
+                    [renderResult.buffer],
+                    2,
+                    sampleRate,
+                  );
                   downloadBlob(
                     `render-${dateToSortableString(new Date())}_${toMinsSecs(compileResult.length, '-')}_${sampleRate}-${bitDepth}b.wav`,
                     blob,

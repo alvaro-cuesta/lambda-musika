@@ -3,8 +3,6 @@
  */
 
 import type { Constructor, Tagged } from 'type-fest';
-import type { MonoRenderer, StereoRenderer, Time } from '../audio.js';
-import { tryParseException, type ExceptionInfo } from '../exception.js';
 import { getQuantizerForBitDepth } from './quantizers.js';
 
 export type Uint8 = Tagged<number, 'Uint8'>;
@@ -114,53 +112,4 @@ export function initRendering<Bd extends BitDepth>(
   const buffer = new BufferType(length);
   const quantizer = getQuantizerForBitDepth(bitDepth);
   return { buffer, quantizer };
-}
-
-export type RenderResult<Bd extends BitDepth> =
-  | { type: 'success'; buffer: BufferForBitDepth<Bd> }
-  | { type: 'error'; error: ExceptionInfo };
-
-export function renderPcmBufferMonoChunk<Bd extends BitDepth>(
-  bitDepth: Bd,
-  sampleRate: number,
-  startSample: number,
-  lengthSamples: number,
-  fn: MonoRenderer,
-): RenderResult<Bd> {
-  const { buffer, quantizer } = initRendering(bitDepth, 1 * lengthSamples);
-
-  for (let i = 0; i < lengthSamples; i++) {
-    const t = ((startSample + i) / sampleRate) as Time;
-    try {
-      const y = fn(t);
-      buffer[i] = quantizer(y);
-    } catch (e) {
-      return { type: 'error' as const, error: tryParseException(e) };
-    }
-  }
-
-  return { type: 'success' as const, buffer };
-}
-
-export function renderPcmBufferStereoChunk<Bd extends BitDepth>(
-  bitDepth: Bd,
-  sampleRate: number,
-  startSample: number,
-  lengthSamples: number,
-  fn: StereoRenderer,
-): RenderResult<Bd> {
-  const { buffer, quantizer } = initRendering(bitDepth, 2 * lengthSamples);
-
-  for (let i = 0; i < lengthSamples; i++) {
-    const t = ((startSample + i) / sampleRate) as Time;
-    try {
-      const [l, r] = fn(t);
-      buffer[i * 2 + 0] = quantizer(l);
-      buffer[i * 2 + 1] = quantizer(r);
-    } catch (e) {
-      return { type: 'error' as const, error: tryParseException(e) };
-    }
-  }
-
-  return { type: 'success' as const, buffer };
 }

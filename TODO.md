@@ -2,7 +2,6 @@
 
 ## Critical
 
-- Parallell rendering is completely broken due to Math.random()
 - `[API]` Module-based scripts
 - `[APP]` Bottom bar is too large in mobile now -- render probably needs a panel instead
 - `[PLAYER]` Input time is completely wrong and has AM/PM in english locales (lol)

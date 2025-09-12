@@ -2,9 +2,13 @@ import { clamp } from '../../utils/math.js';
 import type { ExceptionInfo } from '../exception.js';
 import type { ScriptPlayerMessage } from '../ScriptPlayer/ScriptPlayer.audioWorklet.js';
 import scriptPlayerProcessorAudioWorkletUrl from '../ScriptPlayer/ScriptPlayer.audioWorklet.js?worker&url';
-import { initRendering, type BitDepth, type RenderResult } from './PCM';
+import { initRendering, type BitDepth, type BufferForBitDepth } from './PCM.js';
 
-// @todo renderPcmBufferMonoWithWorkers
+// @todo renderPcmMonoBuffer
+
+type RenderResult<Bd extends BitDepth> =
+  | { type: 'success'; buffer: BufferForBitDepth<Bd> }
+  | { type: 'error'; error: ExceptionInfo };
 
 /**
  * Render a stereo PCM audio buffer using a {@link OfflineAudioContext}.
@@ -15,9 +19,7 @@ import { initRendering, type BitDepth, type RenderResult } from './PCM';
  * @param fnCode - The code for a {@link StereoRenderer} function that generates the audio samples.
  * @returns A {@link RenderResult} containing the generated audio buffer, or error information
  */
-export async function renderPcmBufferStereoWithOfflineAudioContext<
-  Bd extends BitDepth,
->(
+export async function renderPcmStereoBuffer<Bd extends BitDepth>(
   bitDepth: Bd,
   sampleRate: number,
   length: number,
