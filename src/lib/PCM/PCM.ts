@@ -2,8 +2,7 @@
  * @module PCM audio utilities.
  */
 
-import type { Constructor, Tagged } from 'type-fest';
-import { getQuantizerForBitDepth } from './quantizers.js';
+import type { Tagged } from 'type-fest';
 
 export type Uint8 = Tagged<number, 'Uint8'>;
 
@@ -32,23 +31,6 @@ export type BufferForBitDepth<Bd extends BitDepth> = Bd extends 8
       : Bd extends 64
         ? Float64Array<ArrayBuffer>
         : never;
-
-function getBufferTypeForBitDepth<Bd extends BitDepth>(
-  bitDepth: Bd,
-): Constructor<BufferForBitDepth<Bd>> {
-  switch (bitDepth) {
-    case 8:
-      return Uint8Array as unknown as Constructor<BufferForBitDepth<Bd>>;
-    case 16:
-      return Int16Array as unknown as Constructor<BufferForBitDepth<Bd>>;
-    case 32:
-      return Float32Array as unknown as Constructor<BufferForBitDepth<Bd>>;
-    case 64:
-      return Float64Array as unknown as Constructor<BufferForBitDepth<Bd>>;
-    default:
-      throw new Error(`Unsupported bit depth: ${bitDepth}`);
-  }
-}
 
 /**
  * Create a WAV blob from PCM data.
@@ -108,17 +90,4 @@ export function makeWavBlob(
   dv.setUint32(40, dataSize, true); /*            Subchunk2Size */
 
   return new Blob([header, ...data], { type: 'audio/wav' });
-}
-
-export function initRendering<Bd extends BitDepth>(
-  bitDepth: Bd,
-  length: number,
-): {
-  buffer: BufferForBitDepth<Bd>;
-  quantizer: (v: number) => number;
-} {
-  const BufferType = getBufferTypeForBitDepth(bitDepth);
-  const buffer = new BufferType(length);
-  const quantizer = getQuantizerForBitDepth(bitDepth);
-  return { buffer, quantizer };
 }

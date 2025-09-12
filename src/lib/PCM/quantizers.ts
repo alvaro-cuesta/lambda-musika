@@ -4,9 +4,11 @@
 
 import { clamp } from '../../utils/math.js';
 import type { MonoSignal } from '../audio.js';
-import type { BitDepth, Float32, Float64, Int16, Uint8 } from './PCM.js';
+import type { BitDepth, Int16, Uint8 } from './PCM.js';
 
-type Quantizer = (v: MonoSignal) => number;
+export type Quantizer = (v: MonoSignal) => number;
+
+// @todo Could this be done more efficiently with a LUT?
 
 /**
  * Quantize a float value to an 8-bit unsigned integer.
@@ -30,38 +32,16 @@ function quantizeInt16(v: MonoSignal): Int16 {
   return Math.floor(((v + 1) / 2) * 0xffff - 0x8000) as Int16;
 }
 
-/**
- * Quantize a float value to a 32-bit float.
- *
- * @param v -1.0 to 1.0
- * @returns {@link Float32} -1.0 to 1.0
- */
-function quantizeFloat32(v: MonoSignal): Float32 {
-  v = clamp(v, -1, 1);
-  return v as Float32;
-}
-
-/**
- * Quantize a float value to a 64-bit float.
- *
- * @param v -1.0 to 1.0
- * @returns {@link Float64} -1.0 to 1.0
- */
-function quantizeFloat64(v: MonoSignal): Float64 {
-  v = clamp(v, -1, 1);
-  return v as Float64;
-}
-
-export function getQuantizerForBitDepth(bitDepth: BitDepth): Quantizer {
+export function getQuantizerForBitDepth(bitDepth: BitDepth): Quantizer | null {
   switch (bitDepth) {
     case 8:
       return quantizeUint8;
     case 16:
       return quantizeInt16;
     case 32:
-      return quantizeFloat32;
+      return null;
     case 64:
-      return quantizeFloat64;
+      return null;
     default:
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions -- this is a fallthrough
       throw new Error(`Unsupported bit depth: ${bitDepth}`);

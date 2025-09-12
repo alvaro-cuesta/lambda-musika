@@ -1,8 +1,26 @@
-import { clamp } from '../../utils/math.js';
+import type { Constructor } from 'type-fest';
 import type { ExceptionInfo } from '../exception.js';
 import type { ScriptPlayerMessage } from '../ScriptPlayer/ScriptPlayer.audioWorklet.js';
 import scriptPlayerProcessorAudioWorkletUrl from '../ScriptPlayer/ScriptPlayer.audioWorklet.js?worker&url';
-import { initRendering, type BitDepth, type BufferForBitDepth } from './PCM.js';
+import { type BitDepth, type BufferForBitDepth } from './PCM.js';
+import { getQuantizerForBitDepth } from './quantizers.js';
+
+function getBufferTypeForBitDepth<Bd extends BitDepth>(
+  bitDepth: Bd,
+): Constructor<BufferForBitDepth<Bd>> {
+  switch (bitDepth) {
+    case 8:
+      return Uint8Array as unknown as Constructor<BufferForBitDepth<Bd>>;
+    case 16:
+      return Int16Array as unknown as Constructor<BufferForBitDepth<Bd>>;
+    case 32:
+      return Float32Array as unknown as Constructor<BufferForBitDepth<Bd>>;
+    case 64:
+      return Float64Array as unknown as Constructor<BufferForBitDepth<Bd>>;
+    default:
+      throw new Error(`Unsupported bit depth: ${bitDepth}`);
+  }
+}
 
 // @todo renderPcmMonoBuffer
 
@@ -77,16 +95,24 @@ export async function renderPcmStereoBuffer<Bd extends BitDepth>(
   const right = audioBuffer.getChannelData(1);
 
   // Copy and quantize the audio data into the output buffer
-  const { buffer: outBuffer, quantizer } = initRendering(
-    bitDepth,
-    2 * lengthSamples,
-  );
+  const BufferType = getBufferTypeForBitDepth(bitDepth);
+  const outBuffer = new BufferType(2 * lengthSamples);
+  const quantizer = getQuantizerForBitDepth(bitDepth);
 
-  for (let i = 0; i < lengthSamples; i++) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- ! is fine because we have the same lengthSamples in the buffer and the audioCtx
-    outBuffer[i * 2 + 0] = quantizer(clamp(left[i]!, -1, 1));
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- ! is fine because we have the same lengthSamples in the buffer and the audioCtx
-    outBuffer[i * 2 + 1] = quantizer(clamp(right[i]!, -1, 1));
+  if (quantizer) {
+    for (let i = 0; i < lengthSamples; i++) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- ! is fine because we have the same lengthSamples in the buffer and the audioCtx
+      outBuffer[i * 2 + 0] = quantizer(left[i]!);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- ! is fine because we have the same lengthSamples in the buffer and the audioCtx
+      outBuffer[i * 2 + 1] = quantizer(right[i]!);
+    }
+  } else {
+    for (let i = 0; i < lengthSamples; i++) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- ! is fine because we have the same lengthSamples in the buffer and the audioCtx
+      outBuffer[i * 2 + 0] = left[i]!;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- ! is fine because we have the same lengthSamples in the buffer and the audioCtx
+      outBuffer[i * 2 + 1] = right[i]!;
+    }
   }
 
   return { type: 'success' as const, buffer: outBuffer };
