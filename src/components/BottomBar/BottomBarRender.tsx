@@ -58,10 +58,8 @@ export function BottomBarRender({
             type="button"
             onClick={handleRender}
             disabled={isRendering}
-            title={isRendering ? 'Rendering audio...' : 'Render'}
-            aria-label={isRendering ? 'Rendering audio...' : 'Render'}
           >
-            Render and download
+            {isRendering ? 'Rendering audio...' : 'Render and download'}
           </button>
 
           <button
