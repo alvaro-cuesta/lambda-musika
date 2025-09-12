@@ -25,7 +25,10 @@ input,
 button {
   border: none;
   outline: none;
-  cursor: pointer;
+
+  &:not(:disabled) {
+    cursor: pointer;
+  }
 }
 
 button {
@@ -99,6 +102,7 @@ $disabled-active: list.nth(map.get(colors.$colorsets, grey), 3);
 button:disabled {
   & {
     background-color: $disabled-normal;
+    opacity: 0.8;
     .fa-inverse {
       color: $disabled-normal;
     }
@@ -106,6 +110,7 @@ button:disabled {
 
   &:hover:not(:active) {
     background-color: $disabled-hover;
+    opacity: 0.8;
     .fa-inverse {
       color: $disabled-hover;
     }
@@ -113,6 +118,7 @@ button:disabled {
 
   &:active {
     background-color: $disabled-active;
+    opacity: 0.8;
     .fa-inverse {
       color: $disabled-active;
     }

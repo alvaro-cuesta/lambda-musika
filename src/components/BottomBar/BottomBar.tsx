@@ -23,6 +23,7 @@ type PanelState =
       state: 'examplesConfirming';
       exampleName: keyof typeof EXAMPLE_SCRIPTS;
     }
+  | { state: 'renderOpen' }
   | { state: null };
 
 type PanelAction =
@@ -30,6 +31,7 @@ type PanelAction =
   | { type: 'loadConfirming'; fileName: string; fileContent: string }
   | { type: 'examplesOpen' }
   | { type: 'examplesConfirming'; exampleName: keyof typeof EXAMPLE_SCRIPTS }
+  | { type: 'renderOpen' }
   | { type: 'close' };
 
 function panelReducer(state: PanelState, action: PanelAction): PanelState {
@@ -53,6 +55,10 @@ function panelReducer(state: PanelState, action: PanelAction): PanelState {
     case 'examplesConfirming':
       return state.state !== 'examplesConfirming'
         ? { state: 'examplesConfirming', exampleName: action.exampleName }
+        : { state: null };
+    case 'renderOpen':
+      return state.state !== 'renderOpen'
+        ? { state: 'renderOpen' }
         : { state: null };
     case 'close':
       return { state: null };
@@ -146,6 +152,11 @@ export const BottomBar = ({
 
   const renderGroup = showRenderControls ? (
     <BottomBarRender
+      isOpen={panelState.state === 'renderOpen'}
+      onOpen={() => {
+        dispatch({ type: 'renderOpen' });
+      }}
+      onClose={closePanels}
       isRendering={isRendering}
       onRender={onRender}
     />
