@@ -17,6 +17,22 @@ describe('tryParseStack', () => {
     });
   });
 
+  it('parses Chrome stack traces (named eval)', () => {
+    const stack = `ReferenceError: testing is not defined
+    at eval (script.musika:50:13)
+    at compile (http://localhost:5173/src/lib/compile.ts?t=1757679141407:38:10)
+    at http://localhost:5173/src/components/App.tsx?t=1757679141407:81:28
+    at http://localhost:5173/src/components/App.tsx?t=1757679141407:101:5
+    at HTMLDocument.handleKeyDown (http://localhost:5173/src/components/BottomBar/BottomBarCommit.tsx:28:9)`;
+
+    const parsed = tryParseStack(stack);
+    expect(parsed).toEqual({
+      fileName: 'script.musika',
+      row: 50,
+      column: 13,
+    });
+  });
+
   it('parses Firefox stack traces', () => {
     const stack = `anonymous@http://localhost:5173/src/lib/compile.ts?t=1757067439409 line 43 > Function:26:1
 compile@http://localhost:5173/src/lib/compile.ts?t=1757067439409:50:10

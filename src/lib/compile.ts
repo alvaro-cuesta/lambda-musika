@@ -10,12 +10,38 @@ import * as Musika from './Musika/index.js';
 
 const ACORN_ECMA_VERSION = 2023;
 
+/**
+ * Lines added automatically by the `Function` constructor which assembles a function in the following fashion:
+ *
+ * ```
+ * `function anonymous(${args.join(",")}
+ * ) {
+ * ${functionBody}
+ * }`;
+ * ```
+ *
+ * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/Function#description
+ */
+const LINE_COUNT_ADDED_ABOVE_BY_FUNCTION_CONSTRUCTOR = 2;
+
+/**
+ * How many lines are added by us when we wrap the user code in a function.
+ *
+ * Currently we manually add one line ("use strict";)
+ */
+const LINE_COUNT_ADDED_ABOVE_BY_US = 1;
+
+export const LINE_COUNT_ADDED_ABOVE =
+  LINE_COUNT_ADDED_ABOVE_BY_FUNCTION_CONSTRUCTOR + LINE_COUNT_ADDED_ABOVE_BY_US;
+
 type StereoRendererBuilder = (
   Musika: typeof import('./Musika/index.js'),
   sampleRate: number,
   console: Console,
   setLength: (l: number) => void,
 ) => StereoRenderer;
+
+const GLOBALS = ['Musika', 'sampleRate', 'console', 'setLength'];
 
 export type CompileResult =
   | {
@@ -31,7 +57,8 @@ export type CompileResult =
 
 export function compile(source: string, sampleRate: number): CompileResult {
   // Check for syntax errors - JavaScript doesn't provide error location otherwise
-  const fnString = `(Musika, sampleRate, setLength) => {${source}\n}`;
+  // @todo This is currently not injecting "use strict", is not the same as `Function`s injection, etc. Unify.
+  const fnString = `(${GLOBALS.join(', ')}) => {${source}\n}`;
   try {
     parse(fnString, { ecmaVersion: ACORN_ECMA_VERSION, sourceType: 'script' });
   } catch (e) {
@@ -46,11 +73,10 @@ export function compile(source: string, sampleRate: number): CompileResult {
   try {
     // eslint-disable-next-line @typescript-eslint/no-implied-eval -- we really do want to use eval here!
     builder = new Function(
-      'Musika',
-      'sampleRate',
-      'console',
-      'setLength',
-      source,
+      ...GLOBALS,
+      `"use strict";
+${source}
+//# sourceURL=script.musika`,
     ) as StereoRendererBuilder;
   } catch (e) {
     return { type: 'error' as const, error: tryParseException(e) };

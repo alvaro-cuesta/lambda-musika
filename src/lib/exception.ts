@@ -1,18 +1,5 @@
 import type { Position } from 'acorn';
-
-/**
- * Lines added automatically by the `Function` constructor which assembles a function in the following fashion:
- *
- * ```
- * `function anonymous(${args.join(",")}
- * ) {
- * ${functionBody}
- * }`;
- * ```
- *
- * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/Function#description
- */
-const FUNCTION_CONSTRUCTOR_ADDED_LINES = 2;
+import { LINE_COUNT_ADDED_ABOVE } from './compile';
 
 export type ExceptionInfo = {
   name: string;
@@ -29,7 +16,7 @@ function groupsToExceptionInfo(groups: {
   column: string;
 }): Pick<ExceptionInfo, 'fileName' | 'row' | 'column'> {
   const { fileName, row: matchedRow, column: matchedColumn } = groups;
-  const row = parseInt(matchedRow, 10) - FUNCTION_CONSTRUCTOR_ADDED_LINES - 1; // -1 due to 1-based lines
+  const row = parseInt(matchedRow, 10) - LINE_COUNT_ADDED_ABOVE - 1; // -1 due to 1-based lines
   const column = parseInt(matchedColumn, 10) - 1; // -1 due to 1-based columns
   return { fileName, row, column };
 }
@@ -50,12 +37,29 @@ function tryParseStackChrome(
   if (!line) return null;
 
   // Get the file name, line number and column number from the line
-  // First we try matching the "    at ... (..., ..., <fileName>:<line>:<column>)" format
-  const matchEval =
-    /^ {4}at .+ \(.+, (?<fileName>.+):(?<row>\d+):(?<column>\d+)\)$/.exec(line);
-  if (matchEval)
+  // First we try matching "    at eval (<fileName>:<line>:<column>)" format (named eval)
+  const matchNamedEval =
+    /^ {4}at eval \((?<fileName>.+):(?<row>\d+):(?<column>\d+)\)$/.exec(line);
+  if (matchNamedEval) {
     return groupsToExceptionInfo(
-      matchEval.groups as { fileName: string; row: string; column: string },
+      matchNamedEval.groups as {
+        fileName: string;
+        row: string;
+        column: string;
+      },
+    );
+  }
+
+  // Then we try matching the "    at ... (..., ..., <fileName>:<line>:<column>)" format (unnamed eval)
+  const matchUnnamedEval =
+    /^ {4}at .+ \(.+, (?<fileName>.+):(?<row>\d+):(?<column>\d+)\)$/.exec(line);
+  if (matchUnnamedEval)
+    return groupsToExceptionInfo(
+      matchUnnamedEval.groups as {
+        fileName: string;
+        row: string;
+        column: string;
+      },
     );
 
   // Then we try matching the "    at filename:line:column" format in case Chrome decides to change the format for evals
@@ -96,7 +100,7 @@ function tryParseStackFirefox(
     lineNumber: string;
     columnNumber: string;
   };
-  const row = parseInt(lineNumber, 10) - FUNCTION_CONSTRUCTOR_ADDED_LINES - 1; // -1 due to 1-based lines
+  const row = parseInt(lineNumber, 10) - LINE_COUNT_ADDED_ABOVE - 1; // -1 due to 1-based lines
   const column = parseInt(columnNumber, 10) - 1; // -1 due to 1-based columns
 
   return { fileName, row, column };
@@ -142,7 +146,7 @@ export function tryParseException(e: unknown): ExceptionInfo {
     if ('fileName' in e && typeof e.fileName === 'string')
       exceptionInfo.fileName = e.fileName;
     if ('lineNumber' in e && typeof e.lineNumber === 'number')
-      exceptionInfo.row = e.lineNumber - FUNCTION_CONSTRUCTOR_ADDED_LINES - 1; // -1 due to 1-based lines
+      exceptionInfo.row = e.lineNumber - LINE_COUNT_ADDED_ABOVE - 1; // -1 due to 1-based lines
     if ('columnNumber' in e && typeof e.columnNumber === 'number')
       exceptionInfo.column = e.columnNumber - 1; // -1 due to 1-based columns
   }
