@@ -1,5 +1,5 @@
 import type { CancellablePromise } from '../../utils/promise.js';
-import type { ExceptionInfo } from '../compile.js';
+import type { ExceptionInfo } from '../exception.js';
 import type { BitDepth, BufferForBitDepth } from './PCM.js';
 import type {
   RenderPCMWorkerRequest,

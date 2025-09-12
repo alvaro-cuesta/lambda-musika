@@ -1,4 +1,4 @@
-import { tryParseStack } from './compile.js';
+import { tryParseStack } from './exception.js';
 
 describe('tryParseStack', () => {
   it('parses Chrome stack traces', () => {

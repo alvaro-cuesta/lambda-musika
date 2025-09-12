@@ -5,7 +5,7 @@
  */
 
 import { getRandomId } from '../../utils/random.js';
-import { type ExceptionInfo } from '../compile.js';
+import { type ExceptionInfo } from '../exception.js';
 import { type BitDepth, type BufferForBitDepth } from './PCM.js';
 import {
   launchRenderPCMWorker,

@@ -4,7 +4,7 @@
 
 import type { Constructor, Tagged } from 'type-fest';
 import type { MonoRenderer, StereoRenderer, Time } from '../audio.js';
-import { tryParseException, type ExceptionInfo } from '../compile.js';
+import { tryParseException, type ExceptionInfo } from '../exception.js';
 import { getQuantizerForBitDepth } from './quantizers.js';
 
 export type Uint8 = Tagged<number, 'Uint8'>;

@@ -1,6 +1,6 @@
-import { clamp } from '../../utils/math';
-import type { ExceptionInfo } from '../compile';
-import type { ScriptPlayerMessage } from '../ScriptPlayer/ScriptPlayer.audioWorklet';
+import { clamp } from '../../utils/math.js';
+import type { ExceptionInfo } from '../exception.js';
+import type { ScriptPlayerMessage } from '../ScriptPlayer/ScriptPlayer.audioWorklet.js';
 import scriptPlayerProcessorAudioWorkletUrl from '../ScriptPlayer/ScriptPlayer.audioWorklet.js?worker&url';
 import { initRendering, type BitDepth, type RenderResult } from './PCM';
 

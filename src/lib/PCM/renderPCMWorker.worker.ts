@@ -4,7 +4,8 @@
  * This prevents blocking the main thread during audio generation.
  */
 
-import { compile, type ExceptionInfo } from '../compile.js';
+import { compile } from '../compile.js';
+import { type ExceptionInfo } from '../exception.js';
 import {
   renderPcmBufferStereoChunk,
   type BitDepth,

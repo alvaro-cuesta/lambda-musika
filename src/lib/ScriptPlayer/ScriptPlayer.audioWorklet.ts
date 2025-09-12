@@ -1,6 +1,7 @@
 import { clamp } from '../../utils/math.js';
 import type { StereoRenderer, Time } from '../audio.js';
-import { compile, tryParseException, type ExceptionInfo } from '../compile.js';
+import { compile } from '../compile.js';
+import { tryParseException, type ExceptionInfo } from '../exception.js';
 import './audio-worklet-defs.ts';
 
 export type ScriptPlayerRequest =
