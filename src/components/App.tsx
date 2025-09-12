@@ -66,6 +66,9 @@ export const App = ({ audioCtx, player }: AppProps) => {
   const [compileResult, setCompileResult] = useState<
     (Exclude<CompileResult, { type: 'error' }> & { fnCode: string }) | null
   >(null);
+  const [gutterState, setGutterState] = useState<'success' | 'error' | 'none'>(
+    'none',
+  );
   const [renderTime, setRenderTime] = useState<RenderTiming | null>(null);
   const [isRendering, setIsRendering] = useState(false);
 
@@ -75,23 +78,40 @@ export const App = ({ audioCtx, player }: AppProps) => {
 
   const { isClean, markClean } = useEditorCleanState(editorRef);
 
-  const handleUpdate = useCallback(() => {
-    if (!editorRef.current) return;
-    const source = editorRef.current.getValue();
-    if (source === null) return;
+  const handleUpdate = useCallback(
+    (initial?: boolean) => {
+      if (!editorRef.current) return;
+      const source = editorRef.current.getValue();
+      if (source === null) return;
 
-    const compileResult = compile(source, audioCtx.sampleRate);
-    switch (compileResult.type) {
-      case 'error':
-        editorRef.current.addError(compileResult.error);
-        return;
-      case 'success':
-        void player.setFn(source);
-        editorRef.current.clearErrors();
-        setCompileResult({ ...compileResult, fnCode: source });
-        return;
-    }
-  }, [audioCtx, player]);
+      if (!initial) {
+        setGutterState('none');
+      }
+
+      const compileResult = compile(source, audioCtx.sampleRate);
+      switch (compileResult.type) {
+        case 'error':
+          editorRef.current.addError(compileResult.error);
+          if (!initial) {
+            setTimeout(() => {
+              setGutterState('error');
+            }, 0);
+          }
+          return;
+        case 'success':
+          void player.setFn(source);
+          editorRef.current.clearErrors();
+          setCompileResult({ ...compileResult, fnCode: source });
+          if (!initial) {
+            setTimeout(() => {
+              setGutterState('success');
+            }, 0);
+          }
+          return;
+      }
+    },
+    [audioCtx, player],
+  );
 
   const handleBackup = useCallback(() => {
     if (!editorRef.current) return;
@@ -121,7 +141,7 @@ export const App = ({ audioCtx, player }: AppProps) => {
 
     backupIntervalRef.current = setInterval(handleBackup, BACKUP_INTERVAL);
 
-    handleUpdate();
+    handleUpdate(true);
 
     return () => {
       if (backupIntervalRef.current) clearInterval(backupIntervalRef.current);
@@ -267,6 +287,7 @@ export const App = ({ audioCtx, player }: AppProps) => {
       <Editor
         ref={editorRef}
         defaultValue={defaultValue}
+        gutterState={gutterState}
       />
 
       <BottomBar

@@ -6,6 +6,7 @@ import 'ace-builds/src-noconflict/ext-searchbox';
 import 'ace-builds/src-noconflict/ext-settings_menu';
 import 'ace-builds/src-noconflict/mode-javascript';
 import 'ace-builds/src-noconflict/theme-tomorrow_night_eighties';
+import cx from 'classnames';
 import { useEffect, useImperativeHandle, useRef, type Ref } from 'react';
 import packageJson from '../../package.json';
 import LambdaMusikaLogo from '../../public-src/lambda-musika-logo-no-color-change.svg?react';
@@ -60,10 +61,11 @@ export type EditorRef = {
 
 type EditorProps = {
   defaultValue?: string;
+  gutterState?: 'success' | 'error' | 'none';
   ref?: Ref<EditorRef | null>;
 };
 
-export const Editor = ({ defaultValue, ref }: EditorProps) => {
+export const Editor = ({ defaultValue, gutterState, ref }: EditorProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<ace.Editor | null>(null);
 
@@ -200,7 +202,12 @@ export const Editor = ({ defaultValue, ref }: EditorProps) => {
   }, []);
 
   return (
-    <div className={styles['container']}>
+    <div
+      className={cx(styles['container'], {
+        [`${styles['container-success']}`]: gutterState === 'success',
+        [`${styles['container-error']}`]: gutterState === 'error',
+      })}
+    >
       <div
         className={styles['logo-container']}
         title={`${packageJson.config.shortName} v${packageJson.version} (${import.meta.env.GIT_COMMIT_SHORT_SHA})`}

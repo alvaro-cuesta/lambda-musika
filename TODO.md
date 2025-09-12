@@ -31,8 +31,7 @@
 
 ## Cosmetic
 
-- `[PLAYER]` VU meter
-- `[EDITOR]` Visual feedback after commit (annotation? flash?)
+- `[PLAYER]` VU meter + peak hold indicator
 
 ## Chores
 

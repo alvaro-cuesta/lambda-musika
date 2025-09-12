@@ -1,3 +1,6 @@
+$success-color: #cccccc;
+$error-color: #cc3333;
+
 .container {
   flex-grow: 1;
   position: relative;
@@ -56,3 +59,30 @@
     z-index: 0;
   }
 }
+
+@mixin gutter-flash($color, $name) {
+  .container-#{$name} :global(.ace_gutter-layer)::after {
+    content: ' ';
+    display: block;
+    width: 100%;
+    height: 100%;
+    animation: gutter-flash-#{$name} 250ms;
+    pointer-events: none;
+    opacity: 0.2;
+  }
+
+  @keyframes gutter-flash-#{$name} {
+    0% {
+      background: rgba($color, 0) 0%;
+    }
+    20% {
+      background: rgba($color, 1) 0%;
+    }
+    100% {
+      background: rgba($color, 0) 0%;
+    }
+  }
+}
+
+@include gutter-flash($success-color, success);
+@include gutter-flash($error-color, error);
