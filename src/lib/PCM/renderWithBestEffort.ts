@@ -1,4 +1,3 @@
-import { compile } from '../compile';
 import type { BitDepth } from './PCM';
 import { renderPcmBufferStereoWithOfflineAudioContext } from './renderWithOfflineAudioContext';
 import {
@@ -25,19 +24,6 @@ export async function renderPcmBufferStereoWithBestEffort<Bd extends BitDepth>(
   // This fallback used to be a synchronous `renderPcmBufferStereo`, but that blocks the main thread for too long on
   // large renders, while `OfflineAudioContext` is only _slightly_ slower (due to how we have to quantize its output)
   if (typeof Worker === 'undefined') {
-    const compileResult = compile(fnCode, sampleRate);
-    switch (compileResult.type) {
-      case 'error': {
-        return { type: 'error', error: compileResult.error };
-      }
-      case 'success': {
-        if (compileResult.length === null) {
-          throw new TypeError('Cannot render infinite-length script');
-        }
-        break;
-      }
-    }
-
     const renderResult = await renderPcmBufferStereoWithOfflineAudioContext(
       bitDepth,
       sampleRate,
