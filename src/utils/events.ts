@@ -42,7 +42,7 @@ export class TypedEventTarget<Events extends EventMap> {
   }
 }
 
-export type TypedEvent<
+type TypedEvent<
   TMap extends EventMap,
   TEvent extends keyof TMap,
   // eslint-disable-next-line @typescript-eslint/no-invalid-void-type -- void acts like a return type here

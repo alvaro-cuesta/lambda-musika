@@ -10,30 +10,6 @@ import * as Musika from './Musika/index.js';
 
 const ACORN_ECMA_VERSION = 2023;
 
-/**
- * Lines added automatically by the `Function` constructor which assembles a function in the following fashion:
- *
- * ```
- * `function anonymous(${args.join(",")}
- * ) {
- * ${functionBody}
- * }`;
- * ```
- *
- * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/Function#description
- */
-const LINE_COUNT_ADDED_ABOVE_BY_FUNCTION_CONSTRUCTOR = 2;
-
-/**
- * How many lines are added by us when we wrap the user code in a function.
- *
- * Currently we manually add one line ("use strict";)
- */
-const LINE_COUNT_ADDED_ABOVE_BY_US = 1;
-
-export const LINE_COUNT_ADDED_ABOVE =
-  LINE_COUNT_ADDED_ABOVE_BY_FUNCTION_CONSTRUCTOR + LINE_COUNT_ADDED_ABOVE_BY_US;
-
 type StereoRendererBuilder = (
   Musika: typeof import('./Musika/index.js'),
   sampleRate: number,
