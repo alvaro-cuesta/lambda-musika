@@ -1,3 +1,4 @@
+import { TypedEventTarget, type TypedEventMap } from '../../utils/events.js';
 import { getRandomId } from '../../utils/random.js';
 import { type ExceptionInfo } from '../exception.js';
 import type {
@@ -6,23 +7,24 @@ import type {
 } from './ScriptPlayer.audioWorklet.js';
 import scriptPlayerProcessorAudioWorkletUrl from './ScriptPlayer.audioWorklet.js?worker&url';
 
-export type OnPlayingChange = (playing: boolean) => void;
-export type OnFrame = (frame: number) => void;
-export type OnRenderTime = (ms: number, bufferLength: number) => void;
-export type OnError = (error: ExceptionInfo) => void;
+type ScriptPlayerEventMap = {
+  playingChange: { playing: boolean };
+  frame: { frame: number };
+  renderTime: { ms: number; bufferLength: number };
+  error: { error: ExceptionInfo };
+};
 
-export class ScriptPlayer {
+export type ScriptPlayerEvents = TypedEventMap<ScriptPlayerEventMap>;
+
+export class ScriptPlayer extends TypedEventTarget<ScriptPlayerEventMap> {
   private readonly audioCtx: AudioContext;
   private readonly audioWorklet: AudioWorkletNode;
 
   private lastProcessStart: number | null = null;
 
-  public onPlayingChange: OnPlayingChange | undefined;
-  public onFrame: OnFrame | undefined;
-  public onRenderTime: OnRenderTime | undefined;
-  public onError: OnError | undefined;
-
   private constructor(audioCtx: AudioContext) {
+    super();
+
     this.audioCtx = audioCtx;
     this.audioWorklet = new AudioWorkletNode(
       this.audioCtx,
@@ -42,6 +44,10 @@ export class ScriptPlayer {
   }
 
   /* PUBLIC API */
+  public get sampleRate(): number {
+    return this.audioCtx.sampleRate;
+  }
+
   public static async create(audioCtx: AudioContext): Promise<ScriptPlayer> {
     await audioCtx.audioWorklet.addModule(scriptPlayerProcessorAudioWorkletUrl);
     return new ScriptPlayer(audioCtx);
@@ -49,12 +55,12 @@ export class ScriptPlayer {
 
   public async play(): Promise<void> {
     await this.audioCtx.resume();
-    this.onPlayingChange?.(true);
+    this.dispatchEvent('playingChange', { playing: true });
   }
 
   public async pause(): Promise<void> {
     await this.audioCtx.suspend();
-    this.onPlayingChange?.(false);
+    this.dispatchEvent('playingChange', { playing: false });
   }
 
   public async togglePlay(): Promise<void> {
@@ -68,8 +74,7 @@ export class ScriptPlayer {
   public async stop(): Promise<void> {
     await this.pause();
     await this.setFrame(0);
-    this.onFrame?.(0);
-    this.onPlayingChange?.(false);
+    this.dispatchEvent('frame', { frame: 0 });
   }
 
   public async destroy(): Promise<void> {
@@ -77,12 +82,9 @@ export class ScriptPlayer {
     this.audioWorklet.disconnect();
     this.audioWorklet.port.close();
     // Note: We do not close the AudioContext because it may be shared with other parts of the app
-    this.onPlayingChange = undefined;
-    this.onFrame = undefined;
-    this.onRenderTime = undefined;
-    this.onError = undefined;
 
-    // @todo do we have to remove event listeners or is closing the port enough?
+    // @todo do we have to remove player event listeners?
+    // @todo do we have to remove worklet event listeners or is closing the port enough?
     // @todo we might want to add a "destroyed" state and make other methods no-ops after destroy
   }
 
@@ -146,7 +148,7 @@ export class ScriptPlayer {
               'message',
               handleMessage,
             );
-            this.onFrame?.(frame);
+            this.dispatchEvent('frame', { frame });
             resolve();
             return;
           }
@@ -176,17 +178,17 @@ export class ScriptPlayer {
         break;
       }
       case 'process-success': {
-        const currentFrame = message.frameStart + message.bufferSize;
-        this.onFrame?.(currentFrame);
-        if (this.lastProcessStart !== null && this.onRenderTime) {
+        const currentFrame = message.frameStart + message.bufferLength;
+        this.dispatchEvent('frame', { frame: currentFrame });
+        if (this.lastProcessStart !== null) {
           // @todo This is actually wrong right now: performance.now() does not exist inside the worklet, so we had to
           // resort to this hacky way of measuring time, but there's a lot of noise introduced by marshalling of
           // messages, the event loop running, the main thread running other stuff, etc.
           // We need a better way of measuring this but I don't think it exists right now.
-          this.onRenderTime(
-            performance.now() - this.lastProcessStart,
-            message.bufferSize,
-          );
+          this.dispatchEvent('renderTime', {
+            ms: performance.now() - this.lastProcessStart,
+            bufferLength: message.bufferLength,
+          });
         }
         if (message.hasFinished) {
           void this.stop();
@@ -194,7 +196,7 @@ export class ScriptPlayer {
         break;
       }
       case 'process-renderError': {
-        this.onError?.(message.error);
+        this.dispatchEvent('error', { error: message.error });
         break;
       }
       default: {

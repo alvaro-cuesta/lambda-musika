@@ -12,9 +12,8 @@ import { compile, type CompileResult } from '../lib/compile.js';
 import { makeWavBlob, type BitDepth } from '../lib/PCM/PCM.js';
 import { renderPcmBufferStereoWithBestEffort } from '../lib/PCM/renderWithBestEffort.js';
 import type {
-  OnError,
-  OnPlayingChange,
-  OnRenderTime,
+  ScriptPlayer,
+  ScriptPlayerEvents,
 } from '../lib/ScriptPlayer/ScriptPlayer.js';
 import { isEditorSerialState } from '../utils/editor.js';
 import { downloadBlob } from '../utils/file.js';
@@ -27,25 +26,11 @@ import {
   type RenderTiming,
 } from './CPULoad.js';
 import { Editor, type EditorRef } from './Editor.js';
-import { Player, type PlayerRef } from './Player/Player.js';
+import { Player } from './Player/Player.js';
 
 const DEFAULT_SCRIPT = EXAMPLE_SCRIPTS.Default;
 
 const BACKUP_INTERVAL = 1000;
-
-function useAudioContext() {
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  audioCtxRef.current ??= new AudioContext();
-
-  useEffect(() => {
-    return () => {
-      void audioCtxRef.current?.close();
-      audioCtxRef.current = null;
-    };
-  }, []);
-
-  return audioCtxRef.current;
-}
 
 const DIRTY_INTERVAL = 100;
 function useEditorCleanState(editorRef: RefObject<EditorRef | null>) {
@@ -72,9 +57,12 @@ function useEditorCleanState(editorRef: RefObject<EditorRef | null>) {
   };
 }
 
-export const App = () => {
-  const audioCtx = useAudioContext();
+type AppProps = {
+  audioCtx: AudioContext;
+  player: ScriptPlayer;
+};
 
+export const App = ({ audioCtx, player }: AppProps) => {
   const [compileResult, setCompileResult] = useState<
     (Exclude<CompileResult, { type: 'error' }> & { fnCode: string }) | null
   >(null);
@@ -83,7 +71,6 @@ export const App = () => {
 
   const backupIntervalRef = useRef<number>(null);
 
-  const playerRef = useRef<PlayerRef>(null);
   const editorRef = useRef<EditorRef>(null);
 
   const { isClean, markClean } = useEditorCleanState(editorRef);
@@ -100,10 +87,11 @@ export const App = () => {
         return;
       case 'infinite':
       case 'with-length':
+        void player.setFn(source);
         setCompileResult({ ...compileResult, fnCode: source });
         return;
     }
-  }, [audioCtx]);
+  }, [audioCtx, player]);
 
   const handleBackup = useCallback(() => {
     if (!editorRef.current) return;
@@ -117,7 +105,7 @@ export const App = () => {
     }
   }, []);
 
-  const handleExplicitUpdate = useCallback(() => {
+  const handleSubmit = useCallback(() => {
     handleUpdate();
     handleBackup();
   }, [handleUpdate, handleBackup]);
@@ -141,24 +129,44 @@ export const App = () => {
   }, [handleUpdate, handleBackup]);
 
   // Player events
-  const handlePlayingChange: OnPlayingChange = useCallback((_playing) => {
-    setRenderTime(null);
-  }, []);
+  const handlePlayingChange = useCallback(
+    (_event: ScriptPlayerEvents['playingChange']) => {
+      setRenderTime(null);
+    },
+    [],
+  );
 
-  const handleRenderTime: OnRenderTime = useCallback((ms, bufferLength) => {
-    setRenderTime((prev) => ({
-      ms: [...(prev?.ms ?? []), ms].slice(-TIMING_HISTORY_LENGTH),
-      bufferLength,
-    }));
-  }, []);
+  const handleRenderTime = useCallback(
+    (event: ScriptPlayerEvents['renderTime']) => {
+      setRenderTime((prev) => ({
+        ms: [...(prev?.ms ?? []), event.detail.ms].slice(
+          -TIMING_HISTORY_LENGTH,
+        ),
+        bufferLength: event.detail.bufferLength,
+      }));
+    },
+    [],
+  );
 
-  const handleError: OnError = useCallback((error) => {
+  const handleError = useCallback((event: ScriptPlayerEvents['error']) => {
     try {
-      editorRef.current?.addError(error);
+      editorRef.current?.addError(event.detail.error);
     } catch {
       /* IGNORE EXCEPTION! Let the player try to recover */
     }
   }, []);
+
+  useEffect(() => {
+    player.addEventListener('playingChange', handlePlayingChange);
+    player.addEventListener('renderTime', handleRenderTime);
+    player.addEventListener('error', handleError);
+
+    return () => {
+      player.removeEventListener('playingChange', handlePlayingChange);
+      player.removeEventListener('renderTime', handleRenderTime);
+      player.removeEventListener('error', handleError);
+    };
+  }, [player, handlePlayingChange, handleRenderTime, handleError]);
 
   // Bottom bar events
   const handleNew = useCallback(
@@ -189,7 +197,7 @@ export const App = () => {
 
         setIsRendering(true);
         try {
-          void playerRef.current?.pause();
+          void player.pause();
 
           handleUpdate();
 
@@ -232,7 +240,7 @@ export const App = () => {
         }
       })();
     },
-    [handleUpdate],
+    [handleUpdate, player],
   );
 
   const defaultValue = isEditorSerialState(history.state)
@@ -242,14 +250,10 @@ export const App = () => {
   return (
     <div className={styles['container']}>
       <Player
-        ref={playerRef}
+        player={player}
         // @todo Merge this into a single prop?
         fnCode={compileResult?.fnCode ?? null}
         length={compileResult?.length ?? null}
-        audioCtx={audioCtx}
-        onPlayingChange={handlePlayingChange}
-        onRenderTime={handleRenderTime}
-        onError={handleError}
       />
 
       <CPULoad
@@ -266,7 +270,7 @@ export const App = () => {
         isClean={isClean}
         showRenderControls={!!compileResult?.length}
         isRendering={isRendering}
-        onCommit={handleExplicitUpdate}
+        onCommit={handleSubmit}
         onNew={handleNew}
         onSave={handleSave}
         onRender={handleRender}

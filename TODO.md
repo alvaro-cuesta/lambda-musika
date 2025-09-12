@@ -2,7 +2,6 @@
 
 ## Critical
 
-- COMMIT should always generate a new build of the function (restarting random et al)
 - `[API]` Module-based scripts
 - `[APP]` Bottom bar is too large in mobile now -- render probably needs a panel instead
 - `[PLAYER]` Input time is completely wrong and has AM/PM in english locales (lol)

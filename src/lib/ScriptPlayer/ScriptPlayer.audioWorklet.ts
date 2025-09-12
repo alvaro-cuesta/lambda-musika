@@ -36,12 +36,12 @@ export type ScriptPlayerMessage =
   | {
       type: 'process-started';
       frameStart: number;
-      bufferSize: number;
+      bufferLength: number;
     }
   | {
       type: 'process-success';
       frameStart: number;
-      bufferSize: number;
+      bufferLength: number;
       hasFinished: boolean;
     }
   | {
@@ -186,19 +186,19 @@ class ScriptPlayerProcessor extends AudioWorkletProcessor {
   process(_inputs: [], [output]: [[Float32Array, Float32Array]]) {
     if (!this.fn) return true;
 
-    // Here we assume all input, output, and parameter buffers are of the same length (bufferSize)
-    const bufferSize = output[0].length;
-    if (!bufferSize) return true;
+    // Here we assume all input, output, and parameter buffers are of the same length (bufferLength)
+    const bufferLength = output[0].length;
+    if (!bufferLength) return true;
 
     this.sendMessage({
       type: 'process-started',
       frameStart: this.currentFrame,
-      bufferSize: output[0].length,
+      bufferLength,
     });
 
     const currentFrame = this.currentFrame;
 
-    for (let i = 0; i < bufferSize; i++) {
+    for (let i = 0; i < bufferLength; i++) {
       const t = ((i + currentFrame) / sampleRate) as Time;
       try {
         const [l, r] = this.fn(t);
@@ -233,12 +233,12 @@ class ScriptPlayerProcessor extends AudioWorkletProcessor {
     const hasFinished =
       this.length === null
         ? false
-        : currentFrame + bufferSize >= this.length * sampleRate;
+        : currentFrame + bufferLength >= this.length * sampleRate;
 
     this.sendMessage({
       type: 'process-success',
       frameStart: currentFrame,
-      bufferSize,
+      bufferLength,
       hasFinished,
     });
 
