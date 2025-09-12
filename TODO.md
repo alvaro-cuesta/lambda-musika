@@ -39,8 +39,6 @@
 - `[APP]` Offline service worker
 - `[EDITOR]` Replace Ace with Monaco?
 - `[EDITOR]` Have IntelliSense (especially for Musika library!)
-- `[PLAYER]` Currently the player is instantiated inside the `Player` component. This was inherited from the previous
-  architecture (ancient React version) and it probably makes sense to move it out and keep `Player` UI-only.
 
 ---
 
