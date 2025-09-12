@@ -27,6 +27,7 @@
 - `[PLAYER]` Hotkeys for time-seeking
 - `[PLAYER]` Volume slider
 - `[API]` `[PLAYER]` `[RENDERER]` Musika scripts with Mono output
+- `[APP]` Allow downloading a range when song has not specified a length
 
 ## Bugs
 
