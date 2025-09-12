@@ -11,11 +11,10 @@ import { TimeSlider } from './TimeSlider.js';
 
 type PlayerProps = {
   player: ScriptPlayer;
-  fnCode: string | null;
-  length: number | null;
+  state: { length: number | null } | null;
 };
 
-export const Player = ({ player, fnCode, length }: PlayerProps) => {
+export const Player = ({ player, state }: PlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [lastFrame, setLastFrame] = useState(0);
 
@@ -85,16 +84,16 @@ export const Player = ({ player, fnCode, length }: PlayerProps) => {
         type="button"
         onClick={togglePlay}
         className={'color-orange'}
-        disabled={fnCode === null}
+        disabled={state === null}
         title={title}
         aria-label={title}
       >
         <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} />
       </button>
 
-      {fnCode === null ? null : length ? (
+      {state === null ? null : state.length !== null ? (
         <TimeSlider
-          length={length}
+          length={state.length}
           value={lastFrame / player.sampleRate}
           onChange={handleTime}
         />

@@ -43,10 +43,10 @@ self.onmessage = (event: MessageEvent<RenderPCMWorkerRequest>) => {
       });
       return;
     }
-    case 'infinite': {
-      throw new TypeError('Rendering function has infinite length.');
-    }
-    case 'with-length': {
+    case 'success': {
+      if (compileResult.length === null) {
+        throw new TypeError('Cannot render infinite-length script');
+      }
       break;
     }
   }

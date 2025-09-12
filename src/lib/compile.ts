@@ -19,18 +19,15 @@ type StereoRendererBuilder = (
 
 export type CompileResult =
   | {
-      type: 'infinite';
+      type: 'success';
       builder: StereoRendererBuilder;
       fn: StereoRenderer;
-      length: undefined;
+      length: number | null;
     }
   | {
-      type: 'with-length';
-      builder: StereoRendererBuilder;
-      fn: StereoRenderer;
-      length: number;
-    }
-  | { type: 'error'; error: ExceptionInfo };
+      type: 'error';
+      error: ExceptionInfo;
+    };
 
 export function compile(source: string, sampleRate: number): CompileResult {
   // Check for syntax errors - JavaScript doesn't provide error location otherwise
@@ -82,8 +79,5 @@ export function compile(source: string, sampleRate: number): CompileResult {
     return { type: 'error' as const, error: tryParseException(e) };
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive... length could be changed via setLength from builder
-  return length === null
-    ? { type: 'infinite' as const, builder, fn, length: undefined }
-    : { type: 'with-length' as const, builder, fn, length };
+  return { type: 'success' as const, builder, fn, length };
 }

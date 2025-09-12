@@ -30,10 +30,10 @@ export async function renderPcmBufferStereoWithBestEffort<Bd extends BitDepth>(
       case 'error': {
         return { type: 'error', error: compileResult.error };
       }
-      case 'infinite': {
-        throw new TypeError('Rendering function has infinite length.');
-      }
-      case 'with-length': {
+      case 'success': {
+        if (compileResult.length === null) {
+          throw new TypeError('Cannot render infinite-length script');
+        }
         break;
       }
     }

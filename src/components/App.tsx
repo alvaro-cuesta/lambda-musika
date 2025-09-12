@@ -85,8 +85,7 @@ export const App = ({ audioCtx, player }: AppProps) => {
       case 'error':
         editorRef.current.addError(compileResult.error);
         return;
-      case 'infinite':
-      case 'with-length':
+      case 'success':
         void player.setFn(source);
         setCompileResult({ ...compileResult, fnCode: source });
         return;
@@ -210,10 +209,11 @@ export const App = ({ audioCtx, player }: AppProps) => {
               editorRef.current.addError(compileResult.error);
               return;
             }
-            case 'infinite': {
-              throw new Error('Cannot render infinite-length script');
-            }
-            case 'with-length': {
+            case 'success': {
+              if (compileResult.length === null) {
+                throw new Error('Cannot render infinite-length script');
+              }
+
               const renderResult = await renderPcmBufferStereoWithBestEffort(
                 bitDepth,
                 sampleRate,
@@ -251,9 +251,7 @@ export const App = ({ audioCtx, player }: AppProps) => {
     <div className={styles['container']}>
       <Player
         player={player}
-        // @todo Merge this into a single prop?
-        fnCode={compileResult?.fnCode ?? null}
-        length={compileResult?.length ?? null}
+        state={compileResult}
       />
 
       <CPULoad

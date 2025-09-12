@@ -143,10 +143,9 @@ class ScriptPlayerProcessor extends AudioWorkletProcessor {
         });
         return;
       }
-      case 'infinite':
-      case 'with-length': {
+      case 'success': {
         this.fn = compileResult.fn;
-        this.length = compileResult.length ?? null;
+        this.length = compileResult.length;
         this.sendMessage({
           type: 'setFn-success',
           requestId,
