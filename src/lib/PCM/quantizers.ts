@@ -6,7 +6,7 @@ import { clamp } from '../../utils/math.js';
 import type { MonoSignal } from '../audio.js';
 import type { BitDepth, Int16, Int32, Uint8 } from './PCM.js';
 
-export type Quantizer = (v: MonoSignal) => number;
+type Quantizer = (v: MonoSignal) => number;
 
 // @todo Could this be done more efficiently with a LUT?
 

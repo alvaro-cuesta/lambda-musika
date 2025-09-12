@@ -10,10 +10,6 @@ export type Int16 = Tagged<number, 'Int16'>;
 
 export type Int32 = Tagged<number, 'Int32'>;
 
-export type Float32 = Tagged<number, 'Float32'>;
-
-export type Float64 = Tagged<number, 'Float64'>;
-
 /**
  * Bit depths that are supported by Lambda Musika's PCM utilities.
  */
@@ -42,18 +38,17 @@ export type BufferForBitDepth<Bd extends BitDepth> = Bd extends 'uint8'
           ? Float64Array<ArrayBuffer>
           : never;
 
-export type BufferConstructorForBitDepth<Bd extends BitDepth> =
-  Bd extends 'uint8'
-    ? Uint8ArrayConstructor
-    : Bd extends 'int16'
-      ? Int16ArrayConstructor
-      : Bd extends 'int32'
-        ? Int32ArrayConstructor
-        : Bd extends 'float32'
-          ? Float32ArrayConstructor
-          : Bd extends 'float64'
-            ? Float64ArrayConstructor
-            : never;
+type BufferConstructorForBitDepth<Bd extends BitDepth> = Bd extends 'uint8'
+  ? Uint8ArrayConstructor
+  : Bd extends 'int16'
+    ? Int16ArrayConstructor
+    : Bd extends 'int32'
+      ? Int32ArrayConstructor
+      : Bd extends 'float32'
+        ? Float32ArrayConstructor
+        : Bd extends 'float64'
+          ? Float64ArrayConstructor
+          : never;
 
 export function getBufferConstructorForBitDepth<Bd extends BitDepth>(
   bitDepth: Bd,
@@ -74,11 +69,11 @@ export function getBufferConstructorForBitDepth<Bd extends BitDepth>(
   }
 }
 
-export function getBytesPerSampleForBitDepth(bitDepth: BitDepth): number {
+function getBytesPerSampleForBitDepth(bitDepth: BitDepth): number {
   return getBufferConstructorForBitDepth(bitDepth).BYTES_PER_ELEMENT;
 }
 
-export const RIFF_HEADER_SIZE = 44;
+const RIFF_HEADER_SIZE = 44;
 
 export function getWavFileSize(
   sampleRate: number,
@@ -122,7 +117,7 @@ export function makeWavBlob(
   const byteRate = sampleRate * blockAlign;
   const dataSize = samplesPerChannel * blockAlign;
 
-  const header = new ArrayBuffer(44); // Header length
+  const header = new ArrayBuffer(RIFF_HEADER_SIZE);
   const dv = new DataView(header);
 
   const chunkID = littleEndian
