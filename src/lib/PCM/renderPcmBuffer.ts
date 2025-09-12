@@ -9,13 +9,15 @@ function getBufferTypeForBitDepth<Bd extends BitDepth>(
   bitDepth: Bd,
 ): Constructor<BufferForBitDepth<Bd>> {
   switch (bitDepth) {
-    case 8:
+    case 'uint8':
       return Uint8Array as unknown as Constructor<BufferForBitDepth<Bd>>;
-    case 16:
+    case 'int16':
       return Int16Array as unknown as Constructor<BufferForBitDepth<Bd>>;
-    case 32:
+    case 'int32':
+      return Int32Array as unknown as Constructor<BufferForBitDepth<Bd>>;
+    case 'float32':
       return Float32Array as unknown as Constructor<BufferForBitDepth<Bd>>;
-    case 64:
+    case 'float64':
       return Float64Array as unknown as Constructor<BufferForBitDepth<Bd>>;
     default:
       throw new Error(`Unsupported bit depth: ${bitDepth}`);

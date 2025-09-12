@@ -8,6 +8,8 @@ export type Uint8 = Tagged<number, 'Uint8'>;
 
 export type Int16 = Tagged<number, 'Int16'>;
 
+export type Int32 = Tagged<number, 'Int32'>;
+
 export type Float32 = Tagged<number, 'Float32'>;
 
 export type Float64 = Tagged<number, 'Float64'>;
@@ -15,22 +17,30 @@ export type Float64 = Tagged<number, 'Float64'>;
 /**
  * Bit depths that are supported by Lambda Musika's PCM utilities.
  */
-export const SUPPORTED_BIT_DEPTHS = [8, 16, 32, 64] as const;
+export const SUPPORTED_BIT_DEPTHS = [
+  'uint8',
+  'int16',
+  'int32',
+  'float32',
+  'float64',
+] as const;
 
 /**
  * Bit depths that are supported by Lambda Musika's PCM utilities.
  */
 export type BitDepth = (typeof SUPPORTED_BIT_DEPTHS)[number];
 
-export type BufferForBitDepth<Bd extends BitDepth> = Bd extends 8
+export type BufferForBitDepth<Bd extends BitDepth> = Bd extends 'uint8'
   ? Uint8Array<ArrayBuffer>
-  : Bd extends 16
+  : Bd extends 'int16'
     ? Int16Array<ArrayBuffer>
-    : Bd extends 32
-      ? Float32Array<ArrayBuffer>
-      : Bd extends 64
-        ? Float64Array<ArrayBuffer>
-        : never;
+    : Bd extends 'int32'
+      ? Int32Array<ArrayBuffer>
+      : Bd extends 'float32'
+        ? Float32Array<ArrayBuffer>
+        : Bd extends 'float64'
+          ? Float64Array<ArrayBuffer>
+          : never;
 
 /**
  * Create a WAV blob from PCM data.

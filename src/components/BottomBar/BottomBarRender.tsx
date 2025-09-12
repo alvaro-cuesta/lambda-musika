@@ -13,7 +13,7 @@ const AVAILABLE_SAMPLE_RATES = [
 type SampleRate = (typeof AVAILABLE_SAMPLE_RATES)[number];
 
 const DEFAULT_SAMPLE_RATE = 44100 satisfies SampleRate;
-const DEFAULT_BIT_RATE = 16 satisfies BitDepth;
+const DEFAULT_BIT_RATE = 'float32' satisfies BitDepth;
 
 type BottomBarRenderProps = {
   isOpen: boolean;
@@ -46,7 +46,7 @@ export function BottomBarRender({
 
   function handleChangeBitDepth(e: React.ChangeEvent<HTMLSelectElement>) {
     // as is safe because options are fixed
-    setRenderBitDepth(Number(e.target.value) as BitDepth);
+    setRenderBitDepth(e.target.value as BitDepth);
   }
 
   const panel = isOpen ? (
@@ -101,7 +101,7 @@ export function BottomBarRender({
               key={b}
               value={b}
             >
-              {b}bit
+              {b}
             </option>
           ))}
         </select>
