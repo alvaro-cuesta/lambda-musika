@@ -1,0 +1,50 @@
+@use '../styles/variables';
+
+$padding: 0.75ch;
+
+.container {
+  display: inline-flex;
+  align-items: center;
+  background-color: white;
+  cursor: pointer;
+
+  input {
+    font: variables.$monospace-font;
+
+    width: calc(var(--width) * 1ch + 2 * $padding);
+    height: 100%;
+
+    // Remove spinner buttons in number input
+    // Firefox
+    appearance: textfield;
+
+    // Chrome
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+}
+
+.minutes {
+  text-align: right;
+  padding-left: 1ch;
+}
+
+.seconds {
+  text-align: left;
+  padding-right: 1ch;
+}
+
+.separator {
+  color: black;
+}
+
+.container-ticking.container-even .separator {
+  opacity: 0.75;
+}
+
+.container-ticking.container-odd .separator {
+  opacity: 0.25;
+}

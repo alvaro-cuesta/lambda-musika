@@ -3,8 +3,8 @@ import { toMinsSecs } from '../../utils/time.js';
 import styles from './TimeSlider.module.scss';
 
 type TimeSliderProps = {
-  length?: number;
-  value?: number;
+  length: number;
+  value: number;
   onChange?: (value: number) => void;
 } & Omit<
   React.HTMLAttributes<HTMLInputElement>,

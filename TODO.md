@@ -8,7 +8,6 @@
 - Never run untrusted code on main page
   - Needed for isolation if e.g. we ever want the user to provide login to GitHub or stuff like that
 - `[API]` Module-based scripts
-- `[PLAYER]` Input time is completely wrong and has AM/PM in english locales (lol)
 
 ## Features
 
@@ -31,7 +30,6 @@
 
 ## Bugs
 
-- `[PLAYER]` TimeSeeker maxes at 23:59 (HH:MM) due to using `<input type="time">`
 - `[PLAYER]` Sound clicks on play/pause/update/seek
 
 ## Cosmetic

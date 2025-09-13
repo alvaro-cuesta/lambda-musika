@@ -101,6 +101,7 @@ export const Player = ({ player, state }: PlayerProps) => {
         <TimeSeeker
           value={lastFrame / player.sampleRate}
           onChange={handleTime}
+          isPlaying={isPlaying}
         />
       )}
     </div>

@@ -1,15 +1,3 @@
 .container {
   display: flex;
 }
-
-.input-time {
-  appearance: textfield;
-  padding: 0 1em;
-  margin: 0px;
-
-  &::-webkit-inner-spin-button,
-  &::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-}

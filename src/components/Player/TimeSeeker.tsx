@@ -4,49 +4,42 @@ import {
   faForward,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import cx from 'classnames';
-import React from 'react';
-import { toMinsSecs } from '../../utils/time.js';
+import { useCallback } from 'react';
+import { TimeInput } from '../TimeInput';
 import styles from './TimeSeeker.module.scss';
 
 const REWIND_FF_SECS = 5;
 const VERY_FF_SECS = 60;
 
 type TimeSeekerProps = {
-  value?: number;
+  value: number;
   onChange?: (value: number) => void;
+  isPlaying?: boolean;
 };
 
-export const TimeSeeker = ({ value = 0, onChange }: TimeSeekerProps) => {
-  const handleRestart = () => {
+export const TimeSeeker = ({
+  value = 0,
+  onChange,
+  isPlaying,
+}: TimeSeekerProps) => {
+  const handleRestart = useCallback(() => {
     onChange?.(0);
-  };
+  }, [onChange]);
 
-  const handleRewind = () => {
+  const handleRewind = useCallback(() => {
     onChange?.(Math.max(0, value - REWIND_FF_SECS));
-  };
+  }, [onChange, value]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (onChange) {
-      const [mins, secs] = e.currentTarget.value
-        .split(':')
-        .map((n) => parseInt(n, 10));
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- safe because input type=time always gives MM:SS
-      onChange(mins! * 60 + secs!);
-    }
-  };
-
-  const handleFastForward = () => {
+  const handleFastForward = useCallback(() => {
     onChange?.(value + REWIND_FF_SECS);
-  };
+  }, [onChange, value]);
 
-  const handleVeryFastForward = () => {
+  const handleVeryFastForward = useCallback(() => {
     onChange?.(value + VERY_FF_SECS);
-  };
+  }, [onChange, value]);
 
   const restartLabel = 'Restart';
   const rewindLabel = `-${REWIND_FF_SECS} seconds`;
-  const timeLabel = 'Time';
   const forwardLabel = `+${REWIND_FF_SECS} seconds`;
   const fastForwardLabel = `+${VERY_FF_SECS} seconds`;
 
@@ -72,14 +65,10 @@ export const TimeSeeker = ({ value = 0, onChange }: TimeSeekerProps) => {
         <FontAwesomeIcon icon={faBackward} />
       </button>
 
-      <input
-        className={cx('color-yellow', styles['input-time'])}
-        type="time"
-        value={toMinsSecs(value)}
-        required
-        onChange={handleChange}
-        title={timeLabel}
-        aria-label={timeLabel}
+      <TimeInput
+        value={value}
+        onChange={onChange}
+        isTicking={isPlaying}
       />
 
       <button
