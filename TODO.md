@@ -96,6 +96,11 @@
 
 ## Ideas or possible research lines
 
+- `[APP]` Use native times from AudioWorklet?
+- `[APP]` Output selection, or even multi-output scripts
+- `[APP]` Audio input
+- `[APP]` MIDI input
+- `[APP]` MIDI output?
 - `[SCRIPTS]` Use strict mode?
 - `[COSMETIC]` "3D" box-shadow buttons Material Design style
 - `[FEATURE]` `[API]` `[APP]` `[...]` Microphone/MIDI/keyboard/mouse input
