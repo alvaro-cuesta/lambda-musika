@@ -65,6 +65,15 @@ type EditorProps = {
   ref?: Ref<EditorRef | null>;
 };
 
+function clearErrorsFromSession(session: ace.EditSession) {
+  session.setAnnotations([]);
+  if (session.lineWidgets) {
+    session.lineWidgets.forEach((w) => {
+      session.widgetManager.removeLineWidget(w);
+    });
+  }
+}
+
 export const Editor = ({ defaultValue, gutterState, ref }: EditorProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<ace.Editor | null>(null);
@@ -107,6 +116,7 @@ export const Editor = ({ defaultValue, gutterState, ref }: EditorProps) => {
     editor.focus();
 
     return () => {
+      clearErrorsFromSession(editor.getSession());
       editor.destroy();
       editorRef.current = null;
     };
@@ -116,20 +126,9 @@ export const Editor = ({ defaultValue, gutterState, ref }: EditorProps) => {
 
   // Expose methods
   // @todo Imperative handle is probably a bad idea here -- ported straight from a class component
-  useImperativeHandle<EditorRef | null, EditorRef | null>(ref, () => {
-    function clearErrors() {
-      if (!editorRef.current) return;
-      const editor = editorRef.current;
-      const session = editor.getSession();
-      session.setAnnotations([]);
-      if (session.lineWidgets) {
-        session.lineWidgets.forEach((w) => {
-          session.widgetManager.removeLineWidget(w);
-        });
-      }
-    }
-
-    return {
+  useImperativeHandle<EditorRef | null, EditorRef | null>(
+    ref,
+    () => ({
       getValue() {
         if (!editorRef.current) return null;
         const editor = editorRef.current;
@@ -150,7 +149,7 @@ export const Editor = ({ defaultValue, gutterState, ref }: EditorProps) => {
         const editor = editorRef.current;
         const session = editor.getSession();
 
-        clearErrors();
+        clearErrorsFromSession(session);
 
         const { name, message, row, column } = error;
         // Cleans stuff like `SyntaxError: Unexpected token (113:8)` to just `SyntaxError: Unexpected token`
@@ -160,7 +159,12 @@ export const Editor = ({ defaultValue, gutterState, ref }: EditorProps) => {
         console.error(error);
       },
 
-      clearErrors,
+      clearErrors() {
+        if (!editorRef.current) return;
+        const editor = editorRef.current;
+        const session = editor.getSession();
+        clearErrorsFromSession(session);
+      },
 
       getSerialState() {
         if (!editorRef.current) return null;
@@ -198,8 +202,9 @@ export const Editor = ({ defaultValue, gutterState, ref }: EditorProps) => {
         const editor = editorRef.current;
         return editor.getSession().getUndoManager().isClean();
       },
-    };
-  }, []);
+    }),
+    [],
+  );
 
   return (
     <div

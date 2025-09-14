@@ -2,7 +2,6 @@
 
 ## Critical
 
-- Syntax errors are sometimes still stuck when they have been backed up into history state
 - Gutter on Firefox does not flash on quick commits
 - Keyboard focus is not visible in buttons, etc.
 - Never run untrusted code on main page
