@@ -2,6 +2,7 @@
 
 ## Critical
 
+- Space still seems to lose selection on time input (at least on Android)
 - Never run untrusted code on main page
   - Needed for isolation if e.g. we ever want the user to provide login to GitHub or stuff like that
 - `[API]` Module-based scripts
