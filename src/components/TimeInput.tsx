@@ -48,7 +48,6 @@ export const TimeInput = ({
         switch (e.key) {
           // Arrow up/down increases/decreses value (simulates <input type="time" /> behavior)
           case 'ArrowUp': {
-            e.preventDefault();
             if (field === 'min') {
               handleChange(m + 1, s);
             } else {
@@ -57,7 +56,6 @@ export const TimeInput = ({
             break;
           }
           case 'ArrowDown': {
-            e.preventDefault();
             if (field === 'min') {
               handleChange(m - 1, s);
             } else {
@@ -67,12 +65,10 @@ export const TimeInput = ({
           }
           // Arrow left/right allows switching between fields (simulates <input type="time" /> behavior)
           case 'ArrowLeft': {
-            e.preventDefault();
             if (field === 'sec') minRef.current?.focus();
             break;
           }
           case 'ArrowRight': {
-            e.preventDefault();
             if (field === 'min') secRef.current?.focus();
             break;
           }
@@ -271,6 +267,7 @@ function TimeInputSegment({
             value = parseInput(writingValueRef.current);
           }
           e.currentTarget.value = writingValueRef.current.padStart(2, '0');
+          onKeyDown?.(e);
           onChange?.(value);
           break;
         }
@@ -278,10 +275,18 @@ function TimeInputSegment({
         case 'Delete': {
           e.preventDefault();
           e.currentTarget.value = '00';
+          onKeyDown?.(e);
           onChange?.(0);
           break;
         }
+        // Do not prevent default behavior for these keys
+        case 'Tab': {
+          onKeyDown?.(e);
+          break;
+        }
         default: {
+          // We have to prevent default behavior or extraneous characters will cause selection to be lost
+          e.preventDefault();
           onKeyDown?.(e);
         }
       }
