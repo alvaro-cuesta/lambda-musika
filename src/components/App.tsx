@@ -206,7 +206,7 @@ export const App = ({ audioCtx, player }: AppProps) => {
       setCompileResult(null);
       editorRef.current?.newScript(source);
       markClean();
-      handleUpdate();
+      handleUpdate(true);
     },
     [markClean, handleUpdate],
   );
