@@ -293,6 +293,12 @@ function TimeInputSegment({
     writingValueRef.current = '';
   }, []);
 
+  const handleOnChange = useCallback(() => {
+    // Do nothing on onChange since we handle everything in onKeyDown
+    // We cannot do it on onChange because it breaks select-all behavior
+    // This is here to silence React warning about controlled input without onChange
+  }, []);
+
   return (
     <input
       ref={handleRef}
@@ -301,6 +307,7 @@ function TimeInputSegment({
       pattern="[0-9]*"
       value={valueStr}
       onKeyDown={handleKeyDown}
+      onChange={handleOnChange}
       onBlur={handleBlur}
       style={
         {
