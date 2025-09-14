@@ -22,7 +22,7 @@ function getSettingsKey(key: keyof Settings): string {
   return `musika.settings.${key}`;
 }
 
-export function getSetting(key: keyof Settings): Settings[typeof key] {
+function getSetting(key: keyof Settings): Settings[typeof key] {
   const v = localStorage.getItem(getSettingsKey(key));
   if (v === null) {
     return DEFAULT_SETTINGS[key];
@@ -35,10 +35,7 @@ export function getSetting(key: keyof Settings): Settings[typeof key] {
   }
 }
 
-export function setSetting<K extends keyof Settings>(
-  key: K,
-  value: Settings[K],
-) {
+function setSetting<K extends keyof Settings>(key: K, value: Settings[K]) {
   localStorage.setItem(getSettingsKey(key), JSON.stringify(value));
   window.dispatchEvent(
     new CustomEvent(CUSTOM_STORAGE_EVENT_KEY, {
