@@ -39,6 +39,29 @@
 - `[APP]` Offline service worker
 - `[EDITOR]` Replace Ace with Monaco?
 - `[EDITOR]` Have IntelliSense (especially for Musika library!)
+- `[APP]` Build static reference of Musika library
+
+## Musika Library
+
+- Make functions take an arbitrary number of signals (or have sister functions that do it)
+  - E.g. `Operator.mix` currently mixes 2 mono signals, but it could be useful to mix 2 stereo signals too.
+- Buffers/samples
+- `[Envelope]` Should inv envelopes actually be logarithmic? Maybe both options?
+- `[Envelope]` More interpolations for Attack/release envelopes
+  - Linear
+  - Hermite
+- `[Envelope]` [ADSR Envelope](http://www.earlevel.com/main/category/digital-audio/oscillators/envelope-generators/?orderby=date&order=ASC)
+- `[Filter]` Equalizer
+- `[Filter]` Delay
+- `[Filter]` [Reverb](http://www.earlevel.com/main/1997/01/19/a-bit-about-reverb/)
+- `[Filter]` [Synth filters](http://www.earlevel.com/main/category/synthesizers/)
+- `[Filter]` [One pole filter](http://www.earlevel.com/main/2012/12/15/a-one-pole-filter/)
+- `[Filter]` [Windowed sinc filter](http://www.earlevel.com/main/category/digital-audio/filters/fir-filters/) (for oversampling)
+- `[Music]` Arpeggiator
+- `[Util]` Memoization
+- `[Util]` Rate limiting helper (e.g. for control rates)
+- `[Util]` Log-to-Linear function and viceversa (for linear parameters into freqs and such)
+  - Also for amplitude? I.e. work with decibels
 
 ---
 
@@ -53,21 +76,10 @@
   Another instance: biquad filters became unstable because of `t` not being
   monotonic.
 
-- `[API]` `[MUSIKA]` `[MUSIKA-UTIL]` Log-to-Linear function and viceversa (for linear parameters into freqs and such)
-  - Also for amplitude? I.e. work with decibels
-- `[API]` `[MUSIKA]` `[MUSIKA-ENVELOPE]` More interpolations for Attack/release envelopes
-  - Linear
-  - Hermite
-- `[API]` `[MUSIKA]` `[MUSIKA-ENVELOPE]` [ADSR Envelope](http://www.earlevel.com/main/category/digital-audio/oscillators/envelope-generators/?orderby=date&order=ASC)
-- `[API]` `[MUSIKA]` `[MUSIKA-ENVELOPE]` Should inv envelopes actually be logarithmic?
-- `[API]` `[MUSIKA]` `[MUSIKA-MUSIC]` Chordify signals (given an osc constructor,
-  instance several and mix)
+- `[API]` `[MUSIKA]` `[MUSIKA-MUSIC]` Chordify signals (given an osc constructor, instance several and mix)
 - `[API]` `[MUSIKA]` `[MUSIKA-MUSIC]` Randomization helpers
 - `[API]` `[MUSIKA]` `[MUSIKA-MUSIC]` Timing helpers
 - `[API]` `[MUSIKA]` `[MUSIKA-MUSIC]` Compositional helpers
-- `[API]` `[MUSIKA]` `[MUSIKA-MUSIC]` Arpeggiator
-- `[API]` `[MUSIKA]` `[MUSIKA-UTIL]` Memoization helper
-- `[API]` `[MUSIKA]` `[MUSIKA-UTIL]` Rate limiting helper (e.g. for control rates)
 
 ## 1.0.0
 
@@ -92,13 +104,13 @@
 ## Ideas or possible research lines
 
 - `[APP]` Use native times from AudioWorklet?
-- `[APP]` Output selection, or even multi-output scripts
-- `[APP]` Audio input
-- `[APP]` MIDI input
+- `[APP]` Audio output selection, or even multi-output scripts
 - `[APP]` MIDI output?
-- `[SCRIPTS]` Use strict mode?
-- `[COSMETIC]` "3D" box-shadow buttons Material Design style
-- `[FEATURE]` `[API]` `[APP]` `[...]` Microphone/MIDI/keyboard/mouse input
+- `[APP]` Audio input (microphone for example)
+- `[APP]` MIDI input
+- `[APP]` Keyboard input
+- `[APP]` Mouse input
+- `[APP]` Gamepad input
 - `[FEATURE]` `[APP]` `[API]` `[COMPILER]` Static plots
   - Ability to plot arbitrary 2D data, formulas, etc.
   - Helpers for filter frequency response, FFT, etc.
@@ -107,16 +119,15 @@
   - FFT
   - XY
 - `[COSMETIC]` `[APP]` Make responsive (adjust font size, element positions, etc.)
-- `[COSMETIC]` `[PLAYER]` https://reactify.github.io/react-player-controls/
 - `[COSMETIC]` `[EDITOR]` Custom scrollbars (https://github.com/ajaxorg/ace/issues/869)
 - `[FEATURE]` `[EDITOR]` History state might have low storage limits, fall back to `localStorage` with large files?
   - Maybe limit undo length too?
+- `[FEATURE]` `[EDITOR]` `[COMPILER]` Multiple files/tabs
 - `[FEATURE]` `[EDITOR]` Work as a git repository (a-la CodeSandbox), maybe even link with GitHub
 - `[FEATURE]` `[EDITOR]` [Enable ACE worker but with custom rules](https://github.com/ajaxorg/ace/blob/master/lib/ace/mode/javascript.js)
 - `[FEATURE]` `[EDITOR]` Detect tab settings from buffer
 - `[FEATURE]` `[EDITOR]` Remove trailing whitespace
 - `[FEATURE]` `[EDITOR]` [Continue comments](https://github.com/ajaxorg/ace/blob/master/lib/ace/mode/javascript.js)
-- `[FEATURE]` `[EDITOR]` `[COMPILER]` Multiple files/tabs
 - `[FEATURE]` `[COMPILER]` Import Gists, JS modules by URL, or other sources of functions (for custom libraries)
 - `[FEATURE]` `[APP]` `[EDITOR]` Slider when double-clicking numerical values in editor
 - `[FEATURE]` `[RENDERER]` MP3/OGG/Opus/FLAC?
@@ -124,13 +135,5 @@
   - Function calls might be expensive, leave it to the user?
 - `[API]` `[MUSIKA]` Maybe use object options instead of parameters (for easier composition of functions)
   - Objects might be expensive, leave it to the user?
-- `[FEATURE]` `[MUSIKA]` `[FILTER]` Equalizer
-- `[FEATURE]` `[MUSIKA]` `[FILTER]` Delay
-- `[FEATURE]` `[MUSIKA]` `[FILTER]` [Reverb](http://www.earlevel.com/main/1997/01/19/a-bit-about-reverb/)
-- `[FEATURE]` `[MUSIKA]` `[FILTER]` [Synth filters](http://www.earlevel.com/main/category/synthesizers/)
-- `[FEATURE]` `[MUSIKA]` `[FILTER]` [One pole filter](http://www.earlevel.com/main/2012/12/15/a-one-pole-filter/)
-- `[FEATURE]` `[MUSIKA]` `[FILTER]` [Windowed sinc filter](http://www.earlevel.com/main/category/digital-audio/filters/fir-filters/) (for oversampling)
-- `[FEATURE]` `[MUSIKA]` Buffers
-- `[FEATURE]` `[MUSIKA]` Samples
 - `[RESEARCH]` [Denormal numbers](http://cmc.music.columbia.edu/music-dsp/musicdspFAQ.html#denormals). Maybe move to integers? Or at least allow it. They might be faster anyways.
 - `[RESEARCH]` [Ring modulation](http://cmc.music.columbia.edu/music-dsp/musicdspFAQ.html#ringmod)
