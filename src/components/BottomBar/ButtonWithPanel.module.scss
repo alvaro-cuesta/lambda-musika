@@ -6,7 +6,7 @@ $panel-bounce-padding: 1em;
 
 // @todo Make this more reliable, it still goes off-screen sometimes
 @media screen and (max-width: variables.$mobile-breakpoint) {
-  .panel-container {
+  .panelContainer {
     width: 100vw;
   }
 }
@@ -17,12 +17,12 @@ $panel-bounce-padding: 1em;
     position: relative;
   }
 
-  .panel-container {
+  .panelContainer {
     width: 30em;
   }
 }
 
-.panel-container {
+.panelContainer {
   display: block;
   position: absolute;
   left: 0;
@@ -48,8 +48,8 @@ $panel-bounce-padding: 1em;
   $hover: list.nth($colorset, 2);
   $active: list.nth($colorset, 3);
 
-  :global(.color-#{'' + $name}) .panel-container,
-  :global(.color-#{'' + $name}) .container.open .button {
+  :global(.color-#{'' + $name}) .panelContainer,
+  :global(.color-#{'' + $name}) .container.containerOpen .button {
     background-color: $hover;
   }
 }

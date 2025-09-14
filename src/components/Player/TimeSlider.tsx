@@ -50,7 +50,7 @@ export function TimeSlider({
   };
 
   return (
-    <div className={styles['container']}>
+    <div className={styles.container}>
       {toMinsSecs(Math.floor(value))}
 
       <input

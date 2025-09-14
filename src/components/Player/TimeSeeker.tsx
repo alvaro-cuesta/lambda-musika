@@ -44,7 +44,7 @@ export const TimeSeeker = ({
   const fastForwardLabel = `+${VERY_FF_SECS} seconds`;
 
   return (
-    <div className={styles['container']}>
+    <div className={styles.container}>
       <button
         type="button"
         className="color-purple"

@@ -101,7 +101,7 @@ export function BottomBarRender({
         </>
       }
     >
-      <p className={styles['group']}>
+      <p className={styles.group}>
         <select
           onChange={handleChangeSampleRate}
           value={renderSampleRate}

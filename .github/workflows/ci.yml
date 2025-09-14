@@ -8,8 +8,6 @@ on:
       - 'README.md'
       - 'TODO.md'
   pull_request:
-    branches:
-      - main
     paths-ignore:
       - 'README.md'
       - 'TODO.md'
@@ -22,7 +20,9 @@ jobs:
       fail-fast: false
       matrix:
         linter:
-          - { name: 'TypeScript', script: 'lint:tsc' }
+          # Currently TSC lint needs .module.scss.d.ts files to be present, which are not committed to the repository
+          # on purpose. TSC will be run post-build though, so we can skip it here for now.
+          # - { name: 'TypeScript', script: 'lint:tsc' }
           - { name: 'ESLint', script: 'lint:eslint' }
           - { name: 'Prettier', script: 'lint:prettier' }
           - { name: 'Knip', script: 'lint:knip' }
@@ -49,7 +49,6 @@ jobs:
 
   build:
     name: Build static files
-    needs: lint
 
     runs-on: ubuntu-latest
     steps:
@@ -66,6 +65,11 @@ jobs:
         run: |
           echo "node_version=$(node --version)" >> $GITHUB_OUTPUT
           echo "npm_version=$(npm --version)" >> $GITHUB_OUTPUT
+          {
+            echo "- **Node version:** $(node --version)"
+            echo "- **NPM version:** $(npm --version)"
+            echo ""
+          } >> $GITHUB_STEP_SUMMARY
 
       - name: Build static files
         env:
@@ -75,15 +79,34 @@ jobs:
           npm run build > >(tee build-output.log) 2> >(tee -a build-output.log >&2)
 
           {
-            echo "- **Node version:** ${{ steps.get-versions.outputs.node_version }}"
-            echo "- **NPM version:** ${{ steps.get-versions.outputs.npm_version }}"
-            echo ""
             echo '```'
             # Strip ANSI colors and escape any triple backticks in the output
             sed 's/\x1b\[[0-9;]*m//g' build-output.log | sed 's/```/``\x60`/g'
             echo '```'
             echo ""
           } >> $GITHUB_STEP_SUMMARY
+
+      # Check that build didn't produce any files that should've been committed (i.e. the repository is clean)
+      # This can happen if the build process modifies files tracked by Git, e.g. while generating .module.css.d.ts files
+      # We want those commited to the repository, so we fail the build if there are any changes
+      - name: Verify Git repository is clean after build
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            echo "##[error]The build process modified files tracked by Git. Please commit the changes!"
+            git status --porcelain
+
+            {
+              echo "> [!CAUTION]"
+              echo "> The build process modified files tracked by Git. Please commit the changes!"
+              echo ""
+              echo '```'
+              git status --porcelain
+              echo '```'
+              echo ""
+            } >> $GITHUB_STEP_SUMMARY
+
+            exit 1
+          fi
 
       - name: Upload static files as artifact
         id: deployment
@@ -94,7 +117,9 @@ jobs:
   deploy:
     if: github.repository == 'alvaro-cuesta/lambda-musika' && github.ref == 'refs/heads/main'
     name: Deploy to GitHub Pages
-    needs: build
+    needs:
+      - lint
+      - build
 
     permissions:
       pages: write # to deploy to Pages

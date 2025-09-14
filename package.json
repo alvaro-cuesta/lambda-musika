@@ -32,7 +32,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "vite build && tsc -b",
     "preview": "vite preview",
     "test": "vitest --typecheck",
     "lint": "run-p -l -c lint:*",
@@ -85,6 +85,7 @@
     "typescript-eslint": "^8.42.0",
     "vite": "^7.1.5",
     "vite-bundle-visualizer": "^1.2.1",
+    "vite-css-modules": "^1.10.0",
     "vite-plugin-image-optimizer": "^2.0.2",
     "vite-plugin-minify": "^2.1.0",
     "vite-plugin-svgr": "^4.5.0",

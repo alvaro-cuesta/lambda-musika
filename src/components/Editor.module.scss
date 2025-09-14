@@ -6,7 +6,7 @@ $error-color: #cc3333;
   position: relative;
 }
 
-.logo-container {
+.logoContainer {
   position: absolute;
   left: 0.5em;
   bottom: 0.5em;
@@ -61,7 +61,7 @@ $error-color: #cc3333;
 }
 
 @mixin gutter-flash($color, $name) {
-  .container-#{$name} :global(.ace_gutter-layer)::after {
+  .container#{$name} :global(.ace_gutter-layer)::after {
     content: ' ';
     display: block;
     width: 100%;
@@ -84,5 +84,5 @@ $error-color: #cc3333;
   }
 }
 
-@include gutter-flash($success-color, success);
-@include gutter-flash($error-color, error);
+@include gutter-flash($success-color, Success);
+@include gutter-flash($error-color, Error);

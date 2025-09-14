@@ -46,7 +46,7 @@ export function BottomBarSettings({
       }
     >
       <p>
-        <label className={styles['label']}>
+        <label className={styles.label}>
           Editor font size:
           <input
             type="number"
@@ -69,7 +69,9 @@ export function BottomBarSettings({
       aria-label="Settings"
     >
       <FontAwesomeIcon
-        className={cx(styles['icon'], isOpen ? styles['icon--active'] : '')}
+        className={cx(styles.icon, {
+          [styles.iconActive]: isOpen,
+        })}
         icon={faGear}
       />
     </ButtonWithPanel>

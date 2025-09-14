@@ -52,10 +52,10 @@ $segment-padding: 0.75ch;
   color: black;
 }
 
-.container-ticking.container-even .separator {
+.containerTicking.containerEven .separator {
   opacity: 0.75;
 }
 
-.container-ticking.container-odd .separator {
+.containerTicking.containerOdd .separator {
   opacity: 0.25;
 }

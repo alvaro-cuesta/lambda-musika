@@ -223,7 +223,7 @@ export const BottomBar = ({
 
   const aboutGroup = (
     <a
-      className={styles['github']}
+      className={styles.github}
       href={import.meta.env.PACKAGE_CONFIG_REPOSITORY_URL}
       target="_blank"
       rel="noopener noreferrer"
@@ -236,19 +236,19 @@ export const BottomBar = ({
   );
 
   return (
-    <div className={styles['panel-wrapper']}>
-      <div className={styles['container']}>
-        <div className={cx(styles['group'], 'color-orange')}>{commitGroup}</div>
-        <div className={cx(styles['group'], 'color-purple')}>{fileGroup}</div>
-        <div className={cx(styles['group'], 'color-blue')}>{examplesGroup}</div>
+    <div className={styles.panelWrapper}>
+      <div className={styles.container}>
+        <div className={cx(styles.group, 'color-orange')}>{commitGroup}</div>
+        <div className={cx(styles.group, 'color-purple')}>{fileGroup}</div>
+        <div className={cx(styles.group, 'color-blue')}>{examplesGroup}</div>
         {renderGroup !== null ? (
-          <div className={cx(styles['group'], 'color-red')}>{renderGroup}</div>
+          <div className={cx(styles.group, 'color-red')}>{renderGroup}</div>
         ) : null}
-        <div className={cx(styles['group'], 'color-dark-blue')}>
+        <div className={cx(styles.group, 'color-dark-blue')}>
           {settingsGroup}
         </div>
-        <div className={styles['gap']} />
-        <div className={styles['group']}>{aboutGroup}</div>
+        <div className={styles.gap} />
+        <div className={styles.group}>{aboutGroup}</div>
       </div>
     </div>
   );

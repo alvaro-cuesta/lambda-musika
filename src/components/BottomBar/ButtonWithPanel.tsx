@@ -47,13 +47,13 @@ export function ButtonWithPanel({
   return (
     <div
       ref={outsideRef}
-      className={cx(styles['container'], { [`${styles['open']}`]: panel })}
+      className={cx(styles.container, { [styles.containerOpen]: panel })}
     >
-      {panel ? <div className={styles['panel-container']}>{panel}</div> : null}
+      {panel ? <div className={styles.panelContainer}>{panel}</div> : null}
 
       <button
         type="button"
-        className={cx(other.className, styles['button'])}
+        className={cx(other.className, styles.button)}
         {...other}
       >
         {children}

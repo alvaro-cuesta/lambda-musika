@@ -79,7 +79,7 @@ export const Player = ({ player, state }: PlayerProps) => {
   const title = `${isPlaying ? 'Pause' : 'Play'} (CTRL-Space)`;
 
   return (
-    <div className={styles['container']}>
+    <div className={styles.container}>
       <button
         type="button"
         onClick={togglePlay}

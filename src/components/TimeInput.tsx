@@ -143,17 +143,17 @@ export const TimeInput = ({
     <div
       role="group"
       aria-label="Time input"
-      className={cx(styles['container'], {
-        [`${styles['container-ticking']}`]: isTicking,
-        [`${styles['container-even']}`]: isEven,
-        [`${styles['container-odd']}`]: !isEven,
+      className={cx(styles.container, {
+        [styles.containerTicking]: isTicking,
+        [styles.containerEven]: isEven,
+        [styles.containerOdd]: !isEven,
       })}
       onCopy={handleCopy}
       onPaste={handlePaste}
     >
       <TimeInputSegment
         ref={minRef}
-        className={styles['minutes']}
+        className={styles.minutes}
         aria-label="Minutes"
         value={Math.floor(value / 60)}
         onChange={handleInputChange}
@@ -161,7 +161,7 @@ export const TimeInput = ({
         {...inputProps}
       />
       <span
-        className={cx(styles['separator'])}
+        className={cx(styles.separator)}
         onMouseDown={handleSeparatorMouseDown}
       >
         :
@@ -169,7 +169,7 @@ export const TimeInput = ({
       <TimeInputSegment
         ref={secRef}
         mode="seconds"
-        className={styles['seconds']}
+        className={styles.seconds}
         aria-label="Seconds"
         value={value % 60}
         onChange={handleInputChange}
@@ -330,7 +330,7 @@ function TimeInputSegment({
   return (
     <input
       ref={handleRef}
-      className={cx(styles['segment'], className)}
+      className={cx(styles.segment, className)}
       type="number"
       inputMode="numeric"
       pattern="[0-9]*"

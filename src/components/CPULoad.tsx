@@ -48,17 +48,17 @@ export const CPULoad = ({ renderTiming, sampleRate }: CPULoadProps) => {
   );
 
   return (
-    <div className={styles['container']}>
+    <div className={styles.container}>
       <div
-        className={styles['black-overlay']}
+        className={styles.blackOverlay}
         style={{ minWidth: `${100 - percentageUsed}%` }}
       />
-      <div className={styles['text-overlay']}>
-        <span className={styles['text']}>
+      <div className={styles.textOverlay}>
+        <span className={styles.text}>
           CPU
           {totalRenderTime != null ? `: ${Math.floor(totalRenderTime)}ms` : ''}
         </span>
-        <span className={styles['text']}>{maxRenderTimeLabel}</span>
+        <span className={styles.text}>{maxRenderTimeLabel}</span>
       </div>
     </div>
   );

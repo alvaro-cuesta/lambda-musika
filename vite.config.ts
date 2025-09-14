@@ -6,6 +6,7 @@ import { exec } from 'node:child_process';
 import process from 'node:process';
 import util from 'node:util';
 import { defineConfig, loadEnv, type UserConfig } from 'vite';
+import { patchCssModules } from 'vite-css-modules';
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
 import { ViteMinifyPlugin } from 'vite-plugin-minify';
 import ViteSvgr from 'vite-plugin-svgr';
@@ -25,6 +26,9 @@ export default defineConfig(async ({ mode }): Promise<UserConfig> => {
     base,
     plugins: [
       ViteReact(),
+      patchCssModules({
+        generateSourceTypes: true,
+      }),
       ViteImageOptimizer({
         // This is almost the same as ViteImageOptimizer's SVGO_CONFIG...
         svg: {
@@ -90,6 +94,7 @@ export default defineConfig(async ({ mode }): Promise<UserConfig> => {
       ),
     },
     build: {
+      target: 'es2023',
       // include sourcemaps even in prod... we are opensource after all, and this might help people debug issues
       sourcemap: true,
       // slower but slightly smaller output... and we don't build often

@@ -285,7 +285,7 @@ export const App = ({ audioCtx, player }: AppProps) => {
     : DEFAULT_SCRIPT;
 
   return (
-    <div className={styles['container']}>
+    <div className={styles.container}>
       <Player
         player={player}
         state={compileResult}

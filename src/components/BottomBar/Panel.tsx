@@ -11,7 +11,7 @@ export function Panel({ title, buttons, children }: PanelProps) {
     <div>
       {title ? <h1>{title}</h1> : null}
       {children}
-      <div className={styles['group']}>{buttons}</div>
+      <div className={styles.group}>{buttons}</div>
     </div>
   );
 }

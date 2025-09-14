@@ -221,16 +221,16 @@ export const Editor = ({ defaultValue, gutterState, ref }: EditorProps) => {
 
   return (
     <div
-      className={cx(styles['container'], {
-        [`${styles['container-success']}`]: gutterState === 'success',
-        [`${styles['container-error']}`]: gutterState === 'error',
+      className={cx(styles.container, {
+        [styles.containerSuccess]: gutterState === 'success',
+        [styles.containerError]: gutterState === 'error',
       })}
     >
       <div
-        className={styles['logo-container']}
+        className={styles.logoContainer}
         title={`${packageJson.config.shortName} v${packageJson.version} (${import.meta.env.GIT_COMMIT_SHORT_SHA})`}
       >
-        <LambdaMusikaLogo className={styles['logo']} />
+        <LambdaMusikaLogo className={styles.logo} />
       </div>
       <div ref={containerRef} />
     </div>
