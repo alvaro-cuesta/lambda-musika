@@ -1,6 +1,7 @@
+@use '../styles/colors';
 @use '../styles/variables';
 
-$padding: 0.75ch;
+$segment-padding: 0.75ch;
 
 .container {
   display: inline-flex;
@@ -8,33 +9,43 @@ $padding: 0.75ch;
   background-color: white;
   cursor: pointer;
 
-  input {
-    font: variables.$monospace-font;
+  &:focus-within {
+    box-shadow: variables.$focus-box-shadow;
+  }
+}
 
-    width: calc(var(--width) * 1ch + 2 * $padding);
-    height: 100%;
+.segment {
+  font: variables.$monospace-font;
+  background-color: transparent;
 
-    // Remove spinner buttons in number input
-    // Firefox
-    appearance: textfield;
+  width: calc(var(--width) * 1ch + 2 * $segment-padding);
+  height: 100%;
 
-    // Chrome
-    &::-webkit-inner-spin-button,
-    &::-webkit-outer-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
+  // Focus is handled at .container level
+  &:focus-visible {
+    box-shadow: none;
+  }
+
+  // Remove spinner buttons in number input
+  // Firefox
+  appearance: textfield;
+
+  // Chrome
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
   }
 }
 
 .minutes {
   text-align: right;
-  padding-left: 1ch;
+  padding-left: $segment-padding;
 }
 
 .seconds {
   text-align: left;
-  padding-right: 1ch;
+  padding-right: $segment-padding;
 }
 
 .separator {

@@ -1,14 +1,18 @@
 @use 'sass:list';
 @use 'sass:map';
 
-@use './styles/variables.scss' as variables;
-@use './styles/colors.scss' as colors;
+@use './styles/variables.scss';
+@use './styles/colors.scss';
 
 * {
   box-sizing: border-box;
 }
 
-html,
+:root {
+  --color-focus: #{colors.$dark};
+}
+
+:root,
 body,
 #root {
   height: 100%;
@@ -29,11 +33,68 @@ button {
   &:not(:disabled) {
     cursor: pointer;
   }
+
+  &:focus-visible {
+    box-shadow: variables.$focus-box-shadow;
+  }
 }
 
 button {
   color: colors.$lightest;
   font: variables.$monospace-font;
+
+  &:not(:disabled) {
+    & {
+      background-color: var(--color-normal);
+      .fa-inverse {
+        color: var(--color-normal);
+      }
+    }
+
+    &:hover:not(:active) {
+      background-color: var(--color-hover);
+      .fa-inverse {
+        color: var(--color-hover);
+      }
+    }
+
+    &:active {
+      background-color: var(--color-active);
+      .fa-inverse {
+        color: var(--color-active);
+      }
+    }
+  }
+
+  $disabled-normal: list.nth(map.get(colors.$colorsets, grey), 1);
+  $disabled-hover: list.nth(map.get(colors.$colorsets, grey), 2);
+  $disabled-active: list.nth(map.get(colors.$colorsets, grey), 3);
+
+  &:disabled {
+    & {
+      background-color: $disabled-normal;
+      opacity: 0.8;
+      .fa-inverse {
+        color: $disabled-normal;
+      }
+    }
+
+    &:hover:not(:active) {
+      background-color: $disabled-hover;
+      opacity: 0.8;
+      .fa-inverse {
+        color: $disabled-hover;
+      }
+    }
+
+    &:active {
+      background-color: $disabled-active;
+      opacity: 0.8;
+      .fa-inverse {
+        color: $disabled-active;
+      }
+    }
+  }
 }
 
 a {
@@ -62,65 +123,9 @@ li {
   $hover: list.nth($colorset, 2);
   $active: list.nth($colorset, 3);
 
-  button:not(:disabled) {
-    & {
-      &.color-#{'' + $name},
-      .color-#{'' + $name} & {
-        background-color: $normal;
-        .fa-inverse {
-          color: $normal;
-        }
-      }
-    }
-
-    &:hover:not(:active) {
-      &.color-#{'' + $name},
-      .color-#{'' + $name} & {
-        background-color: $hover;
-        .fa-inverse {
-          color: $hover;
-        }
-      }
-    }
-
-    &:active {
-      &.color-#{'' + $name},
-      .color-#{'' + $name} & {
-        background-color: $active;
-        .fa-inverse {
-          color: $active;
-        }
-      }
-    }
-  }
-}
-
-$disabled-normal: list.nth(map.get(colors.$colorsets, grey), 1);
-$disabled-hover: list.nth(map.get(colors.$colorsets, grey), 2);
-$disabled-active: list.nth(map.get(colors.$colorsets, grey), 3);
-
-button:disabled {
-  & {
-    background-color: $disabled-normal;
-    opacity: 0.8;
-    .fa-inverse {
-      color: $disabled-normal;
-    }
-  }
-
-  &:hover:not(:active) {
-    background-color: $disabled-hover;
-    opacity: 0.8;
-    .fa-inverse {
-      color: $disabled-hover;
-    }
-  }
-
-  &:active {
-    background-color: $disabled-active;
-    opacity: 0.8;
-    .fa-inverse {
-      color: $disabled-active;
-    }
+  .color-#{'' + $name} {
+    --color-normal: #{$normal};
+    --color-hover: #{$hover};
+    --color-active: #{$active};
   }
 }

@@ -192,8 +192,8 @@ function handleFocus(
 type TimeInputSegmentProps = {
   ref: React.Ref<HTMLInputElement>;
   value: number;
-  onChange?: (value: number) => void;
   mode?: 'seconds' | undefined;
+  onChange?: (value: number) => void;
 } & Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
   | 'ref'
@@ -209,6 +209,7 @@ function TimeInputSegment({
   ref,
   value,
   mode,
+  className,
   onChange,
   onKeyDown,
   ...rest
@@ -307,6 +308,7 @@ function TimeInputSegment({
   return (
     <input
       ref={handleRef}
+      className={cx(styles['segment'], className)}
       type="number"
       inputMode="numeric"
       pattern="[0-9]*"

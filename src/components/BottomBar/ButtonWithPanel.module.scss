@@ -1,6 +1,6 @@
 @use 'sass:list';
-@use '../../styles/variables.scss' as variables;
-@use '../../styles/colors.scss' as colors;
+@use '../../styles/variables.scss';
+@use '../../styles/colors.scss';
 
 $panel-bounce-padding: 1em;
 
