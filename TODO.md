@@ -2,7 +2,6 @@
 
 ## Critical
 
-- Gutter on Firefox does not flash on quick commits
 - Keyboard focus is not visible in buttons, etc.
 - Never run untrusted code on main page
   - Needed for isolation if e.g. we ever want the user to provide login to GitHub or stuff like that

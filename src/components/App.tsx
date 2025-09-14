@@ -93,9 +93,11 @@ export const App = ({ audioCtx, player }: AppProps) => {
         case 'error':
           editorRef.current.addError(compileResult.error);
           if (!initial) {
-            setTimeout(() => {
+            // This has to be wrapped in requestAnimationFrame, otherwise the gutterState change
+            // sometimes doesn't trigger the animation in Firefox
+            requestAnimationFrame(() => {
               setGutterState('error');
-            }, 0);
+            });
           }
           return;
         case 'success':
@@ -103,9 +105,10 @@ export const App = ({ audioCtx, player }: AppProps) => {
           editorRef.current.clearErrors();
           setCompileResult({ ...compileResult, fnCode: source });
           if (!initial) {
-            setTimeout(() => {
+            // See above on why this rAF
+            requestAnimationFrame(() => {
               setGutterState('success');
-            }, 0);
+            });
           }
           return;
       }
