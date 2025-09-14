@@ -212,6 +212,7 @@ function TimeInputSegment({
   className,
   onChange,
   onKeyDown,
+  onKeyUp,
   ...rest
 }: TimeInputSegmentProps) {
   const valueStr = Math.floor(value).toString().padStart(2, '0');
@@ -245,6 +246,10 @@ function TimeInputSegment({
 
   // Simulate <input type="time" /> behavior when typing numbers
   const writingValueRef = useRef('');
+
+  const handleBlur = useCallback(() => {
+    writingValueRef.current = '';
+  }, []);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -295,15 +300,32 @@ function TimeInputSegment({
     [mode, onChange, onKeyDown],
   );
 
-  const handleBlur = useCallback(() => {
-    writingValueRef.current = '';
-  }, []);
+  const handleKeyUp = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      switch (e.key) {
+        // Do not prevent default behavior for these keys
+        case 'Tab': {
+          break;
+        }
+        // Also prevent default for the keydown keys that we prevented
+        default: {
+          e.preventDefault();
+        }
+      }
+      onKeyUp?.(e);
+    },
+    [onKeyUp],
+  );
 
-  const handleOnChange = useCallback(() => {
-    // Do nothing on onChange since we handle everything in onKeyDown
-    // We cannot do it on onChange because it breaks select-all behavior
-    // This is here to silence React warning about controlled input without onChange
-  }, []);
+  const handleOnChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      // Do nothing on onChange since we handle everything in onKeyDown
+      // We cannot do it on onChange because it breaks select-all behavior
+      // This is here to silence React warning about controlled input without onChange
+      e.preventDefault();
+    },
+    [],
+  );
 
   return (
     <input
@@ -314,6 +336,7 @@ function TimeInputSegment({
       pattern="[0-9]*"
       value={valueStr}
       onKeyDown={handleKeyDown}
+      onKeyUp={handleKeyUp}
       onChange={handleOnChange}
       onBlur={handleBlur}
       style={
