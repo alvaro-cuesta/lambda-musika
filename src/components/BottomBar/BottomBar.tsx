@@ -1,7 +1,7 @@
 import { faGithub } from '@fortawesome/free-brands-svg-icons/faGithub';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import cx from 'classnames';
-import { useCallback, useReducer } from 'react';
+import { useCallback, useMemo, useReducer } from 'react';
 import EmptyScript from '../../examples/empty.musika?raw';
 import { EXAMPLE_SCRIPTS } from '../../examples/index.js';
 import { type BitDepth } from '../../lib/PCM/PCM.js';
@@ -97,65 +97,101 @@ export const BottomBar = ({
     dispatch({ type: 'close' });
   }, []);
 
+  // Commit group
+
   const commitGroup = <BottomBarCommit onCommit={onCommit} />;
+
+  // File group
+
+  const fileGroupState = useMemo(
+    () =>
+      panelState.state === 'newConfirming'
+        ? { state: 'newConfirming' as const }
+        : panelState.state === 'loadConfirming'
+          ? {
+              state: 'loadConfirming' as const,
+              fileName: panelState.fileName,
+              fileContent: panelState.fileContent,
+            }
+          : { state: 'closed' as const },
+    [panelState],
+  );
+
+  const handleNew = useCallback(
+    (force?: boolean) => {
+      if (isClean || force) {
+        closePanels();
+        onNew(EmptyScript);
+      } else {
+        dispatch({ type: 'newConfirming' });
+      }
+    },
+    [isClean, onNew, closePanels],
+  );
+
+  const handleLoadFile = useCallback(
+    (fileName: string, fileContent: string, force?: boolean) => {
+      if (isClean || force) {
+        closePanels();
+        onNew(fileContent);
+      } else {
+        dispatch({ type: 'loadConfirming', fileName, fileContent });
+      }
+    },
+    [isClean, onNew, closePanels],
+  );
 
   const fileGroup = (
     <BottomBarFiles
-      state={
-        panelState.state === 'newConfirming'
-          ? { state: 'newConfirming' }
-          : panelState.state === 'loadConfirming'
-            ? {
-                state: 'loadConfirming',
-                fileName: panelState.fileName,
-                fileContent: panelState.fileContent,
-              }
-            : { state: 'closed' }
-      }
-      onNew={(force) => {
-        if (isClean || force) {
-          closePanels();
-          onNew(EmptyScript);
-        } else {
-          dispatch({ type: 'newConfirming' });
-        }
-      }}
-      onLoad={(fileName, fileContent, force) => {
-        if (isClean || force) {
-          closePanels();
-          onNew(fileContent);
-        } else {
-          dispatch({ type: 'loadConfirming', fileName, fileContent });
-        }
-      }}
+      state={fileGroupState}
+      onNew={handleNew}
+      onLoad={handleLoadFile}
       onSave={onSave}
       onClose={closePanels}
     />
   );
 
+  // Examples group
+
+  const examplesGroupState = useMemo(
+    () =>
+      panelState.state === 'examplesOpen'
+        ? { state: 'open' as const }
+        : panelState.state === 'examplesConfirming'
+          ? {
+              state: 'confirming' as const,
+              exampleName: panelState.exampleName,
+            }
+          : { state: 'closed' as const },
+    [panelState],
+  );
+
+  const handleOpenExamples = useCallback(() => {
+    dispatch({ type: 'examplesOpen' });
+  }, []);
+
+  const handleLoadExample = useCallback(
+    (example: keyof typeof EXAMPLE_SCRIPTS, force?: boolean) => {
+      if (isClean || force) {
+        closePanels();
+        onNew(EXAMPLE_SCRIPTS[example]);
+      } else {
+        dispatch({ type: 'examplesConfirming', exampleName: example });
+      }
+    },
+    [isClean, onNew, closePanels],
+  );
+
   const examplesGroup = (
     <BottomBarExamples
-      state={
-        panelState.state === 'examplesOpen'
-          ? { state: 'open' }
-          : panelState.state === 'examplesConfirming'
-            ? { state: 'confirming', exampleName: panelState.exampleName }
-            : { state: 'closed' }
-      }
-      onOpen={() => {
-        dispatch({ type: 'examplesOpen' });
-      }}
+      state={examplesGroupState}
+      onOpen={handleOpenExamples}
       onClose={closePanels}
-      onLoad={(example, force) => {
-        if (isClean || force) {
-          closePanels();
-          onNew(EXAMPLE_SCRIPTS[example]);
-        } else {
-          dispatch({ type: 'examplesConfirming', exampleName: example });
-        }
-      }}
+      onLoad={handleLoadExample}
     />
   );
+
+  // Render group
 
   const handleOpenRender = useCallback(() => {
     dispatch({ type: 'renderOpen' });
@@ -205,7 +241,9 @@ export const BottomBar = ({
         <div className={cx(styles['group'], 'color-orange')}>{commitGroup}</div>
         <div className={cx(styles['group'], 'color-purple')}>{fileGroup}</div>
         <div className={cx(styles['group'], 'color-blue')}>{examplesGroup}</div>
-        <div className={cx(styles['group'], 'color-red')}>{renderGroup}</div>
+        {renderGroup !== null ? (
+          <div className={cx(styles['group'], 'color-red')}>{renderGroup}</div>
+        ) : null}
         <div className={cx(styles['group'], 'color-dark-blue')}>
           {settingsGroup}
         </div>
