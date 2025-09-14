@@ -66,9 +66,9 @@ export const App = ({ audioCtx, player }: AppProps) => {
   const [compileResult, setCompileResult] = useState<
     (Exclude<CompileResult, { type: 'error' }> & { fnCode: string }) | null
   >(null);
-  const [gutterState, setGutterState] = useState<'success' | 'error' | 'none'>(
-    'none',
-  );
+  const [gutterState, setGutterStateRaw] = useState<
+    'success' | 'error' | 'none'
+  >('none');
   const [renderTime, setRenderTime] = useState<RenderTiming | null>(null);
   const [isRendering, setIsRendering] = useState(false);
 
@@ -78,6 +78,17 @@ export const App = ({ audioCtx, player }: AppProps) => {
 
   const { isClean, markClean } = useEditorCleanState(editorRef);
 
+  const setGutterState = useCallback(
+    (state: typeof gutterState) => {
+      // This has to be wrapped in requestAnimationFrame, otherwise the gutterState change
+      // sometimes doesn't trigger the animation in Firefox
+      requestAnimationFrame(() => {
+        setGutterStateRaw(state);
+      });
+    },
+    [setGutterStateRaw],
+  );
+
   const handleUpdate = useCallback(
     (initial?: boolean) => {
       if (!editorRef.current) return;
@@ -85,7 +96,7 @@ export const App = ({ audioCtx, player }: AppProps) => {
       if (source === null) return;
 
       if (!initial) {
-        setGutterState('none');
+        setGutterStateRaw('none');
       }
 
       const compileResult = compile(source, audioCtx.sampleRate);
@@ -93,11 +104,7 @@ export const App = ({ audioCtx, player }: AppProps) => {
         case 'error':
           editorRef.current.addError(compileResult.error);
           if (!initial) {
-            // This has to be wrapped in requestAnimationFrame, otherwise the gutterState change
-            // sometimes doesn't trigger the animation in Firefox
-            requestAnimationFrame(() => {
-              setGutterState('error');
-            });
+            setGutterState('error');
           }
           return;
         case 'success':
@@ -113,7 +120,7 @@ export const App = ({ audioCtx, player }: AppProps) => {
           return;
       }
     },
-    [audioCtx, player],
+    [audioCtx, player, setGutterState],
   );
 
   const handleBackup = useCallback(() => {
