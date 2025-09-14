@@ -161,12 +161,14 @@ export const App = ({ audioCtx, player }: AppProps) => {
 
   const handleRenderTime = useCallback(
     (event: ScriptPlayerEvents['renderTime']) => {
-      setRenderTime((prev) => ({
-        ms: [...(prev?.ms ?? []), event.detail.ms].slice(
-          -TIMING_HISTORY_LENGTH,
-        ),
-        bufferLength: event.detail.bufferLength,
-      }));
+      requestAnimationFrame(() => {
+        setRenderTime((prev) => ({
+          ms: [...(prev?.ms ?? []), event.detail.ms].slice(
+            -TIMING_HISTORY_LENGTH,
+          ),
+          bufferLength: event.detail.bufferLength,
+        }));
+      });
     },
     [],
   );
