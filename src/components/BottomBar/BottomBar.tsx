@@ -10,6 +10,7 @@ import { BottomBarCommit } from './BottomBarCommit.js';
 import { BottomBarExamples } from './BottomBarExamples.js';
 import { BottomBarFiles } from './BottomBarFiles.js';
 import { BottomBarRender } from './BottomBarRender.js';
+import { BottomBarSettings } from './BottomBarSettings.js';
 
 type PanelState =
   | { state: 'newConfirming' }
@@ -24,6 +25,7 @@ type PanelState =
       exampleName: keyof typeof EXAMPLE_SCRIPTS;
     }
   | { state: 'renderOpen' }
+  | { state: 'settingsOpen' }
   | { state: null };
 
 type PanelAction =
@@ -32,6 +34,7 @@ type PanelAction =
   | { type: 'examplesOpen' }
   | { type: 'examplesConfirming'; exampleName: keyof typeof EXAMPLE_SCRIPTS }
   | { type: 'renderOpen' }
+  | { type: 'settingsOpen' }
   | { type: 'close' };
 
 function panelReducer(state: PanelState, action: PanelAction): PanelState {
@@ -59,6 +62,10 @@ function panelReducer(state: PanelState, action: PanelAction): PanelState {
     case 'renderOpen':
       return state.state !== 'renderOpen'
         ? { state: 'renderOpen' }
+        : { state: null };
+    case 'settingsOpen':
+      return state.state !== 'settingsOpen'
+        ? { state: 'settingsOpen' }
         : { state: null };
     case 'close':
       return { state: null };
@@ -150,19 +157,33 @@ export const BottomBar = ({
     />
   );
 
+  const handleOpenRender = useCallback(() => {
+    dispatch({ type: 'renderOpen' });
+  }, []);
+
   const renderGroup =
     lengthSecs !== null ? (
       <BottomBarRender
         lengthSecs={lengthSecs}
         isOpen={panelState.state === 'renderOpen'}
-        onOpen={() => {
-          dispatch({ type: 'renderOpen' });
-        }}
+        onOpen={handleOpenRender}
         onClose={closePanels}
         isRendering={isRendering}
         onRender={onRender}
       />
     ) : null;
+
+  const handleOpenSettings = useCallback(() => {
+    dispatch({ type: 'settingsOpen' });
+  }, []);
+
+  const settingsGroup = (
+    <BottomBarSettings
+      isOpen={panelState.state === 'settingsOpen'}
+      onOpen={handleOpenSettings}
+      onClose={closePanels}
+    />
+  );
 
   const aboutGroup = (
     <a
@@ -185,6 +206,9 @@ export const BottomBar = ({
         <div className={cx(styles['group'], 'color-purple')}>{fileGroup}</div>
         <div className={cx(styles['group'], 'color-blue')}>{examplesGroup}</div>
         <div className={cx(styles['group'], 'color-red')}>{renderGroup}</div>
+        <div className={cx(styles['group'], 'color-dark-blue')}>
+          {settingsGroup}
+        </div>
         <div className={styles['gap']} />
         <div className={styles['group']}>{aboutGroup}</div>
       </div>

@@ -13,40 +13,45 @@ import LambdaMusikaLogo from '../../public-src/lambda-musika-logo-no-color-chang
 import EmptyScript from '../examples/empty.musika?raw';
 import type { ExceptionInfo } from '../lib/exception.js';
 import type { EditorSerialState } from '../utils/editor.js';
+import { useSetting, type Settings } from '../utils/settings.js';
 import styles from './Editor.module.scss';
 
-const EDITOR_DEFAULT_OPTIONS: Partial<Ace.EditorOptions> = {
-  selectionStyle: 'line',
-  highlightActiveLine: true,
-  highlightSelectedWord: true,
-  readOnly: false,
-  cursorStyle: 'slim',
-  behavioursEnabled: true,
-  wrapBehavioursEnabled: true,
-  autoScrollEditorIntoView: false,
-  hScrollBarAlwaysVisible: false,
-  vScrollBarAlwaysVisible: false,
-  highlightGutterLine: true,
-  animatedScroll: false,
-  showInvisibles: false,
-  showPrintMargin: true,
-  printMarginColumn: 79,
-  fadeFoldWidgets: true,
-  showFoldWidgets: true,
-  showLineNumbers: true,
-  showGutter: true,
-  displayIndentGuides: true,
-  fontSize: '14px',
-  scrollPastEnd: 1,
-  fixedWidthGutter: true,
-  theme: 'ace/theme/tomorrow_night_eighties',
-  useWorker: false,
-  useSoftTabs: true,
-  tabSize: 2,
-  wrap: false,
-  mode: 'ace/mode/javascript',
-  useElasticTabstops: true,
-};
+function getEditorOptions(
+  settings: Pick<Settings, 'editorFontSize'>,
+): Partial<Ace.EditorOptions> {
+  return {
+    selectionStyle: 'line',
+    highlightActiveLine: true,
+    highlightSelectedWord: true,
+    readOnly: false,
+    cursorStyle: 'slim',
+    behavioursEnabled: true,
+    wrapBehavioursEnabled: true,
+    autoScrollEditorIntoView: false,
+    hScrollBarAlwaysVisible: false,
+    vScrollBarAlwaysVisible: false,
+    highlightGutterLine: true,
+    animatedScroll: false,
+    showInvisibles: false,
+    showPrintMargin: true,
+    printMarginColumn: 79,
+    fadeFoldWidgets: true,
+    showFoldWidgets: true,
+    showLineNumbers: true,
+    showGutter: true,
+    displayIndentGuides: true,
+    fontSize: `${settings.editorFontSize}px`,
+    scrollPastEnd: 1,
+    fixedWidthGutter: true,
+    theme: 'ace/theme/tomorrow_night_eighties',
+    useWorker: false,
+    useSoftTabs: true,
+    tabSize: 2,
+    wrap: false,
+    mode: 'ace/mode/javascript',
+    useElasticTabstops: true,
+  };
+}
 
 export type EditorRef = {
   getValue: () => string | null;
@@ -75,6 +80,8 @@ function clearErrorsFromSession(session: ace.EditSession) {
 }
 
 export const Editor = ({ defaultValue, gutterState, ref }: EditorProps) => {
+  const [editorFontSize] = useSetting('editorFontSize');
+
   const containerRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<ace.Editor | null>(null);
 
@@ -90,7 +97,7 @@ export const Editor = ({ defaultValue, gutterState, ref }: EditorProps) => {
       editor.scrollToLine(0, false, false);
     }
     editor.getSession().setUndoManager(new ace.UndoManager());
-    editor.setOptions(EDITOR_DEFAULT_OPTIONS);
+    editor.setOptions(getEditorOptions({ editorFontSize }));
 
     // Add margin so drop shadows don't overlap text
     editor.renderer.setScrollMargin(8, 8, 0, 0);
@@ -123,6 +130,12 @@ export const Editor = ({ defaultValue, gutterState, ref }: EditorProps) => {
     // @todo Buggy! Intentionally omitted defaultValue  but this is scary
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (!editorRef.current) return;
+    const editor = editorRef.current;
+    editor.setFontSize(editorFontSize);
+  }, [editorFontSize]);
 
   // Expose methods
   // @todo Imperative handle is probably a bad idea here -- ported straight from a class component

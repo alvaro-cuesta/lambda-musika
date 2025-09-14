@@ -9,7 +9,6 @@
 
 ## Features
 
-- `[APP]` Settings panel (e.g. editor font size, remember to store in `localStorage`!)
 - `[API]` `[EDITOR]` Widgets in scripts, which the user can control to affect sound/constants in real time
   - Slider
   - Spinner (like `<input type="number">`)
