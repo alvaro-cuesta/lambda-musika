@@ -61,8 +61,8 @@ describe('makeWavBlob', () => {
         (byteRate & 0x00ff0000) >> 16,
         (byteRate & 0xff000000) >> 24,
         // BlockAlign (NumChannels * BitsPerSample/8)
-        (blockAlign & 0x000000ff) >> 0,
-        (blockAlign & 0x0000ff00) >> 8,
+        (blockAlign & 0x00ff) >> 0,
+        (blockAlign & 0xff00) >> 8,
         // BitsPerSample (32 bits)
         ((inputBuffer.BYTES_PER_ELEMENT * 8) & 0x00ff) >> 0,
         ((inputBuffer.BYTES_PER_ELEMENT * 8) & 0xff00) >> 8,
