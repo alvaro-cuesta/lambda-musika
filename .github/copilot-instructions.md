@@ -19,6 +19,7 @@ Lambda Musika is a browser-based JavaScript Digital Audio Workstation (DAW) that
 - **Development**: `pnpm -F @lambda-musika/app dev` → Starts Vite dev server on `http://localhost:5173/`
 - **Lint (workspace)**: `pnpm lint` → Runs workspace/package lint scripts via filters
 - **Test (workspace)**: `pnpm test` → Runs package tests (`app`, `audio`, `musika`)
+- **Test (non-watch / CI-style)**: `pnpm test --run` → Runs tests once and exits (preferred for coding agents/LLMs)
 - **Build (app)**: `pnpm -F @lambda-musika/app build` → Vite build + TypeScript build for app package
 
 ### Individual Lint Commands:
@@ -119,6 +120,7 @@ GitHub Actions workflow (`.github/workflows/ci.yml`):
 2. **Build Timing**: Full build takes 14+ seconds due to TypeScript compilation + Vite bundling
 3. **Audio Context**: Web Audio requires user interaction - player won't start without user gesture
 4. **Workspace Commands**: Most package-specific tasks must be run with pnpm filters (e.g., `pnpm -F @lambda-musika/app ...`)
+5. **Vitest Watch Mode**: Use `--run` (for example `pnpm test --run` or `pnpm -F @lambda-musika/app test --run`) in LLM/automation flows so tests exit instead of waiting in watch mode
 
 ### Error Patterns:
 
@@ -130,7 +132,7 @@ GitHub Actions workflow (`.github/workflows/ci.yml`):
 ### Before Committing:
 
 1. `pnpm lint` (must pass - CI requirement)
-2. `pnpm test` (must pass - CI requirement)
+2. `pnpm test --run` (must pass - CI requirement, and ensures non-watch execution)
 3. `pnpm -F @lambda-musika/app build` (should complete without errors)
 
 ### Testing Changes:
@@ -151,6 +153,20 @@ GitHub Actions workflow (`.github/workflows/ci.yml`):
 
 - Add tests for the existing functionality you're modifying to ensure no regressions
 - This helps document expected behavior and catch future issues
+
+**Execution mode for coding agents/LLMs:**
+
+- Run tests with `--run` first (targeted package tests where possible, then broader workspace tests)
+- Avoid plain `pnpm test` in automation contexts because Vitest may stay in watch mode and never exit
+
+## Change Impact Checklist
+
+When making repository-level changes, update all related instructions and configuration in the same task.
+
+- **Instruction updates are mandatory**: If a change affects setup, workflow, architecture, commands, project structure, package layout, or key file locations, update this `.github/copilot-instructions.md` file immediately.
+- **Root config updates are mandatory**: If a change affects workspace/package orchestration, update root `package.json` scripts/config in the same PR/task. Example: adding a package may require updating scripts such as `lint:madge`, `lint`, `test`, or other workspace checks.
+- **CI updates are mandatory**: If a change affects lint/test/build/deploy scope, package matrix entries, command names, or artifact paths, update the relevant workflows and actions under `.github/` in the same PR/task.
+- **New package scaffolding**: New packages should be created by copying/adapting the skeleton of an existing package in `packages/` (matching `package.json`, tsconfig files, vitest config, and script conventions), then adjusting only what is package-specific.
 
 ## Refactoring and Code Quality
 
