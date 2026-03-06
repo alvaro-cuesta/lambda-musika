@@ -30,7 +30,6 @@
     "publicUrlBase": "https://lambda.cuesta.dev",
     "repositoryUrl": "https://www.github.com/alvaro-cuesta/lambda-musika"
   },
-  "packageManager": "pnpm@10.30.3",
   "scripts": {
     "dev": "vite",
     "build": "vite build && tsc -b",

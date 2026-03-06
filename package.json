@@ -1,5 +1,6 @@
 {
   "name": "@lambda-musika/workspace",
+  "packageManager": "pnpm@10.30.3",
   "private": true,
   "type": "module",
   "devDependencies": {
