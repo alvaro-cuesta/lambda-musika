@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="#lambda-musika-the-functional-daw">
-    <img src="https://img.shields.io/github/package-json/v/alvaro-cuesta/lambda-musika" alt="Version" /></a>
+    <img src="https://img.shields.io/github/package-json/v/alvaro-cuesta/lambda-musika?filename=packages/app/package.json" alt="Version" /></a>
   <a href="./LICENSE">
     <img src="https://img.shields.io/github/license/alvaro-cuesta/lambda-musika" alt="License" /></a>
   <a href="https://github.com/alvaro-cuesta/lambda-musika/actions/workflows/ci.yml">
