@@ -11,8 +11,9 @@ describe('tryParseStack', () => {
 
     const parsed = tryParseStack(stack);
     expect(parsed).toEqual({
-      fileName: '<anonymous>',
-      row: 23,
+      fileName:
+        'eval at compile (http://localhost:5173/src/lib/compile.ts:43:15), <anonymous>',
+      row: 22,
       column: 0,
     });
   });
@@ -28,8 +29,8 @@ describe('tryParseStack', () => {
     const parsed = tryParseStack(stack);
     expect(parsed).toEqual({
       fileName: 'script.musika',
-      row: 50,
-      column: 13,
+      row: 46,
+      column: 12,
     });
   });
 
@@ -42,7 +43,7 @@ App/handleExplicitUpdate<@http://localhost:5173/src/components/App.tsx?t=1757067
     expect(parsed).toEqual({
       fileName:
         'http://localhost:5173/src/lib/compile.ts?t=1757067439409 line 43 > Function',
-      row: 23,
+      row: 22,
       column: 0,
     });
   });

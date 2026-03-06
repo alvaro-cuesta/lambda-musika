@@ -51,6 +51,19 @@ jobs:
       - name: Run ${{ matrix.linter.name }}
         run: pnpm run ${{ matrix.linter.script }}
 
+  test:
+    name: Run tests
+
+    runs-on: ubuntu-latest
+    steps:
+      - *checkout
+      - *setup_pnpm
+      - *setup_node
+      - *install_deps
+
+      - name: Run tests
+        run: pnpm run test
+
   build:
     name: Build static files
 
@@ -124,6 +137,7 @@ jobs:
     name: Deploy to GitHub Pages
     needs:
       - lint
+      - test
       - build
 
     permissions:
