@@ -55,7 +55,7 @@
     "${configDir}/**/*.spec.mtsx"
   ],
   "compilerOptions": {
-    "outDir": "${configDir}/dist/package",
+    "outDir": "${configDir}/dist",
     "tsBuildInfoFile": "${configDir}/node_modules/.tmp/tsconfig.package.tsbuildinfo"
   }
 }

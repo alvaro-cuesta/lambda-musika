@@ -33,6 +33,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && tsc -b",
+    "clean": "rm -rf build dist",
+    "clean:hard": "rm -rf build dist node_modules/.tmp/tsconfig.*.tsbuildinfo",
     "preview": "vite preview",
     "test": "vitest --typecheck",
     "lint": "pnpm run \"/^lint:.+$/\"",

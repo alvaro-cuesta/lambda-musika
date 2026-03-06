@@ -10,7 +10,9 @@
   "scripts": {
     "lint": "pnpm run \"/^lint:.+$/\"",
     "lint:tsc": "tsc --build",
-    "test": "vitest --typecheck"
+    "test": "vitest --typecheck",
+    "clean": "rm -rf build dist",
+    "clean:hard": "rm -rf build dist node_modules/.tmp/tsconfig.*.tsbuildinfo"
   },
   "dependencies": {
     "@lambda-musika/audio": "workspace:*"

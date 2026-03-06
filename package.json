@@ -18,6 +18,8 @@
     "typescript-eslint": "^8.42.0"
   },
   "scripts": {
+    "clean": "pnpm -F @lambda-musika/* run clean",
+    "clean:hard": "pnpm -F @lambda-musika/* run clean:hard",
     "lint": "pnpm -F . -F @lambda-musika/* run \"/^lint:.+$/\"",
     "test": "pnpm -F @lambda-musika/* run test",
     "lint:eslint": "eslint .",

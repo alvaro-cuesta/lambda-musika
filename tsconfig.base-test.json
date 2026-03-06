@@ -65,7 +65,7 @@
     "${configDir}/node_modules"
   ],
   "compilerOptions": {
-    "outDir": "${configDir}/dist/test",
+    "noEmit": true,
     "tsBuildInfoFile": "${configDir}/node_modules/.tmp/tsconfig.test.tsbuildinfo"
   }
 }
