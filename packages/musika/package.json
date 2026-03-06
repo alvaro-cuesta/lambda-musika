@@ -1,0 +1,21 @@
+{
+  "name": "@lambda-musika/musika",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "pnpm run \"/^lint:.+$/\"",
+    "lint:tsc": "tsc --build",
+    "test": "vitest --typecheck"
+  },
+  "dependencies": {
+    "@lambda-musika/audio": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

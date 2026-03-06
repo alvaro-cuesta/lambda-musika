@@ -1,0 +1,61 @@
+{
+  "extends": "./tsconfig.base.json",
+  // This is needed because otherwise vitest force inclusion of Node types globally, which makes for example setTimeout
+  // return a NodeJS.Timeout instead of a number
+  "exclude": [
+    // Default excludes
+    "${configDir}/node_modules",
+    "${configDir}/bower_components",
+    "${configDir}/jspm_packages",
+
+    // See tsconfig.base-test.json
+    "${configDir}/**/*.test.js",
+    "${configDir}/**/*.test.jsx",
+    "${configDir}/**/*.test.ts",
+    "${configDir}/**/*.test.tsx",
+
+    "${configDir}/**/*.test.cjs",
+    "${configDir}/**/*.test.cjsx",
+    "${configDir}/**/*.test.cts",
+    "${configDir}/**/*.test.ctsx",
+
+    "${configDir}/**/*.test.mjs",
+    "${configDir}/**/*.test.mjsx",
+    "${configDir}/**/*.test.mts",
+    "${configDir}/**/*.test.mtsx",
+
+    "${configDir}/**/*.test-d.js",
+    "${configDir}/**/*.test-d.jsx",
+    "${configDir}/**/*.test-d.ts",
+    "${configDir}/**/*.test-d.tsx",
+
+    "${configDir}/**/*.test-d.cjs",
+    "${configDir}/**/*.test-d.cjsx",
+    "${configDir}/**/*.test-d.cts",
+    "${configDir}/**/*.test-d.ctsx",
+
+    "${configDir}/**/*.test-d.mjs",
+    "${configDir}/**/*.test-d.mjsx",
+    "${configDir}/**/*.test-d.mts",
+    "${configDir}/**/*.test-d.mtsx",
+
+    "${configDir}/**/*.spec.js",
+    "${configDir}/**/*.spec.jsx",
+    "${configDir}/**/*.spec.ts",
+    "${configDir}/**/*.spec.tsx",
+
+    "${configDir}/**/*.spec.cjs",
+    "${configDir}/**/*.spec.cjsx",
+    "${configDir}/**/*.spec.cts",
+    "${configDir}/**/*.spec.ctsx",
+
+    "${configDir}/**/*.spec.mjs",
+    "${configDir}/**/*.spec.mjsx",
+    "${configDir}/**/*.spec.mts",
+    "${configDir}/**/*.spec.mtsx"
+  ],
+  "compilerOptions": {
+    "outDir": "${configDir}/dist/package",
+    "tsBuildInfoFile": "${configDir}/node_modules/.tmp/tsconfig.package.tsbuildinfo"
+  }
+}

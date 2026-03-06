@@ -85,6 +85,16 @@ pnpm lint
 
 Or just let your IDE do the work with TypeScript/ESLint/Prettier integrations. These are automatically run as checks on GitHub Actions, but it's better if you keep lints up to date as you code!
 
+### Tests
+
+Run all package tests from the workspace root:
+
+```sh
+pnpm test
+```
+
+These are automatically run as checks on GitHub Actions, but it's better if you keep tests up to date as you code!
+
 ### Things to do
 
 - See [`TODO.md`](TODO.md) for outstanding general tasks.

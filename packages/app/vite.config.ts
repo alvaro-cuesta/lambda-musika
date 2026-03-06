@@ -94,6 +94,7 @@ export default defineConfig(async ({ mode }): Promise<UserConfig> => {
       ),
     },
     build: {
+      outDir: 'build',
       target: 'es2023',
       // include sourcemaps even in prod... we are opensource after all, and this might help people debug issues
       sourcemap: true,

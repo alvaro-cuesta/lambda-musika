@@ -4,6 +4,18 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    type-fest:
+      specifier: ^4.41.0
+      version: 4.41.0
+    typescript:
+      specifier: ~5.8.3
+      version: 5.8.3
+    vitest:
+      specifier: ^3.2.4
+      version: 3.2.4
+
 importers:
 
   .:
@@ -32,6 +44,9 @@ importers:
       knip:
         specifier: ^5.63.1
         version: 5.85.0(@types/node@24.12.0)(typescript@5.9.3)
+      madge:
+        specifier: ^8.0.0
+        version: 8.0.0(typescript@5.9.3)
       prettier:
         specifier: 3.8.1
         version: 3.8.1
@@ -56,6 +71,12 @@ importers:
       '@fortawesome/react-fontawesome':
         specifier: ^3.0.2
         version: 3.2.0(@fortawesome/fontawesome-svg-core@7.2.0)(react@19.2.4)
+      '@lambda-musika/audio':
+        specifier: workspace:*
+        version: link:../audio
+      '@lambda-musika/musika':
+        specifier: workspace:*
+        version: link:../musika
       '@react-hookz/deep-equal':
         specifier: ^3.0.4
         version: 3.0.4
@@ -93,9 +114,6 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^5.0.0
         version: 5.1.4(vite@7.3.1(@types/node@24.12.0)(jiti@2.6.1)(sass-embedded@1.97.3)(sass@1.97.3)(terser@5.46.0))
-      madge:
-        specifier: ^8.0.0
-        version: 8.0.0(typescript@5.8.3)
       sass-embedded:
         specifier: ^1.97.3
         version: 1.97.3
@@ -109,10 +127,10 @@ importers:
         specifier: ^5.44.0
         version: 5.46.0
       type-fest:
-        specifier: ^4.41.0
+        specifier: 'catalog:'
         version: 4.41.0
       typescript:
-        specifier: ~5.8.3
+        specifier: 'catalog:'
         version: 5.8.3
       vite:
         specifier: ^7.1.5
@@ -133,7 +151,32 @@ importers:
         specifier: ^4.5.0
         version: 4.5.0(rollup@4.59.0)(typescript@5.8.3)(vite@7.3.1(@types/node@24.12.0)(jiti@2.6.1)(sass-embedded@1.97.3)(sass@1.97.3)(terser@5.46.0))
       vitest:
-        specifier: ^3.2.4
+        specifier: 'catalog:'
+        version: 3.2.4(@types/node@24.12.0)(jiti@2.6.1)(sass-embedded@1.97.3)(sass@1.97.3)(terser@5.46.0)
+
+  packages/audio:
+    devDependencies:
+      type-fest:
+        specifier: 'catalog:'
+        version: 4.41.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.8.3
+      vitest:
+        specifier: 'catalog:'
+        version: 3.2.4(@types/node@24.12.0)(jiti@2.6.1)(sass-embedded@1.97.3)(sass@1.97.3)(terser@5.46.0)
+
+  packages/musika:
+    dependencies:
+      '@lambda-musika/audio':
+        specifier: workspace:*
+        version: link:../audio
+    devDependencies:
+      typescript:
+        specifier: 'catalog:'
+        version: 5.8.3
+      vitest:
+        specifier: 'catalog:'
         version: 3.2.4(@types/node@24.12.0)(jiti@2.6.1)(sass-embedded@1.97.3)(sass@1.97.3)(terser@5.46.0)
 
 packages:
@@ -4036,15 +4079,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/project-service@8.56.1(typescript@5.8.3)':
-    dependencies:
-      '@typescript-eslint/tsconfig-utils': 8.56.1(typescript@5.8.3)
-      '@typescript-eslint/types': 8.56.1
-      debug: 4.4.3
-      typescript: 5.8.3
-    transitivePeerDependencies:
-      - supports-color
-
   '@typescript-eslint/project-service@8.56.1(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/tsconfig-utils': 8.56.1(typescript@5.9.3)
@@ -4058,10 +4092,6 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 8.56.1
       '@typescript-eslint/visitor-keys': 8.56.1
-
-  '@typescript-eslint/tsconfig-utils@8.56.1(typescript@5.8.3)':
-    dependencies:
-      typescript: 5.8.3
 
   '@typescript-eslint/tsconfig-utils@8.56.1(typescript@5.9.3)':
     dependencies:
@@ -4080,21 +4110,6 @@ snapshots:
       - supports-color
 
   '@typescript-eslint/types@8.56.1': {}
-
-  '@typescript-eslint/typescript-estree@8.56.1(typescript@5.8.3)':
-    dependencies:
-      '@typescript-eslint/project-service': 8.56.1(typescript@5.8.3)
-      '@typescript-eslint/tsconfig-utils': 8.56.1(typescript@5.8.3)
-      '@typescript-eslint/types': 8.56.1
-      '@typescript-eslint/visitor-keys': 8.56.1
-      debug: 4.4.3
-      minimatch: 10.2.4
-      semver: 7.7.4
-      tinyglobby: 0.2.15
-      ts-api-utils: 2.4.0(typescript@5.8.3)
-      typescript: 5.8.3
-    transitivePeerDependencies:
-      - supports-color
 
   '@typescript-eslint/typescript-estree@8.56.1(typescript@5.9.3)':
     dependencies:
@@ -4511,16 +4526,16 @@ snapshots:
 
   detective-stylus@5.0.1: {}
 
-  detective-typescript@14.0.0(typescript@5.8.3):
+  detective-typescript@14.0.0(typescript@5.9.3):
     dependencies:
-      '@typescript-eslint/typescript-estree': 8.56.1(typescript@5.8.3)
+      '@typescript-eslint/typescript-estree': 8.56.1(typescript@5.9.3)
       ast-module-types: 6.0.1
       node-source-walk: 7.0.1
-      typescript: 5.8.3
+      typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
 
-  detective-vue2@2.2.0(typescript@5.8.3):
+  detective-vue2@2.2.0(typescript@5.9.3):
     dependencies:
       '@dependents/detective-less': 5.0.1
       '@vue/compiler-sfc': 3.5.29
@@ -4528,8 +4543,8 @@ snapshots:
       detective-sass: 6.0.1
       detective-scss: 5.0.1
       detective-stylus: 5.0.1
-      detective-typescript: 14.0.0(typescript@5.8.3)
-      typescript: 5.8.3
+      detective-typescript: 14.0.0(typescript@5.9.3)
+      typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
 
@@ -5024,7 +5039,7 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
-  madge@8.0.0(typescript@5.8.3):
+  madge@8.0.0(typescript@5.9.3):
     dependencies:
       chalk: 4.1.2
       commander: 7.2.0
@@ -5039,7 +5054,7 @@ snapshots:
       ts-graphviz: 2.1.6
       walkdir: 0.4.1
     optionalDependencies:
-      typescript: 5.8.3
+      typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
 
@@ -5262,12 +5277,12 @@ snapshots:
       detective-sass: 6.0.1
       detective-scss: 5.0.1
       detective-stylus: 5.0.1
-      detective-typescript: 14.0.0(typescript@5.8.3)
-      detective-vue2: 2.2.0(typescript@5.8.3)
+      detective-typescript: 14.0.0(typescript@5.9.3)
+      detective-vue2: 2.2.0(typescript@5.9.3)
       module-definition: 6.0.1
       node-source-walk: 7.0.1
       postcss: 8.5.8
-      typescript: 5.8.3
+      typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
 
@@ -5708,10 +5723,6 @@ snapshots:
   to-regex-range@5.0.1:
     dependencies:
       is-number: 7.0.0
-
-  ts-api-utils@2.4.0(typescript@5.8.3):
-    dependencies:
-      typescript: 5.8.3
 
   ts-api-utils@2.4.0(typescript@5.9.3):
     dependencies:

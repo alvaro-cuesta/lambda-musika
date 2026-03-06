@@ -1,4 +1,4 @@
-import type { Time } from '../audio.js';
+import type { Time } from '@lambda-musika/audio';
 import { curry, LimitRate } from './Util.js';
 
 describe('curry', () => {

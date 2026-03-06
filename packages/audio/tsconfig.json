@@ -9,12 +9,6 @@
     },
     {
       "path": "./tsconfig.test.json"
-    },
-    {
-      "path": "../audio/tsconfig.json"
-    },
-    {
-      "path": "../musika/tsconfig.json"
     }
   ]
 }

@@ -10,4 +10,4 @@ export type StereoSignal = [number, number];
 
 export type StereoRenderer = (t: Time) => StereoSignal;
 
-// @todo consider adding more branding (e.g. `Frequency`, `Interval`...)
+// @todo consider adding more branding (e.g. `Frequency`, `Interval`, maybe branding `*Signal`...)

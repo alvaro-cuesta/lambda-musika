@@ -2,7 +2,7 @@
  * @module Audio signal operators.
  */
 
-import type { MonoSignal, StereoSignal } from '../audio.js';
+import type { MonoSignal, StereoSignal } from '@lambda-musika/audio';
 
 /**
  * Mixes two mono signals together.

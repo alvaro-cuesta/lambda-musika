@@ -2,7 +2,7 @@
  * @module Audio signal generators.
  */
 
-import type { MonoSignal, Time } from '../audio.js';
+import type { MonoSignal, Time } from '@lambda-musika/audio';
 
 /**
  * Generates a stateful sine wave signal.

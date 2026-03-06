@@ -1,4 +1,4 @@
-import type { MonoSignal } from '../../audio.js';
+import type { MonoSignal } from '@lambda-musika/audio';
 
 export type BiquadCoefficients = [number, number, number, number, number];
 

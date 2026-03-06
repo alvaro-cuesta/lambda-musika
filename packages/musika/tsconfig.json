@@ -12,9 +12,6 @@
     },
     {
       "path": "../audio/tsconfig.json"
-    },
-    {
-      "path": "../musika/tsconfig.json"
     }
   ]
 }

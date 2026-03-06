@@ -2,3 +2,4 @@
 *.module.scss.d.ts
 pnpm-lock.yaml
 dist/
+build/

@@ -2,7 +2,7 @@
  * @module Envelope functions.
  */
 
-import type { Time } from '../audio.js';
+import type { Time } from '@lambda-musika/audio';
 
 /**
  * Attack function that grows quickly from `[0, 0]` to `[length, 1]` in a concave

@@ -2,7 +2,7 @@
  * @module Functional utilities.
  */
 
-import type { Time } from '../audio.js';
+import type { Time } from '@lambda-musika/audio';
 
 // Helper type to generate all valid prefixes of a tuple
 type AllPrefixes<T extends readonly unknown[]> = T extends readonly []

@@ -1,5 +1,5 @@
+import type { StereoRenderer, Time } from '@lambda-musika/audio';
 import { clamp } from '../../utils/math.js';
-import type { StereoRenderer, Time } from '../audio.js';
 import { compile } from '../compile.js';
 import { tryParseException, type ExceptionInfo } from '../exception.js';
 import './audio-worklet-defs.js';

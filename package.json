@@ -11,14 +11,17 @@
     "eslint-plugin-react-x": "^1.53.0",
     "globals": "^16.3.0",
     "knip": "^5.63.1",
+    "madge": "^8.0.0",
     "prettier": "3.8.1",
     "prettier-plugin-organize-imports": "^4.3.0",
     "typescript-eslint": "^8.42.0"
   },
   "scripts": {
     "lint": "pnpm -F . -F @lambda-musika/* run \"/^lint:.+$/\"",
+    "test": "pnpm -F @lambda-musika/* run test",
     "lint:eslint": "eslint .",
     "lint:knip": "knip",
+    "lint:madge": "madge --warning --circular --extensions .js,.jsx,.ts,.tsx ./packages/app/src/main.tsx ./packages/audio/src/index.ts ./packages/musika/src/index.ts",
     "lint:prettier": "prettier --check ."
   }
 }

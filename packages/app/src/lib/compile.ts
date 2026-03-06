@@ -1,17 +1,17 @@
+import type { StereoRenderer, Time } from '@lambda-musika/audio';
+import * as Musika from '@lambda-musika/musika';
 import { parse } from 'acorn';
-import type { StereoRenderer, Time } from './audio.js';
 import {
   type AcornException,
   type ExceptionInfo,
   parseAcornException,
   tryParseException,
 } from './exception.js';
-import * as Musika from './Musika/index.js';
 
 const ACORN_ECMA_VERSION = 2023;
 
 type StereoRendererBuilder = (
-  Musika: typeof import('./Musika/index.js'),
+  Musika: typeof import('@lambda-musika/musika'),
   sampleRate: number,
   console: Console,
   setLength: (l: number) => void,

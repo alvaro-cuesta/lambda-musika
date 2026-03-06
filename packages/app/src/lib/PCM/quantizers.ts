@@ -2,8 +2,8 @@
  * @module Audio quantization utilities for converting float samples to different bit depths.
  */
 
+import type { MonoSignal } from '@lambda-musika/audio';
 import { clamp } from '../../utils/math.js';
-import type { MonoSignal } from '../audio.js';
 import type { BitDepth, Int16, Int32, Uint8 } from './PCM.js';
 
 type Quantizer = (v: MonoSignal) => number;

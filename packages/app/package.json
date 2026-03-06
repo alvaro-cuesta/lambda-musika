@@ -37,14 +37,15 @@
     "preview": "vite preview",
     "test": "vitest --typecheck",
     "lint": "pnpm run \"/^lint:.+$/\"",
-    "lint:tsc": "tsc --build --noEmit",
-    "lint:madge": "madge --warning --circular --extensions .js,.jsx,.ts,.tsx ./src/main.tsx",
+    "lint:tsc": "tsc --build",
     "debug:visualize-build": "vite-bundle-visualizer",
     "generate:pwa-assets": "pwa-assets-generator",
     "generate:og-assets": "node ./bin/generate-og-assets.ts",
     "preversion": "pnpm run lint && pnpm test && pnpm run build"
   },
   "dependencies": {
+    "@lambda-musika/audio": "workspace:*",
+    "@lambda-musika/musika": "workspace:*",
     "@fortawesome/fontawesome-svg-core": "^7.0.1",
     "@fortawesome/free-brands-svg-icons": "^7.0.1",
     "@fortawesome/free-solid-svg-icons": "^7.0.1",
@@ -63,19 +64,18 @@
     "@types/react-dom": "^19.1.7",
     "@vite-pwa/assets-generator": "^1.0.0",
     "@vitejs/plugin-react": "^5.0.0",
-    "madge": "^8.0.0",
     "sass-embedded": "^1.97.3",
     "sharp": "^0.34.3",
     "svgo": "^4.0.0",
     "terser": "^5.44.0",
-    "type-fest": "^4.41.0",
-    "typescript": "~5.8.3",
+    "type-fest": "catalog:",
+    "typescript": "catalog:",
     "vite": "^7.1.5",
     "vite-bundle-visualizer": "^1.2.1",
     "vite-css-modules": "^1.10.0",
     "vite-plugin-image-optimizer": "^2.0.2",
     "vite-plugin-minify": "^2.1.0",
     "vite-plugin-svgr": "^4.5.0",
-    "vitest": "^3.2.4"
+    "vitest": "catalog:"
   }
 }

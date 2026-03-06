@@ -8,7 +8,7 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config([
-  globalIgnores(['packages/app/dist']),
+  globalIgnores(['**/dist/**', '**/build/**']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
@@ -21,15 +21,10 @@ export default tseslint.config([
       reactDom.configs.recommended,
     ],
     languageOptions: {
-      ecmaVersion: 2020,
+      ecmaVersion: 2023,
       globals: globals.browser,
       parserOptions: {
-        project: [
-          './tsconfig.node.json',
-          './packages/app/tsconfig.app.json',
-          './packages/app/tsconfig.node.json',
-          './packages/app/tsconfig.test.json',
-        ],
+        projectService: true,
         tsconfigRootDir: import.meta.dirname,
       },
     },

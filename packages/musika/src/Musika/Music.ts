@@ -2,7 +2,7 @@
  * @module Built-in music utilities
  */
 
-import type { Time } from '../audio.js';
+import type { Time } from '@lambda-musika/audio';
 
 /**
  * The number of semitones in an octave.

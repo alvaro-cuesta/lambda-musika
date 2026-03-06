@@ -23,18 +23,24 @@ jobs:
           # Currently TSC lint needs .module.scss.d.ts files to be present, which are not committed to the repository
           # on purpose. TSC will be run post-build though, so we can skip it here for now.
           # - {
-          #     name: 'TypeScript',
+          #     name: 'TypeScript (app)',
           #     package: '@lambda-musika/app',
           #     script: 'lint:tsc',
           #   }
-          - { name: 'ESLint', package: '.', script: 'lint:eslint' }
-          - { name: 'Prettier', package: '.', script: 'lint:prettier' }
-          - { name: 'Knip', package: '.', script: 'lint:knip' }
           - {
-              name: 'Madge',
-              package: '@lambda-musika/app',
-              script: 'lint:madge',
+              name: 'TypeScript (audio)',
+              package: '@lambda-musika/audio',
+              script: 'lint:tsc',
             }
+          - {
+              name: 'TypeScript (musika)',
+              package: '@lambda-musika/musika',
+              script: 'lint:tsc',
+            }
+          - { name: 'ESLint', package: '.', script: 'lint:eslint' }
+          - { name: 'Knip', package: '.', script: 'lint:knip' }
+          - { name: 'Madge', package: '.', script: 'lint:madge' }
+          - { name: 'Prettier', package: '.', script: 'lint:prettier' }
     steps:
       - &checkout
         name: Check out Git repository
@@ -60,9 +66,15 @@ jobs:
         run: pnpm -F ${{ matrix.linter.package }} run ${{ matrix.linter.script }}
 
   test:
-    name: Run tests
-
+    name: Test ${{ matrix.package }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - '@lambda-musika/app'
+          - '@lambda-musika/audio'
+          - '@lambda-musika/musika'
     steps:
       - *checkout
       - *setup_pnpm
@@ -70,7 +82,7 @@ jobs:
       - *install_deps
 
       - name: Run tests
-        run: pnpm test
+        run: pnpm -F ${{ matrix.package }} run test
 
   build:
     name: Build static files
@@ -138,7 +150,7 @@ jobs:
         id: deployment
         uses: actions/upload-pages-artifact@v3
         with:
-          path: packages/app/dist/
+          path: packages/app/build/
 
   deploy:
     if: github.repository == 'alvaro-cuesta/lambda-musika' && github.ref == 'refs/heads/main'

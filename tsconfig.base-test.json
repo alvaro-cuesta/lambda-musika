@@ -1,0 +1,71 @@
+{
+  "extends": "./tsconfig.base.json",
+  "include": [
+    /*
+     * This is supposed to match vitest's default patterns, i.e. "** /*.{test,spec}.?(c|m)[jt]s?(x)"
+     * The glob format used by tsconfig is a bit different, so we need to expand it manually
+     * Also added test-d for the Vitest type testing feature
+     */
+    "${configDir}/**/*.test.js",
+    "${configDir}/**/*.test.jsx",
+    "${configDir}/**/*.test.ts",
+    "${configDir}/**/*.test.tsx",
+
+    "${configDir}/**/*.test.cjs",
+    "${configDir}/**/*.test.cjsx",
+    "${configDir}/**/*.test.cts",
+    "${configDir}/**/*.test.ctsx",
+
+    "${configDir}/**/*.test.mjs",
+    "${configDir}/**/*.test.mjsx",
+    "${configDir}/**/*.test.mts",
+    "${configDir}/**/*.test.mtsx",
+
+    "${configDir}/**/*.test-d.js",
+    "${configDir}/**/*.test-d.jsx",
+    "${configDir}/**/*.test-d.ts",
+    "${configDir}/**/*.test-d.tsx",
+
+    "${configDir}/**/*.test-d.cjs",
+    "${configDir}/**/*.test-d.cjsx",
+    "${configDir}/**/*.test-d.cts",
+    "${configDir}/**/*.test-d.ctsx",
+
+    "${configDir}/**/*.test-d.mjs",
+    "${configDir}/**/*.test-d.mjsx",
+    "${configDir}/**/*.test-d.mts",
+    "${configDir}/**/*.test-d.mtsx",
+
+    "${configDir}/**/*.spec.js",
+    "${configDir}/**/*.spec.jsx",
+    "${configDir}/**/*.spec.ts",
+    "${configDir}/**/*.spec.tsx",
+
+    "${configDir}/**/*.spec.cjs",
+    "${configDir}/**/*.spec.cjsx",
+    "${configDir}/**/*.spec.cts",
+    "${configDir}/**/*.spec.ctsx",
+
+    "${configDir}/**/*.spec.mjs",
+    "${configDir}/**/*.spec.mjsx",
+    "${configDir}/**/*.spec.mts",
+    "${configDir}/**/*.spec.mtsx",
+
+    // Include type definitions that are active in src because we want to import stuff in src to test it and we want
+    // the types to be available
+    // I think this is better solved by using "references" but I couldn't get that to work properly
+    "${configDir}/**/*.d.ts",
+
+    // And finally what we really want to include
+    "${configDir}/test"
+  ],
+  "exclude": [
+    "${configDir}/build",
+    "${configDir}/dist",
+    "${configDir}/node_modules"
+  ],
+  "compilerOptions": {
+    "outDir": "${configDir}/dist/test",
+    "tsBuildInfoFile": "${configDir}/node_modules/.tmp/tsconfig.test.tsbuildinfo"
+  }
+}

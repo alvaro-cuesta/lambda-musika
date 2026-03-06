@@ -1,7 +1,17 @@
 {
   "files": [],
   "references": [
-    { "path": "./tsconfig.node.json" },
-    { "path": "./packages/app/tsconfig.json" }
+    {
+      "path": "./tsconfig.node.json"
+    },
+    {
+      "path": "./packages/app/tsconfig.json"
+    },
+    {
+      "path": "./packages/audio/tsconfig.json"
+    },
+    {
+      "path": "./packages/musika/tsconfig.json"
+    }
   ]
 }
