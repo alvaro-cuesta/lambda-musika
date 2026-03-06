@@ -21,8 +21,8 @@ type TimeSliderProps = {
 
 // A slider component to seek time
 export function TimeSlider({
-  length = 0,
-  value = 0,
+  length,
+  value,
   onChange,
   ...other
 }: TimeSliderProps) {

@@ -62,7 +62,9 @@ return (t) => [0, 0];
 Install [Node.js](https://nodejs.org), clone this repository and run this in the root of the project to install the required dependencies:
 
 ```sh
-npm install
+corepack enable
+corepack install
+pnpm install --frozen-lockfile
 ```
 
 ### Local development
@@ -70,7 +72,7 @@ npm install
 Just run this to start a local development server and follow the instructions:
 
 ```sh
-npm run dev
+pnpm run dev
 ```
 
 ### Lints
@@ -78,12 +80,12 @@ npm run dev
 You should periodically run linters to ensure the code passes some basic checks:
 
 ```sh
-npm run lint:tsc
-npm run lint:eslint
-npm run lint:prettier
+pnpm run lint:tsc
+pnpm run lint:eslint
+pnpm run lint:prettier
 # Or just let your IDE do the work with TypeScript/ESLint/Prettier integrations
-npm run lint:knip
-npm run lint:madge
+pnpm run lint:knip
+pnpm run lint:madge
 ```
 
 These are automatically run as checks on GitHub Actions, but it's better if you keep lints up to date as you code!
@@ -99,6 +101,6 @@ These are automatically run as checks on GitHub Actions, but it's better if you 
 Run this to serve the application in production mode:
 
 ```sh
-npm run build
-npm run preview
+pnpm run build
+pnpm run preview
 ```

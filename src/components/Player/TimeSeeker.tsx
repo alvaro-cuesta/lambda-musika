@@ -17,11 +17,7 @@ type TimeSeekerProps = {
   isPlaying?: boolean;
 };
 
-export const TimeSeeker = ({
-  value = 0,
-  onChange,
-  isPlaying,
-}: TimeSeekerProps) => {
+export const TimeSeeker = ({ value, onChange, isPlaying }: TimeSeekerProps) => {
   const handleRestart = useCallback(() => {
     onChange?.(0);
   }, [onChange]);

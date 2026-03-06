@@ -32,20 +32,24 @@ jobs:
         name: Check out Git repository
         uses: actions/checkout@v4
 
-      - &setup
+      - &setup_pnpm
+        uses: pnpm/action-setup@v4
+        name: Install pnpm
+
+      - &setup_node
         name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: npm
+          cache: pnpm
 
       - &install_deps
         name: Install dependencies
         shell: bash
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Run ${{ matrix.linter.name }}
-        run: npm run ${{ matrix.linter.script }}
+        run: pnpm run ${{ matrix.linter.script }}
 
   build:
     name: Build static files
@@ -53,21 +57,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - *checkout
-      - *setup
+      - *setup_pnpm
+      - *setup_node
       - *install_deps
 
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
 
-      - name: Get Node.js and NPM versions
+      - name: Get Node.js and PNPM versions
         id: get-versions
         run: |
           echo "node_version=$(node --version)" >> $GITHUB_OUTPUT
-          echo "npm_version=$(npm --version)" >> $GITHUB_OUTPUT
+          echo "pnpm_version=$(pnpm --version)" >> $GITHUB_OUTPUT
           {
             echo "- **Node version:** $(node --version)"
-            echo "- **NPM version:** $(npm --version)"
+            echo "- **PNPM version:** $(pnpm --version)"
             echo ""
           } >> $GITHUB_STEP_SUMMARY
 
@@ -76,7 +81,7 @@ jobs:
           BASE: ${{ steps.pages.outputs.base_path }}
         run: |
           set -o pipefail
-          npm run build > >(tee build-output.log) 2> >(tee -a build-output.log >&2)
+          pnpm run build > >(tee build-output.log) 2> >(tee -a build-output.log >&2)
 
           {
             echo '```'

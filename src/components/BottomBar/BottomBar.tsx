@@ -227,11 +227,9 @@ export const BottomBar = ({
       href={import.meta.env.PACKAGE_CONFIG_REPOSITORY_URL}
       target="_blank"
       rel="noopener noreferrer"
+      title="alvaro-cuesta/lambda-musika at GitHub"
     >
-      <FontAwesomeIcon
-        icon={faGithub}
-        title="alvaro-cuesta/lambda-musika at GitHub"
-      />
+      <FontAwesomeIcon icon={faGithub} />
     </a>
   );
 

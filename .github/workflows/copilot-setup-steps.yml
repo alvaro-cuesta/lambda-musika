@@ -29,14 +29,18 @@ jobs:
         name: Check out Git repository
         uses: actions/checkout@v4
 
-      - &setup
+      - &setup_pnpm
+        uses: pnpm/action-setup@v4
+        name: Install pnpm
+
+      - &setup_node
         name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: npm
+          cache: pnpm
 
       - &install_deps
         name: Install dependencies
         shell: bash
-        run: npm ci
+        run: pnpm install --frozen-lockfile
