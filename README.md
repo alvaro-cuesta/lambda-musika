@@ -72,7 +72,7 @@ pnpm install --frozen-lockfile
 Just run this to start a local development server and follow the instructions:
 
 ```sh
-pnpm run dev
+pnpm -F @lambda-musika/app dev
 ```
 
 ### Lints
@@ -80,15 +80,10 @@ pnpm run dev
 You should periodically run linters to ensure the code passes some basic checks:
 
 ```sh
-pnpm run lint:tsc
-pnpm run lint:eslint
-pnpm run lint:prettier
-# Or just let your IDE do the work with TypeScript/ESLint/Prettier integrations
-pnpm run lint:knip
-pnpm run lint:madge
+pnpm lint
 ```
 
-These are automatically run as checks on GitHub Actions, but it's better if you keep lints up to date as you code!
+Or just let your IDE do the work with TypeScript/ESLint/Prettier integrations. These are automatically run as checks on GitHub Actions, but it's better if you keep lints up to date as you code!
 
 ### Things to do
 
@@ -101,6 +96,6 @@ These are automatically run as checks on GitHub Actions, but it's better if you 
 Run this to serve the application in production mode:
 
 ```sh
-pnpm run build
-pnpm run preview
+pnpm -F @lambda-musika/app build
+pnpm -F @lambda-musika/app preview
 ```

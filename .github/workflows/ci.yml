@@ -22,11 +22,19 @@ jobs:
         linter:
           # Currently TSC lint needs .module.scss.d.ts files to be present, which are not committed to the repository
           # on purpose. TSC will be run post-build though, so we can skip it here for now.
-          # - { name: 'TypeScript', script: 'lint:tsc' }
-          - { name: 'ESLint', script: 'lint:eslint' }
-          - { name: 'Prettier', script: 'lint:prettier' }
-          - { name: 'Knip', script: 'lint:knip' }
-          - { name: 'Madge', script: 'lint:madge' }
+          # - {
+          #     name: 'TypeScript',
+          #     package: '@lambda-musika/app',
+          #     script: 'lint:tsc',
+          #   }
+          - { name: 'ESLint', package: '.', script: 'lint:eslint' }
+          - { name: 'Prettier', package: '.', script: 'lint:prettier' }
+          - { name: 'Knip', package: '.', script: 'lint:knip' }
+          - {
+              name: 'Madge',
+              package: '@lambda-musika/app',
+              script: 'lint:madge',
+            }
     steps:
       - &checkout
         name: Check out Git repository
@@ -49,7 +57,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run ${{ matrix.linter.name }}
-        run: pnpm run ${{ matrix.linter.script }}
+        run: pnpm -F ${{ matrix.linter.package }} run ${{ matrix.linter.script }}
 
   test:
     name: Run tests
@@ -62,7 +70,7 @@ jobs:
       - *install_deps
 
       - name: Run tests
-        run: pnpm run test
+        run: pnpm test
 
   build:
     name: Build static files
@@ -94,7 +102,7 @@ jobs:
           BASE: ${{ steps.pages.outputs.base_path }}
         run: |
           set -o pipefail
-          pnpm run build > >(tee build-output.log) 2> >(tee -a build-output.log >&2)
+          pnpm -F @lambda-musika/app run build > >(tee build-output.log) 2> >(tee -a build-output.log >&2)
 
           {
             echo '```'
@@ -130,7 +138,7 @@ jobs:
         id: deployment
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/
+          path: packages/app/dist/
 
   deploy:
     if: github.repository == 'alvaro-cuesta/lambda-musika' && github.ref == 'refs/heads/main'

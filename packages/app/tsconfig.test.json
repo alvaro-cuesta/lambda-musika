@@ -1,5 +1,5 @@
 {
-  "extends": "./tsconfig.base.json",
+  "extends": "../../tsconfig.base.json",
   "include": [
     /*
      * This is supposed to match vitest's default patterns, i.e. "** /*.{test,spec}.?(c|m)[jt]s?(x)"

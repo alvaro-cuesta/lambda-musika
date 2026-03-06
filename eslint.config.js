@@ -8,7 +8,7 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config([
-  globalIgnores(['dist']),
+  globalIgnores(['packages/app/dist']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
@@ -25,9 +25,10 @@ export default tseslint.config([
       globals: globals.browser,
       parserOptions: {
         project: [
-          './tsconfig.app.json',
           './tsconfig.node.json',
-          './tsconfig.test.json',
+          './packages/app/tsconfig.app.json',
+          './packages/app/tsconfig.node.json',
+          './packages/app/tsconfig.test.json',
         ],
         tsconfigRootDir: import.meta.dirname,
       },

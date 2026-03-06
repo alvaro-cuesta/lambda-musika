@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { App } from './components/App.jsx';
+import { App } from './components/App.js';
 import { ScriptPlayer } from './lib/ScriptPlayer/ScriptPlayer.js';
 import './main.scss';
 

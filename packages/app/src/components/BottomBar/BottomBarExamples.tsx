@@ -2,8 +2,8 @@
 import { faFileText } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { EXAMPLE_SCRIPTS } from '../../examples/index.js';
-import { ButtonWithPanel } from './ButtonWithPanel.jsx';
-import { ConfirmPanel } from './ConfirmPanel.jsx';
+import { ButtonWithPanel } from './ButtonWithPanel.js';
+import { ConfirmPanel } from './ConfirmPanel.js';
 
 type BottomBarExamplesProps = {
   state:

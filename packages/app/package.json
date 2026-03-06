@@ -1,0 +1,81 @@
+{
+  "name": "@lambda-musika/app",
+  "version": "0.2.0",
+  "description": "The functional DAW.",
+  "keywords": [
+    "lambda",
+    "musika",
+    "functional",
+    "daw",
+    "music",
+    "sound"
+  ],
+  "homepage": "https://lambda.cuesta.dev",
+  "bugs": "https://github.com/alvaro-cuesta/lambda-musika/issues",
+  "author": {
+    "name": "Álvaro Cuesta",
+    "url": "https://alvaro.cuesta.dev"
+  },
+  "license": "GPL-3.0-only",
+  "repository": "github:alvaro-cuesta/lambda-musika",
+  "private": true,
+  "type": "module",
+  "config": {
+    "name": "Lambda Musika, the functional DAW",
+    "shortName": "Lambda Musika",
+    "description": "The functional DAW",
+    "author": "https://alvaro.cuesta.dev",
+    "themeColor": "#2d2d2d",
+    "url": "https://lambda.cuesta.dev",
+    "publicUrlBase": "https://lambda.cuesta.dev",
+    "repositoryUrl": "https://www.github.com/alvaro-cuesta/lambda-musika"
+  },
+  "packageManager": "pnpm@10.30.3",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && tsc -b",
+    "preview": "vite preview",
+    "test": "vitest --typecheck",
+    "lint": "pnpm run \"/^lint:.+$/\"",
+    "lint:tsc": "tsc --build --noEmit",
+    "lint:madge": "madge --warning --circular --extensions .js,.jsx,.ts,.tsx ./src/main.tsx",
+    "debug:visualize-build": "vite-bundle-visualizer",
+    "generate:pwa-assets": "pwa-assets-generator",
+    "generate:og-assets": "node ./bin/generate-og-assets.ts",
+    "preversion": "pnpm run lint && pnpm test && pnpm run build"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^7.0.1",
+    "@fortawesome/free-brands-svg-icons": "^7.0.1",
+    "@fortawesome/free-solid-svg-icons": "^7.0.1",
+    "@fortawesome/react-fontawesome": "^3.0.2",
+    "@react-hookz/deep-equal": "^3.0.4",
+    "ace-builds": "^1.43.3",
+    "acorn": "^8.15.0",
+    "classnames": "^2.5.1",
+    "pretty-bytes": "^7.0.1",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.1",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
+    "@vite-pwa/assets-generator": "^1.0.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "madge": "^8.0.0",
+    "sass-embedded": "^1.97.3",
+    "sharp": "^0.34.3",
+    "svgo": "^4.0.0",
+    "terser": "^5.44.0",
+    "type-fest": "^4.41.0",
+    "typescript": "~5.8.3",
+    "vite": "^7.1.5",
+    "vite-bundle-visualizer": "^1.2.1",
+    "vite-css-modules": "^1.10.0",
+    "vite-plugin-image-optimizer": "^2.0.2",
+    "vite-plugin-minify": "^2.1.0",
+    "vite-plugin-svgr": "^4.5.0",
+    "vitest": "^3.2.4"
+  }
+}

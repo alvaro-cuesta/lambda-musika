@@ -6,8 +6,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { loadFile } from '../../utils/file.js';
-import { ButtonWithPanel } from './ButtonWithPanel.jsx';
-import { ConfirmPanel } from './ConfirmPanel.jsx';
+import { ButtonWithPanel } from './ButtonWithPanel.js';
+import { ConfirmPanel } from './ConfirmPanel.js';
 
 type BottomBarFilesProps = {
   state:
