@@ -39,7 +39,7 @@ A Musika script is just a regular JS script:
 - where `t` is time
 - and `l` and `r` are output samples for the left and right channels in `[-1, 1]` range
 
-For now there is no static documentation available, just dive in the source code and learn form the [default song](examples/default.musika), other [examples](examples/), or just browse the [Musika library](src/lib/Musika/).
+For now there is no static documentation available, just dive in the source code and learn form the [default song](packages/app/src/examples/default.musika), other [examples](packages/app/src/examples/), or just browse the [Musika library](packages/musika/src/).
 
 ### Available defines:
 
@@ -47,7 +47,7 @@ For now there is no static documentation available, just dive in the source code
 - `setLength(secs)`, sets the total length of the song in seconds.
   - Used to seek using the time slider.
   - When omitted the time slider is disabled and the sound is played endlessly (useful for drone or endless procedural music).
-- `Musika`, the [Musika library](src/lib/Musika/)
+- `Musika`, the [Musika library](packages/musika/src/)
 
 ### Empty script skeleton:
 
