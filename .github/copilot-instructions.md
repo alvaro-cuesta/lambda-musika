@@ -8,7 +8,7 @@ Lambda Musika is a browser-based JavaScript Digital Audio Workstation (DAW) that
 **Size**: Medium monorepo (3 workspace packages)
 **Tech Stack**: TypeScript + React 19 + Vite 7 + Vitest + Web Audio API
 **Target Runtime**: Modern browsers supporting Web Audio API
-**Node Version**: v22.18.0 (see `.nvmrc`)
+**Node Version**: v25.8.0 (see `.nvmrc`)
 
 ## Build Instructions
 
@@ -41,7 +41,7 @@ Lambda Musika is a browser-based JavaScript Digital Audio Workstation (DAW) that
 
 ### Environment Setup:
 
-- Uses **exact Node.js version** specified in `.nvmrc` (v22.18.0)
+- Uses **exact Node.js version** specified in `.nvmrc` (v25.8.0)
 - Use **pnpm** via Corepack, then `pnpm install --frozen-lockfile`
 - **No additional global dependencies** required
 
@@ -121,6 +121,9 @@ GitHub Actions workflow (`.github/workflows/ci.yml`):
 3. **Audio Context**: Web Audio requires user interaction - player won't start without user gesture
 4. **Workspace Commands**: Most package-specific tasks must be run with pnpm filters (e.g., `pnpm -F @lambda-musika/app ...`)
 5. **Vitest Watch Mode**: Use `--run` (for example `pnpm test --run` or `pnpm -F @lambda-musika/app test --run`) in LLM/automation flows so tests exit instead of waiting in watch mode
+6. **Quick TS snippets**: For brief ad-hoc checks, use Node directly and do not use `tsx` or `--experimental-strip-types`.
+   - `node --input-type=module -e` is allowed for quick eval snippets with no inline TS type annotations; it can still import from `.ts` modules.
+   - If the snippet itself includes TypeScript syntax (for example `const x: number = 1`), write and run an actual `.ts` file with `node path/to/file.ts`.
 
 ### Error Patterns:
 
