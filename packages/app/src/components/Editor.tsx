@@ -34,7 +34,7 @@ function getEditorOptions(
     animatedScroll: false,
     showInvisibles: false,
     showPrintMargin: true,
-    printMarginColumn: 79,
+    printMarginColumn: 80,
     fadeFoldWidgets: true,
     showFoldWidgets: true,
     showLineNumbers: true,
