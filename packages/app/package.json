@@ -45,12 +45,12 @@
     "preversion": "pnpm run lint && pnpm test && pnpm run build"
   },
   "dependencies": {
-    "@lambda-musika/audio": "workspace:*",
-    "@lambda-musika/musika": "workspace:*",
     "@fortawesome/fontawesome-svg-core": "^7.0.1",
     "@fortawesome/free-brands-svg-icons": "^7.0.1",
     "@fortawesome/free-solid-svg-icons": "^7.0.1",
     "@fortawesome/react-fontawesome": "^3.0.2",
+    "@lambda-musika/audio": "workspace:*",
+    "@lambda-musika/musika": "workspace:*",
     "@react-hookz/deep-equal": "^3.0.4",
     "ace-builds": "^1.43.3",
     "acorn": "^8.15.0",
@@ -73,7 +73,7 @@
     "typescript": "catalog:",
     "vite": "^7.1.5",
     "vite-bundle-visualizer": "^1.2.1",
-    "vite-css-modules": "^1.10.0",
+    "vite-css-modules": "^1.13.0",
     "vite-plugin-image-optimizer": "^2.0.2",
     "vite-plugin-minify": "^2.1.0",
     "vite-plugin-svgr": "^4.5.0",

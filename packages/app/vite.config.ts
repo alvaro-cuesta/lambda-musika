@@ -28,6 +28,7 @@ export default defineConfig(async ({ mode }): Promise<UserConfig> => {
       ViteReact(),
       patchCssModules({
         generateSourceTypes: true,
+        declarationMap: true,
       }),
       ViteImageOptimizer({
         // This is almost the same as ViteImageOptimizer's SVGO_CONFIG...
