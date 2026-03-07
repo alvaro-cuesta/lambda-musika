@@ -72,7 +72,7 @@ pnpm install --frozen-lockfile
 Just run this to start a local development server and follow the instructions:
 
 ```sh
-pnpm -F @lambda-musika/app dev
+pnpm dev
 ```
 
 ### Lints
@@ -106,6 +106,6 @@ These are automatically run as checks on GitHub Actions, but it's better if you 
 Run this to serve the application in production mode:
 
 ```sh
-pnpm -F @lambda-musika/app build
-pnpm -F @lambda-musika/app preview
+pnpm build
+pnpm preview
 ```
