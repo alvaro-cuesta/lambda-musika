@@ -2,6 +2,7 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "noEmit": true,
-    "tsBuildInfoFile": "${configDir}/node_modules/.tmp/tsconfig.node.tsbuildinfo"
+    "tsBuildInfoFile": "${configDir}/node_modules/.tmp/tsconfig.node.tsbuildinfo",
+    "lib": ["ES2024", "DOM", "DOM.Iterable"]
   }
 }

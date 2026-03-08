@@ -1,4 +1,7 @@
 {
   "extends": "./tsconfig.base-node.json",
-  "include": ["knip.config.ts"]
+  "include": ["knip.config.ts", "eslint.config.ts"],
+  "compilerOptions": {
+    "types": ["node"]
+  }
 }

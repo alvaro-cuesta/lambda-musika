@@ -7,7 +7,8 @@
 
     /* Disable automatic inclusion of @types packages */
     "types": [],
-    "typeRoots": [],
+    /* Include only the @types packages in node_modules, excluding any from parent directories */
+    "typeRoots": ["${configDir}/node_modules/@types"],
 
     /* Bundler mode */
     "moduleResolution": "bundler",

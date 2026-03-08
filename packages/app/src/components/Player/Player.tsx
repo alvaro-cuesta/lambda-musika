@@ -2,12 +2,26 @@ import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useCallback, useEffect, useState } from 'react';
 import {
+  useGlobalShortcut,
+  type ShortcutEvent,
+} from '../../hooks/useGlobalShortcut.js';
+import {
   ScriptPlayer,
   type ScriptPlayerEvents,
 } from '../../lib/ScriptPlayer/ScriptPlayer.js';
 import styles from './Player.module.scss';
 import { TimeSeeker } from './TimeSeeker.js';
 import { TimeSlider } from './TimeSlider.js';
+
+function isTogglePlayPauseShortcut(event: ShortcutEvent): boolean {
+  return (
+    event.ctrlKey &&
+    !event.shiftKey &&
+    !event.altKey &&
+    !event.metaKey &&
+    event.key === ' '
+  );
+}
 
 type PlayerProps = {
   player: ScriptPlayer;
@@ -45,26 +59,8 @@ export const Player = ({ player, state }: PlayerProps) => {
     void player.togglePlay();
   }, [player]);
 
-  // CTRL+Space = toggle play/pause
-  useEffect(() => {
-    function handler(e: KeyboardEvent) {
-      if (
-        e.ctrlKey &&
-        !e.shiftKey &&
-        !e.altKey &&
-        !e.metaKey &&
-        e.key === ' '
-      ) {
-        togglePlay();
-      }
-    }
-
-    document.addEventListener('keydown', handler);
-
-    return () => {
-      document.removeEventListener('keydown', handler);
-    };
-  }, [togglePlay]);
+  // Toggle play/pause shortcut
+  useGlobalShortcut(isTogglePlayPauseShortcut, togglePlay);
 
   // Seeking
   const handleTime = useCallback(

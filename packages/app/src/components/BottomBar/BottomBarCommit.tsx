@@ -1,34 +1,27 @@
 /* eslint-disable @typescript-eslint/unbound-method -- false positive, not methods but React props */
 import { faShare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useEffect } from 'react';
+import {
+  useGlobalShortcut,
+  type ShortcutEvent,
+} from '../../hooks/useGlobalShortcut.js';
+
+function isCommitShortcut(event: ShortcutEvent): boolean {
+  return (
+    event.ctrlKey &&
+    !event.shiftKey &&
+    !event.altKey &&
+    !event.metaKey &&
+    event.key === 's'
+  );
+}
 
 type BottomBarCommitProps = {
   onCommit(): void;
 };
 
 export function BottomBarCommit({ onCommit }: BottomBarCommitProps) {
-  // CTRL+S = commit
-  useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      if (
-        e.ctrlKey &&
-        !e.shiftKey &&
-        !e.altKey &&
-        !e.metaKey &&
-        e.key === 's'
-      ) {
-        e.preventDefault();
-        onCommit();
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [onCommit]);
+  useGlobalShortcut(isCommitShortcut, onCommit);
 
   return (
     <button
