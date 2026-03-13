@@ -24,7 +24,6 @@
 - `[PLAYER]` Volume slider
 - `[API]` `[PLAYER]` `[RENDERER]` Musika scripts with Mono output
 - `[APP]` Allow downloading a range when song has not specified a length
-- `[APP]` Song metadata in comments (title, artist, etc.)
 
 ## Bugs
 

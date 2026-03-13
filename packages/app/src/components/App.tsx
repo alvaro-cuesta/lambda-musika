@@ -109,7 +109,11 @@ export const App = ({ audioCtx, player }: AppProps) => {
           return;
         case 'success':
           void player.setFn(source);
-          editorRef.current.clearErrors();
+          if (compileResult.warnings.length > 0) {
+            editorRef.current.addWarnings(compileResult.warnings);
+          } else {
+            editorRef.current.clearErrors();
+          }
           setCompileResult({ ...compileResult, fnCode: source });
           if (!initial) {
             // See above on why this rAF
@@ -243,6 +247,12 @@ export const App = ({ audioCtx, player }: AppProps) => {
               return;
             }
             case 'success': {
+              if (compileResult.warnings.length > 0) {
+                editorRef.current.addWarnings(compileResult.warnings);
+              } else {
+                editorRef.current.clearErrors();
+              }
+
               if (compileResult.length === null) {
                 throw new Error('Cannot render infinite-length script');
               }

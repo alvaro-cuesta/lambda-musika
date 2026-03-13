@@ -1,3 +1,16 @@
+exports.meta = {
+  title: 'Ebb & Flow',
+  authors: 'Álvaro Cuesta <https://alvaro.cuesta.dev>',
+  license: 'CC-BY-NC-SA-4.0',
+  details: `
+    Welcome to Lambda Musika!
+
+    https://lambda.cuesta.dev
+    https://lambda.cuesta.dev/docs/
+    https://github.com/alvaro-cuesta/lambda-musika#readme
+  `,
+}
+
 const { Generator, Envelope, Filter, Operator, Music, Util } = Musika
 
 

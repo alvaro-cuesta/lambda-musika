@@ -1,3 +1,17 @@
+exports.meta = {
+  title: 'THX Clone',
+  album: 'Lambda Musika Examples',
+  authors: 'Álvaro Cuesta <https://alvaro.cuesta.dev>',
+  license: 'CC-BY-NC-SA-4.0',
+  details: `
+    An impression of the famous THX "Deep Note" sound, created by
+    Dr. James A. Moorer in 1982.
+
+    This example includes randomized elements. Click "Commit" to generate a new
+    variation of the sound.
+  `,
+}
+
 const { Generator, Envelope, Filter, Operator, Music, Util } = Musika
 
 const LENGTH = 15
