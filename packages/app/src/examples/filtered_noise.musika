@@ -1,7 +1,7 @@
 exports.meta = {
   title: 'Filtered Noise',
   album: 'Lambda Musika Examples',
-  authors: 'Álvaro Cuesta <https://alvaro.cuesta.dev>',
+  authors: 'Álvaro Cuesta (https://alvaro.cuesta.dev)',
   license: 'CC-BY-NC-SA-4.0',
   details: 'Filtered white noise.',
 }

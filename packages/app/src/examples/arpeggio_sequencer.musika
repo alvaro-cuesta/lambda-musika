@@ -1,7 +1,7 @@
 exports.meta = {
   title: 'Arpeggio Sequencer',
   album: 'Lambda Musika Examples',
-  authors: 'Álvaro Cuesta <https://alvaro.cuesta.dev>',
+  authors: 'Álvaro Cuesta (https://alvaro.cuesta.dev)',
   license: 'CC-BY-NC-SA-4.0',
   details: `
     This example demonstrates how to create a simple arpeggio sequencer using

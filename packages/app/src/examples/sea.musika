@@ -1,7 +1,7 @@
 exports.meta = {
   title: 'Sea',
   album: 'Lambda Musika Examples',
-  authors: 'Álvaro Cuesta <https://alvaro.cuesta.dev>',
+  authors: 'Álvaro Cuesta (https://alvaro.cuesta.dev)',
   license: 'CC-BY-NC-SA-4.0',
   details: `
     An impression of the sound of the sea, using filtered white noise and slow

@@ -1,6 +1,6 @@
 exports.meta = {
   title: 'My awesome song',
-  authors: 'Your Name <https://example.com>',
+  authors: 'Your Name <your.name@example.com> (https://example.com)',
   license: 'CC-BY-NC-SA-4.0',
   details: 'An empty example to start from scratch.',
 }
