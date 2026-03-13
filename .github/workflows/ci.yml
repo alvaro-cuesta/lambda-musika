@@ -104,12 +104,13 @@ jobs:
           echo "node_version=$(node --version)" >> $GITHUB_OUTPUT
           echo "pnpm_version=$(pnpm --version)" >> $GITHUB_OUTPUT
           {
+            echo "# Environment"
             echo "- **Node version:** $(node --version)"
             echo "- **PNPM version:** $(pnpm --version)"
             echo ""
           } >> $GITHUB_STEP_SUMMARY
 
-      - name: Build static files
+      - name: Build @lambda-musika/app
         env:
           BASE: ${{ steps.pages.outputs.base_path }}
         run: |
@@ -117,6 +118,7 @@ jobs:
           pnpm -F @lambda-musika/app run build --outDir $(pwd)/pages > >(tee build-output.log) 2> >(tee -a build-output.log >&2)
 
           {
+            echo "# Build @lambda-musika/app"
             echo '```'
             # Strip ANSI colors and escape any triple backticks in the output
             sed 's/\x1b\[[0-9;]*m//g' build-output.log | sed 's/```/``\x60`/g'
@@ -125,7 +127,18 @@ jobs:
           } >> $GITHUB_STEP_SUMMARY
 
       - name: Build @lambda-musika/musika documentation
-        run: pnpm -F @lambda-musika/musika run build:docs --out $(pwd)/pages/docs
+        run: |
+          set -o pipefail
+          pnpm -F @lambda-musika/musika run build:docs --out $(pwd)/pages/docs > >(tee build-output.log) 2> >(tee -a build-output.log >&2)
+
+          {
+            echo "# Build @lambda-musika/musika documentation"
+            echo '```'
+            # Strip ANSI colors and escape any triple backticks in the output
+            sed 's/\x1b\[[0-9;]*m//g' build-output.log | sed 's/```/``\x60`/g'
+            echo '```'
+            echo ""
+          } >> $GITHUB_STEP_SUMMARY
 
       # Check that build didn't produce any files that should've been committed (i.e. the repository is clean)
       # This can happen if the build process modifies files tracked by Git, e.g. while generating .module.css.d.ts files
