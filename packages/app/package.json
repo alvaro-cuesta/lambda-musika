@@ -61,11 +61,13 @@
     "react-dom": "^19.1.1"
   },
   "devDependencies": {
+    "@testing-library/react": "^16.3.2",
     "@types/node": "catalog:",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
     "@vite-pwa/assets-generator": "^1.0.0",
     "@vitejs/plugin-react": "^5.0.0",
+    "jsdom": "^28.1.0",
     "sass-embedded": "^1.97.3",
     "sharp": "^0.34.3",
     "svgo": "^4.0.0",

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { toMinsSecs } from './time.js';
+import { dateToSortableString, toMinsSecs } from './time.js';
 
 describe('toMinSecs', () => {
   it('converts seconds', () => {
@@ -47,5 +47,19 @@ describe('toMinSecs', () => {
   it('breaks on >= 100 hours', () => {
     expect(toMinsSecs(100 * 60 + 0)).toBe('100:00');
     expect(toMinsSecs(100 * 60 + 1)).toBe('100:01');
+  });
+});
+
+describe('dateToSortableString', () => {
+  it('formats date parts in sortable YYYYMMDDHHMMSS format', () => {
+    const date = new Date(2026, 2, 3, 4, 5, 6);
+
+    expect(dateToSortableString(date)).toBe('20260303040506');
+  });
+
+  it('pads single-digit values', () => {
+    const date = new Date(9, 0, 1, 0, 0, 0);
+
+    expect(dateToSortableString(date)).toBe('19090101000000');
   });
 });

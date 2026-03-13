@@ -1,12 +1,12 @@
-import { useEffect, useRef, type RefObject } from 'react';
+import { useEffect, type RefObject } from 'react';
+import { useLatest } from './useLatest';
 
 export function useOnClickOutside(
   ref: RefObject<HTMLElement | null>,
   callback: ((event: MouseEvent) => void) | null | undefined,
   eventType: 'click' | 'mousedown' = 'click',
 ) {
-  const latestRef = useRef(ref);
-  latestRef.current = ref;
+  const latestRef = useLatest(ref);
 
   useEffect(() => {
     if (!callback) return;
@@ -26,5 +26,5 @@ export function useOnClickOutside(
     return () => {
       document.removeEventListener(eventType, handler);
     };
-  }, [callback, eventType]);
+  }, [latestRef, callback, eventType]);
 }

@@ -11,9 +11,9 @@ import { useEffect, useImperativeHandle, useRef, type Ref } from 'react';
 import packageJson from '../../package.json';
 import LambdaMusikaLogo from '../../public-src/lambda-musika-logo-no-color-change.svg?react';
 import EmptyScript from '../examples/empty.musika?raw';
+import { useSetting, type Settings } from '../hooks/useSetting.js';
 import type { ExceptionInfo } from '../lib/exception.js';
 import type { EditorSerialState } from '../utils/editor.js';
-import { useSetting, type Settings } from '../utils/settings.js';
 import styles from './Editor.module.scss';
 
 function getEditorOptions(

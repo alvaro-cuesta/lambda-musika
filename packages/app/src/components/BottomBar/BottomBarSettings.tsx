@@ -2,7 +2,7 @@ import { faGear } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import cx from 'classnames';
 import { useCallback } from 'react';
-import { useSetting } from '../../utils/settings.js';
+import { useSetting } from '../../hooks/useSetting.js';
 import styles from './BottomBarSettings.module.scss';
 import { ButtonWithPanel } from './ButtonWithPanel.js';
 import { Panel } from './Panel.js';
