@@ -38,6 +38,7 @@ export function attack(
     t = arg4;
   }
 
+  if (t < 0) return 0;
   return t < length ? Math.pow(t / length, curve) : 1;
 }
 
@@ -75,6 +76,7 @@ export function invAttack(
     t = arg4;
   }
 
+  if (t < 0) return 0;
   return t < length ? 1 - Math.pow(1 - t / length, curve) : 1;
 }
 
