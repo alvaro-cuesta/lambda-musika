@@ -234,10 +234,19 @@ export const BottomBar = ({
   );
 
   return (
-    <div className={styles.panelWrapper}>
+    <section
+      aria-label="App controls"
+      className={styles.panelWrapper}
+    >
       <div className={styles.container}>
         <div className={cx(styles.group, 'color-orange')}>{commitGroup}</div>
-        <div className={cx(styles.group, 'color-purple')}>{fileGroup}</div>
+        <div
+          role="group"
+          aria-label="File controls"
+          className={cx(styles.group, 'color-purple')}
+        >
+          {fileGroup}
+        </div>
         <div className={cx(styles.group, 'color-blue')}>{examplesGroup}</div>
         {renderGroup !== null ? (
           <div className={cx(styles.group, 'color-red')}>{renderGroup}</div>
@@ -248,6 +257,6 @@ export const BottomBar = ({
         <div className={styles.gap} />
         <div className={styles.group}>{aboutGroup}</div>
       </div>
-    </div>
+    </section>
   );
 };

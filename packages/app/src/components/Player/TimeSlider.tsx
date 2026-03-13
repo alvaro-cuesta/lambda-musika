@@ -55,6 +55,7 @@ export function TimeSlider({
 
       <input
         {...other}
+        aria-label="Time slider (seconds)"
         type="range"
         min={0}
         max={length}

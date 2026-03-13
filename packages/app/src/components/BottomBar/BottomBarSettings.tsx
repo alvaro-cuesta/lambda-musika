@@ -1,7 +1,7 @@
 import { faGear } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import cx from 'classnames';
-import { useCallback } from 'react';
+import { useCallback, useId } from 'react';
 import { useSetting } from '../../hooks/useSetting.js';
 import styles from './BottomBarSettings.module.scss';
 import { ButtonWithPanel } from './ButtonWithPanel.js';
@@ -31,8 +31,11 @@ export function BottomBarSettings({
     [setEditorFontSize],
   );
 
+  const panelId = useId();
+
   const panel = isOpen ? (
     <Panel
+      id={panelId}
       title="Settings"
       buttons={
         <>
@@ -66,6 +69,10 @@ export function BottomBarSettings({
       onClose={onClose}
       panel={panel}
       title="Settings"
+      aria-haspopup="dialog"
+      aria-expanded={isOpen}
+      aria-owns={panelId}
+      aria-controls={panelId}
     >
       <FontAwesomeIcon
         className={cx(styles.icon, {

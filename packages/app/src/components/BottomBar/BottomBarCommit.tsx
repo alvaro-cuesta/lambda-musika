@@ -28,7 +28,8 @@ export function BottomBarCommit({ onCommit }: BottomBarCommitProps) {
       type="button"
       onClick={onCommit}
       title="CTRL-S"
-      aria-label="Commit (CTRL-S)"
+      aria-label="Commit"
+      aria-keyshortcuts="Control+S"
     >
       <FontAwesomeIcon icon={faShare} />
       <span aria-hidden="true">Commit</span>

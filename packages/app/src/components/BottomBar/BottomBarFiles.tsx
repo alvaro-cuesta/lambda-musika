@@ -5,6 +5,7 @@ import {
   faFileArrowUp,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useId } from 'react';
 import { loadFile } from '../../utils/file.js';
 import { ButtonWithPanel } from './ButtonWithPanel.js';
 import { ConfirmPanel } from './ConfirmPanel.js';
@@ -27,9 +28,13 @@ export function BottomBarFiles({
   onSave,
   onClose,
 }: BottomBarFilesProps) {
+  const newPanelId = useId();
+  const loadPanelId = useId();
+
   const newConfirmPanel =
     state.state === 'newConfirming' ? (
       <ConfirmPanel
+        id={newPanelId}
         title="New script"
         onAccept={() => {
           onNew(true);
@@ -41,6 +46,7 @@ export function BottomBarFiles({
   const loadConfirmPanel =
     state.state === 'loadConfirming' ? (
       <ConfirmPanel
+        id={loadPanelId}
         title="Load file"
         loadName={state.fileName}
         onAccept={() => {
@@ -58,7 +64,11 @@ export function BottomBarFiles({
         }}
         onClose={onClose}
         panel={newConfirmPanel}
-        title="New"
+        title="New script"
+        aria-haspopup="dialog"
+        aria-expanded={state.state === 'newConfirming'}
+        aria-owns={newPanelId}
+        aria-controls={newPanelId}
       >
         <FontAwesomeIcon icon={faFile} />
       </ButtonWithPanel>
@@ -82,7 +92,11 @@ export function BottomBarFiles({
         }}
         onClose={onClose}
         panel={loadConfirmPanel}
-        title="Load"
+        title="Load script"
+        aria-haspopup="dialog"
+        aria-expanded={state.state === 'loadConfirming'}
+        aria-owns={loadPanelId}
+        aria-controls={loadPanelId}
       >
         <FontAwesomeIcon icon={faFileArrowUp} />
       </ButtonWithPanel>

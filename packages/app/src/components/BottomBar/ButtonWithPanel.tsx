@@ -16,6 +16,9 @@ export function ButtonWithPanel({
   ...other
 }: ButtonWithPanelProps) {
   const outsideRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const panelContainerRef = useRef<HTMLDivElement>(null);
+  const wasOpenRef = useRef(false);
 
   // Close panel when clicking outside it
   useOnClickOutside(outsideRef, panel ? onClose : null, 'mousedown');
@@ -44,14 +47,42 @@ export function ButtonWithPanel({
     };
   }, [panel, onClose]);
 
+  // Focus management
+  useEffect(() => {
+    const isOpen = panel != null;
+
+    if (isOpen && !wasOpenRef.current) {
+      const panelContainer = panelContainerRef.current;
+
+      if (panelContainer) {
+        panelContainer.focus({ preventScroll: true });
+      }
+    }
+
+    if (!isOpen && wasOpenRef.current) {
+      triggerRef.current?.focus({ preventScroll: true });
+    }
+
+    wasOpenRef.current = isOpen;
+  }, [panel]);
+
   return (
     <div
       ref={outsideRef}
       className={cx(styles.container, { [styles.containerOpen]: panel })}
     >
-      {panel ? <div className={styles.panelContainer}>{panel}</div> : null}
+      {panel ? (
+        <div
+          ref={panelContainerRef}
+          className={styles.panelContainer}
+          tabIndex={-1}
+        >
+          {panel}
+        </div>
+      ) : null}
 
       <button
+        ref={triggerRef}
         type="button"
         className={cx(other.className, styles.button)}
         {...other}

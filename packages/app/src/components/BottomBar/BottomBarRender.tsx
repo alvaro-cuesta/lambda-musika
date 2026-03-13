@@ -1,7 +1,7 @@
 import { faDownload, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import prettyBytes from 'pretty-bytes';
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import {
   getWavFileSize,
   SUPPORTED_BIT_DEPTHS,
@@ -77,8 +77,11 @@ export function BottomBarRender({
     setRenderBitDepth(e.target.value as BitDepth);
   }
 
+  const panelId = useId();
+
   const panel = isOpen ? (
     <Panel
+      id={panelId}
       title="Download .WAV"
       buttons={
         <>
@@ -143,6 +146,10 @@ export function BottomBarRender({
       onClose={onClose}
       panel={panel}
       title="Render .WAV"
+      aria-haspopup="dialog"
+      aria-expanded={isOpen}
+      aria-owns={panelId}
+      aria-controls={panelId}
     >
       <FontAwesomeIcon
         icon={isRendering ? faSpinner : faDownload}

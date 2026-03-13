@@ -226,13 +226,19 @@ export const Editor = ({ defaultValue, gutterState, ref }: EditorProps) => {
         [styles.containerError]: gutterState === 'error',
       })}
     >
-      <div
+      <section
         className={styles.logoContainer}
         title={`${packageJson.config.shortName} v${packageJson.version} (${import.meta.env.GIT_COMMIT_SHORT_SHA})`}
       >
-        <LambdaMusikaLogo className={styles.logo} />
-      </div>
-      <div ref={containerRef} />
+        <LambdaMusikaLogo
+          className={styles.logo}
+          aria-hidden="true"
+        />
+      </section>
+      <section
+        aria-label="Editor"
+        ref={containerRef}
+      />
     </div>
   );
 };

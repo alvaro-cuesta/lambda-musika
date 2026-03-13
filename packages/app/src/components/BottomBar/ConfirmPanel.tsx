@@ -1,21 +1,27 @@
 import { Panel } from './Panel';
 
 type ConfirmPanelProps = {
+  id?: string;
   title?: string;
+  'aria-label'?: string | undefined;
   loadName?: string;
   onAccept: () => void;
   onCancel: () => void;
 };
 
 export function ConfirmPanel({
+  id,
   title,
+  'aria-label': ariaLabel,
   loadName,
   onAccept,
   onCancel,
 }: ConfirmPanelProps) {
   return (
     <Panel
+      id={id}
       title={title}
+      aria-label={ariaLabel}
       buttons={
         <>
           <button

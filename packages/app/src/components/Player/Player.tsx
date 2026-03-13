@@ -72,16 +72,21 @@ export const Player = ({ player, state }: PlayerProps) => {
     [player],
   );
 
-  const title = `${isPlaying ? 'Pause' : 'Play'} (CTRL-Space)`;
+  const label = isPlaying ? 'Pause' : 'Play';
 
   return (
-    <div className={styles.container}>
+    <section
+      className={styles.container}
+      aria-label="Player controls"
+    >
       <button
         type="button"
         onClick={togglePlay}
         className={'color-orange'}
         disabled={state === null}
-        title={title}
+        title={`${label} (CTRL-Space)`}
+        aria-label={label}
+        aria-keyshortcuts="Control+Space"
       >
         <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} />
       </button>
@@ -99,6 +104,6 @@ export const Player = ({ player, state }: PlayerProps) => {
           isPlaying={isPlaying}
         />
       )}
-    </div>
+    </section>
   );
 };

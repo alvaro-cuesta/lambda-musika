@@ -48,18 +48,21 @@ export const CPULoad = ({ renderTiming, sampleRate }: CPULoadProps) => {
   );
 
   return (
-    <div className={styles.container}>
+    <section
+      className={styles.container}
+      aria-label="CPU load"
+    >
       <div
         className={styles.blackOverlay}
         style={{ minWidth: `${100 - percentageUsed}%` }}
       />
       <div className={styles.textOverlay}>
         <span className={styles.text}>
-          CPU
+          <span aria-hidden="true">CPU</span>
           {totalRenderTime != null ? `: ${Math.floor(totalRenderTime)}ms` : ''}
         </span>
         <span className={styles.text}>{maxRenderTimeLabel}</span>
       </div>
-    </div>
+    </section>
   );
 };
