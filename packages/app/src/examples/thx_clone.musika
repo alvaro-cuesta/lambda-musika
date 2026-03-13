@@ -8,8 +8,6 @@ const ATTACK_STRENGTH = 2
 const RELEASE_LENGTH = 3
 const RELEASE_STRENGTH = 2
 
-setLength(LENGTH)
-
 const Voice = () => ({
   osc: Generator.Saw(),
   f: 200 + Math.random() * 200,
@@ -41,7 +39,9 @@ const sweep_envelope = (x1, x2, y1, t) =>
     ? y1 + (t - x1) * (1 - y1) / (x2 - x1)
   : 1
 
-return t => {
+exports.length = LENGTH
+
+exports.render = t => {
   let lout = 0
   let rout = 0
 

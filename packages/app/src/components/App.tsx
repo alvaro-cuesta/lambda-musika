@@ -142,7 +142,7 @@ export const App = ({ audioCtx, player }: AppProps) => {
 
   // Setup intervals and initial state
   useEffect(() => {
-    // @todo This needs to happen always when the editor already is refed -- I think that's why the player starts with no loaded fn
+    // @todo This needs to happen always when the editor already is refed -- I think that's why the player starts with no loaded render fn
     if (editorRef.current) {
       if (history.state && isEditorSerialState(history.state)) {
         editorRef.current.setSerialState(history.state);

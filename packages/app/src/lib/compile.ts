@@ -10,20 +10,25 @@ import {
 
 const ACORN_ECMA_VERSION = 2023;
 
+type StereoRendererExports = {
+  render?: StereoRenderer;
+  length?: number | null;
+} & Record<string, unknown>;
+
 type StereoRendererBuilder = (
   Musika: typeof import('@lambda-musika/musika'),
   sampleRate: number,
   console: Console,
-  setLength: (l: number) => void,
-) => StereoRenderer;
+  exports: StereoRendererExports,
+) => void;
 
-const GLOBALS = ['Musika', 'sampleRate', 'console', 'setLength'];
+const GLOBALS = ['Musika', 'sampleRate', 'console', 'exports'];
 
 export type CompileResult =
   | {
       type: 'success';
       builder: StereoRendererBuilder;
-      fn: StereoRenderer;
+      render: StereoRenderer;
       length: number | null;
     }
   | {
@@ -44,7 +49,7 @@ export function compile(source: string, sampleRate: number): CompileResult {
     };
   }
 
-  // Compile fn builder
+  // Compile renderer builder
   let builder: StereoRendererBuilder;
   try {
     // eslint-disable-next-line @typescript-eslint/no-implied-eval -- we really do want to use eval here!
@@ -58,28 +63,58 @@ ${source}
     return { type: 'error' as const, error: tryParseException(e) };
   }
 
-  // Run fn builder
-  let length: number | null = null;
-  let fn: StereoRenderer;
+  // Run renderer builder
+  const exports: StereoRendererExports = {};
   try {
-    fn = builder(Musika, sampleRate, console, (l: number) => (length = l));
+    builder(Musika, sampleRate, console, exports);
   } catch (e) {
     return { type: 'error' as const, error: tryParseException(e) };
   }
 
-  // Run fn dummy with t=0, t=length/2, t=length to check for basic errors
+  const renderRaw: unknown = exports.render;
+  if (typeof renderRaw !== 'function') {
+    return {
+      type: 'error' as const,
+      error: {
+        name: 'InvalidExportError',
+        message: 'Expected export "render" to be a function',
+        fileName: '<unknown file>',
+        row: 0,
+        column: 0,
+        e: null,
+      },
+    };
+  }
+  // We will have to assume the type here since we can't really typecheck the function args/return type
+  const render = renderRaw as StereoRenderer;
+
+  const length: unknown = exports.length ?? null;
+  if (typeof length !== 'number' && length !== null) {
+    return {
+      type: 'error' as const,
+      error: {
+        name: 'InvalidExportError',
+        message: 'Expected export "length" to be a number, null, or undefined',
+        fileName: '<unknown file>',
+        row: 0,
+        column: 0,
+        e: null,
+      },
+    };
+  }
+
+  // Run render fn with dummy t=0, t=length/2, t=length to check for basic errors
   try {
-    fn(0 as Time);
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive... length could be changed via setLength from builder
+    render(0 as Time);
     if (length) {
-      fn((length / 2) as Time);
-      fn(length as Time);
+      render((length / 2) as Time);
+      render(length as Time);
     } else {
-      fn(10 as Time); // Unknown length, try 10 just in case
+      render(10 as Time); // Unknown length, try 10 just in case
     }
   } catch (e) {
     return { type: 'error' as const, error: tryParseException(e) };
   }
 
-  return { type: 'success' as const, builder, fn, length };
+  return { type: 'success' as const, builder, render, length };
 }

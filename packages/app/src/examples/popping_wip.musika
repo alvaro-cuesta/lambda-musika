@@ -4,7 +4,7 @@ const triggerSweep = Generator.Sin()
 
 let from = 0, length = 0, pan = 0.5
 
-return t => {
+exports.render = t => {
   let out = 0
 
   const dt = Math.random() * (triggerSweep(0.1, t) + 1.0) / 2 * 0.1

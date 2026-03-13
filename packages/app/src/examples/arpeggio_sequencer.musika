@@ -35,7 +35,7 @@ const detune = Detune(0.1, 0.4)
 const losc = Note(0.05)
 const rosc = Note(0.05)
 
-return t => {
+exports.render = t => {
   const note_in_song = Math.floor(t / Note.LENGTH)
   const chord_i = Math.floor(note_in_song / CHORD_LENGTH) % CHORDS.length
   const note_i = note_in_song % CHORD_LENGTH

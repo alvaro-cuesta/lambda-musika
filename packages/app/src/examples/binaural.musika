@@ -10,7 +10,7 @@ const A = Math.SQRT1_2  // Amplitude
 const oscL = Generator.Sin()
 const oscR = Generator.Sin()
 
-return t => [
+exports.render = t => [
   oscL(F, t) * A,
   oscR(F * (100 + dF) / 100, t) * A,
 ]

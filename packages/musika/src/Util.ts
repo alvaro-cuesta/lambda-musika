@@ -68,13 +68,13 @@ export function choose<T>(array: T[]): T | undefined {
  * @param f - The frequency (in Hz) to limit the rate to
  * @returns A function that limits the rate of calls to the given function
  */
-export function LimitRate<Fn extends (...args: never[]) => unknown>(
-  fn: Fn,
+export function LimitRate<TFn extends (...args: never[]) => unknown>(
+  fn: TFn,
   f: number,
 ) {
   const period = (1 / f) as Time;
   let nextUpdate: Time | null = null;
-  let cachedFn: () => ReturnType<Fn>;
+  let cachedFn: () => ReturnType<TFn>;
 
   return function (this: unknown, t: Time) {
     nextUpdate ??= t;
@@ -83,8 +83,8 @@ export function LimitRate<Fn extends (...args: never[]) => unknown>(
       return cachedFn;
     }
 
-    return function (this: unknown, ...args: Parameters<Fn>): ReturnType<Fn> {
-      const v = fn.apply(this, args) as ReturnType<Fn>;
+    return function (this: unknown, ...args: Parameters<TFn>): ReturnType<TFn> {
+      const v = fn.apply(this, args) as ReturnType<TFn>;
       cachedFn = () => v;
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- we set nextUpdate to t above and nobody else could've modified it
       nextUpdate = (nextUpdate! + period) as Time;

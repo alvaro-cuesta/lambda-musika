@@ -101,7 +101,6 @@ const snareInstrument = (t) =>
 /* SONG */
 
 const SONG_LENGTH = SONG_IN_LENGTH + SONG_BARS * SONG_TEMPO.barLength + SONG_OUT_LENGTH
-setLength(SONG_LENGTH)
 
 let lastSongStructureIndex
 let lastMelodyIndex
@@ -114,7 +113,9 @@ const melodyInstrument = MelodyInstrument()
 const bassInstrument = BassInstrument()
 const drumInstrument = DrumInstrument()
 
-return t => {
+exports.length = SONG_LENGTH
+
+exports.render = t => {
   if (t < SONG_IN_LENGTH) return [0, 0]
   if (t > (SONG_LENGTH - SONG_OUT_LENGTH)) return [0, 0]
 

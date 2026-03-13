@@ -38,7 +38,7 @@ const NoiseGen = () => {
 const noiseL = NoiseGen(), noiseR = NoiseGen()
 const limiter = Util.LimitRate(2)
 
-return t => {
+exports.render = t => {
   const barIndex = Math.floor(t / TEMPO.barLength)
   const bar = NOTES[barIndex % NOTES.length]
   const noteLength = TEMPO.barLength / bar.length

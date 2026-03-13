@@ -35,26 +35,35 @@ A **JavaScript DAW** that emphasizes **functions as its core building block**. I
 A Musika script is just a regular JS script:
 
 - interpreted client side
-- that returns a function `t => [l, r]`
+- that exports a `render` function `t => [l, r]`
 - where `t` is time
-- and `l` and `r` are output samples for the left and right channels in `[-1, 1]` range
+- and `l`/`r` are output samples for the left and right channels in `[-1, 1]` range
 
-For now there is no official documentation available. Just dive in the source code and learn form the [default song](packages/app/src/examples/default.musika), other [examples](packages/app/src/examples/), or browse the [Musika library](packages/musika/src/) and [its documentation](https://lambda.cuesta.dev/docs/).
+For now there is no official documentation available. Just dive in the source code and learn form the [default song](packages/app/src/examples/default.musika), other [examples](packages/app/src/examples/), or browse the [Musika](packages/musika/src/) library and [its documentation](https://lambda.cuesta.dev/docs/).
 
 ### Available defines:
 
-- `sampleRate`, current audio device sample rate.
-- `setLength(secs)`, sets the total length of the song in seconds.
+- `sampleRate` (`number`)
+  - Current audio device sample rate (e.g. `44100`).
+- `Musika`
+  - The [Musika](packages/musika/src/) library ([docs](https://lambda.cuesta.dev/docs/)).
+- `exports.render` (required, `(t: Time) => [number, number]`)
+  - The render function `t => [l, r]`.
+  - `t` is `Time` in seconds.
+  - `l` and `r` are output `number` samples for the left and right channels in `[-1, 1]` range.
+- `exports.length` (optional `number`)
+  - Sets the total length of the song in seconds.
   - Used to seek using the time slider.
   - When omitted the time slider is disabled and the sound is played endlessly (useful for drone or endless procedural music).
-- `Musika`, the [Musika library](packages/musika/src/) ([docs](https://lambda.cuesta.dev/docs/)).
+
+_(Note that Musika scripts are only CommonJS-like. They have `exports` but there is no `require`, `module`, nor other CommonJS affordances.)_
 
 ### Empty script skeleton:
 
 ```js
 const { Generator, Envelope, Filter, Operator, Music, Util } = Musika;
 
-return (t) => [0, 0];
+exports.render = (t) => [0, 0];
 ```
 
 ## Development

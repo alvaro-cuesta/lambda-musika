@@ -1,6 +1,6 @@
 const { Generator, Envelope, Filter, Operator, Music, Util } = Musika
 
-return t => {
+exports.render = t => {
   // Start writing your Musika here!
 
   return [0, 0]

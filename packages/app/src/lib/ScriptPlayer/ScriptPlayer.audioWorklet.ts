@@ -55,8 +55,8 @@ class ScriptPlayerProcessor extends AudioWorkletProcessor {
     setAtFrame: number;
   };
 
-  fn: StereoRenderer | null;
-  lastKnownWorkingFn: StereoRenderer | null;
+  render: StereoRenderer | null;
+  lastKnownWorkingRender: StereoRenderer | null;
   length: number | null;
 
   constructor(options?: AudioWorkletNodeOptions) {
@@ -91,8 +91,8 @@ class ScriptPlayerProcessor extends AudioWorkletProcessor {
 
     this.port.onmessage = this.handleMessage.bind(this);
 
-    this.lastKnownWorkingFn = null;
-    this.fn = null;
+    this.lastKnownWorkingRender = null;
+    this.render = null;
     this.length = null;
     this.frame = {
       frame: 0,
@@ -123,7 +123,7 @@ class ScriptPlayerProcessor extends AudioWorkletProcessor {
 
   handleSetFn(requestId: string, fnCode: string | null): void {
     if (fnCode === null) {
-      this.fn = null;
+      this.render = null;
       this.length = null;
       this.sendMessage({
         type: 'setFn-success',
@@ -144,7 +144,7 @@ class ScriptPlayerProcessor extends AudioWorkletProcessor {
         return;
       }
       case 'success': {
-        this.fn = compileResult.fn;
+        this.render = compileResult.render;
         this.length = compileResult.length;
         this.sendMessage({
           type: 'setFn-success',
@@ -183,7 +183,7 @@ class ScriptPlayerProcessor extends AudioWorkletProcessor {
   // We always return `true` here even if we presumably won't process because I'm not sure if we can easily restart a
   // worklet that returned `false` once and was cleaned up by the audio system
   process(_inputs: [], [output]: [[Float32Array, Float32Array]]) {
-    if (!this.fn) return true;
+    if (!this.render) return true;
 
     // Here we assume all input, output, and parameter buffers are of the same length (bufferLength)
     const bufferLength = output[0].length;
@@ -200,7 +200,7 @@ class ScriptPlayerProcessor extends AudioWorkletProcessor {
     for (let i = 0; i < bufferLength; i++) {
       const t = ((i + currentFrame) / sampleRate) as Time;
       try {
-        const [l, r] = this.fn(t);
+        const [l, r] = this.render(t);
         output[0][i] = clamp(l, -1, 1);
         output[1][i] = clamp(r, -1, 1);
       } catch (e) {
@@ -209,25 +209,25 @@ class ScriptPlayerProcessor extends AudioWorkletProcessor {
           error: tryParseException(e),
         });
 
-        // Try to recover using backup fn
-        if (this.lastKnownWorkingFn) {
-          this.fn = this.lastKnownWorkingFn;
-          // Reset last known working function so we don't get stuck in a loop
+        // Try to recover using backup render fn
+        if (this.lastKnownWorkingRender) {
+          this.render = this.lastKnownWorkingRender;
+          // Reset last known working render fn so we don't get stuck in a loop
           // This will be saved again once we successfully complete a process call
-          this.lastKnownWorkingFn = null;
-          // And restart processing from the beginning of this buffer with the working fn
+          this.lastKnownWorkingRender = null;
+          // And restart processing from the beginning of this buffer with the working render fn
           i = 0;
           continue;
         }
-        // No backup fn, just stop
+        // No backup render fn, just stop
         else {
           return true;
         }
       }
     }
 
-    // Save this (presumably working) fn as a backup fn
-    this.lastKnownWorkingFn = this.fn;
+    // Save this (presumably working) render fn as a backup render
+    this.lastKnownWorkingRender = this.render;
 
     const hasFinished =
       this.length === null

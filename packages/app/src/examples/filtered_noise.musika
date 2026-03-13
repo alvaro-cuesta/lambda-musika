@@ -10,7 +10,7 @@ const NoiseGen = () => {
 
 const noiseL = NoiseGen(), noiseR = NoiseGen()
 
-return () => [
+exports.render = () => [
   noiseL(),
   noiseR(),
 ]
