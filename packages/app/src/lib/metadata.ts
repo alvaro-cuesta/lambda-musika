@@ -115,9 +115,14 @@ export function normalizeAuthor(input: unknown): MetaAuthor | null {
   ) {
     const obj = input as Record<string, unknown>;
     const result: MetaAuthor = { name: (obj['name'] as string).trim() };
-    if (typeof obj['email'] === 'string' && obj['email'])
-      result.email = obj['email'];
-    if (typeof obj['url'] === 'string' && obj['url']) result.url = obj['url'];
+    if (typeof obj['email'] === 'string') {
+      const email = obj['email'].trim();
+      if (email) result.email = email;
+    }
+    if (typeof obj['url'] === 'string') {
+      const url = obj['url'].trim();
+      if (url) result.url = url;
+    }
     return result;
   }
   return null;
