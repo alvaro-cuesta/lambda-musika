@@ -40,7 +40,6 @@
 - `[APP]` Offline service worker
 - `[EDITOR]` Replace Ace with Monaco?
 - `[EDITOR]` Have IntelliSense (especially for Musika library!)
-- `[APP]` Build static reference of Musika library
 
 ## Musika Library
 
@@ -87,7 +86,6 @@
 - `[FEATURE]` `[COSMETIC]` `[APP]` Some kind of help/README/intro/tutorial/documentation of Musika
 - `[TODO]` `[MUSIKA]` Documentation
   - Add missing comments
-  - Static documentation generation
 
 ## 1.0.x
 

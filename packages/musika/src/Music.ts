@@ -1,5 +1,5 @@
 /**
- * @module Built-in music utilities
+ * @packageDocumentation Built-in music utilities
  */
 
 import type { Time } from '@lambda-musika/audio';

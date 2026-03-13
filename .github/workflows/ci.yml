@@ -114,7 +114,7 @@ jobs:
           BASE: ${{ steps.pages.outputs.base_path }}
         run: |
           set -o pipefail
-          pnpm -F @lambda-musika/app run build > >(tee build-output.log) 2> >(tee -a build-output.log >&2)
+          pnpm -F @lambda-musika/app run build --outDir $(pwd)/pages > >(tee build-output.log) 2> >(tee -a build-output.log >&2)
 
           {
             echo '```'
@@ -123,6 +123,9 @@ jobs:
             echo '```'
             echo ""
           } >> $GITHUB_STEP_SUMMARY
+
+      - name: Build @lambda-musika/musika documentation
+        run: pnpm -F @lambda-musika/musika run build:docs --out $(pwd)/pages/docs
 
       # Check that build didn't produce any files that should've been committed (i.e. the repository is clean)
       # This can happen if the build process modifies files tracked by Git, e.g. while generating .module.css.d.ts files
@@ -150,7 +153,7 @@ jobs:
         id: deployment
         uses: actions/upload-pages-artifact@v3
         with:
-          path: packages/app/build/
+          path: pages/
 
   deploy:
     if: github.repository == 'alvaro-cuesta/lambda-musika' && github.ref == 'refs/heads/main'

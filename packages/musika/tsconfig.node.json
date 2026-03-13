@@ -1,4 +1,4 @@
 {
   "extends": "../../tsconfig.base-node.json",
-  "include": ["vitest.config.ts"]
+  "include": ["vitest.config.ts", "typedoc.config.ts"]
 }

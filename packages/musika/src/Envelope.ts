@@ -1,5 +1,5 @@
 /**
- * @module Envelope functions.
+ * @packageDocumentation Envelope functions.
  */
 
 import type { Time } from '@lambda-musika/audio';
@@ -10,7 +10,7 @@ import type { Time } from '@lambda-musika/audio';
  *
  * `curve` controls the exponential strength.
  *
- * ```
+ * ```text
  *      __
  *     /
  * ,.·´
@@ -21,8 +21,8 @@ import type { Time } from '@lambda-musika/audio';
  * @param t - The current time.
  * @return The envelope value at time `t`.
  */
-export function attack(length: number, t: Time): number;
 export function attack(length: number, curve: number, t: Time): number;
+export function attack(length: number, t: Time): number;
 export function attack(
   length: number,
   arg3: Time | number,
@@ -47,7 +47,7 @@ export function attack(
  *
  * `curve` controls the exponential strength.
  *
- * ```
+ * ```text
  *      __
  *  ,·´
  * /
@@ -58,8 +58,8 @@ export function attack(
  * @param t - The current time.
  * @return The envelope value at time `t`.
  */
-export function invAttack(length: number, t: Time): number;
 export function invAttack(length: number, curve: number, t: Time): number;
+export function invAttack(length: number, t: Time): number;
 export function invAttack(
   length: number,
   arg3: Time | number,
@@ -84,7 +84,7 @@ export function invAttack(
  *
  * `curve` controls the exponential strength.
  *
- * ```
+ * ```text
  * __
  *   \
  *    `·.,_
@@ -99,12 +99,12 @@ export function invAttack(
 export function release(
   releaseTime: number,
   totalTime: number,
+  curve: number,
   t: Time,
 ): number;
 export function release(
   releaseTime: number,
   totalTime: number,
-  curve: number,
   t: Time,
 ): number;
 export function release(
@@ -136,7 +136,7 @@ export function release(
  *
  * `curve` controls the exponential strength.
  *
- * ```
+ * ```text
  * __
  *    `·.
  *       \_
@@ -151,12 +151,12 @@ export function release(
 export function invRelease(
   releaseTime: number,
   totalTime: number,
+  curve: number,
   t: Time,
 ): number;
 export function invRelease(
   releaseTime: number,
   totalTime: number,
-  curve: number,
   t: Time,
 ): number;
 export function invRelease(
@@ -187,7 +187,7 @@ export function invRelease(
  *
  * When `t < x0` outputs `y0`. When `t > xn` outputs `yn`.
  *
- * ```
+ * ```text
  *    /\
  *   /  \       _____
  *  /    \_____/     \

@@ -8,6 +8,8 @@
     ".": "./src/index.ts"
   },
   "scripts": {
+    "build:lib": "tsc --build",
+    "build:docs": "typedoc --options ./typedoc.config.ts",
     "lint": "pnpm run \"/^lint:.+$/\"",
     "lint:tsc": "tsc --build",
     "test": "vitest --typecheck",
@@ -18,6 +20,9 @@
     "@lambda-musika/audio": "workspace:*"
   },
   "devDependencies": {
+    "@types/jsdom": "^28.0.0",
+    "jsdom": "^28.1.0",
+    "typedoc": "^0.28.17",
     "typescript": "catalog:",
     "vitest": "catalog:"
   }

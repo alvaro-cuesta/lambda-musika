@@ -1,5 +1,5 @@
 /**
- * @module Audio signal generators.
+ * @packageDocumentation Audio signal generators.
  */
 
 import type { MonoSignal, Time } from '@lambda-musika/audio';
@@ -96,8 +96,8 @@ export function PositiveSquare() {
    * @param pw - Pulse width (between 0 and 1). Defaults to 0.5.
    * @param t - Time in seconds.
    */
-  function positiveSquare(f: number, t: Time): MonoSignal;
   function positiveSquare(f: number, pw: number, t: Time): MonoSignal;
+  function positiveSquare(f: number, t: Time): MonoSignal;
   function positiveSquare(
     f: number,
     arg3: Time | number,
@@ -137,8 +137,8 @@ export function Square() {
    * @param pw - Pulse width (between 0 and 1). Defaults to 0.5.
    * @param t - Time in seconds.
    */
-  function square(f: number, t: Time): MonoSignal;
   function square(f: number, pw: number, t: Time): MonoSignal;
+  function square(f: number, t: Time): MonoSignal;
   function square(f: number, arg3: Time | number, arg4?: Time): MonoSignal {
     let pw: number;
     let t: Time;
@@ -187,7 +187,7 @@ export function Tri() {
  *
  * @param f - Frequency of the noise.
  * @returns A function that takes time and returns the noise value between 0 and 1.
- * @see {@link LFNoisePolar}
+ * @see {@link LFNoise2}
  */
 export function LFNoise(f: number) {
   const period = 1 / f;

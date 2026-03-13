@@ -32,7 +32,8 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build && tsc -b",
+    "build": "vite build",
+    "postbuild": "tsc -b",
     "clean": "rm -rf build dist",
     "clean:hard": "rm -rf build dist node_modules/.tmp/tsconfig.*.tsbuildinfo",
     "preview": "vite preview",

@@ -25,6 +25,8 @@ const config: KnipConfig = {
     },
     'packages/musika': {
       entry: [
+        // used by typedoc
+        'typedoc.config.ts',
         // for some reason Knip doesn't detect these module augmentations as used even though they are really needed
         'test/globals.d.ts',
       ],

@@ -1,5 +1,5 @@
 /**
- * @module Audio signal operators.
+ * @packageDocumentation Audio signal operators.
  */
 
 import type { MonoSignal, StereoSignal } from '@lambda-musika/audio';
