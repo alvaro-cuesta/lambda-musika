@@ -71,10 +71,9 @@ export function BottomBarExamples({
       onClose={onClose}
       panel={panel}
       title="Examples"
-      aria-label="Examples"
     >
       <FontAwesomeIcon icon={faFileText} />
-      Examples
+      <span aria-hidden="true">Examples</span>
     </ButtonWithPanel>
   );
 }

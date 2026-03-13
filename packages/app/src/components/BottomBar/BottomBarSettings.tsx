@@ -66,7 +66,6 @@ export function BottomBarSettings({
       onClose={onClose}
       panel={panel}
       title="Settings"
-      aria-label="Settings"
     >
       <FontAwesomeIcon
         className={cx(styles.icon, {

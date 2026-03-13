@@ -59,7 +59,6 @@ export function BottomBarFiles({
         onClose={onClose}
         panel={newConfirmPanel}
         title="New"
-        aria-label="New"
       >
         <FontAwesomeIcon icon={faFile} />
       </ButtonWithPanel>
@@ -84,7 +83,6 @@ export function BottomBarFiles({
         onClose={onClose}
         panel={loadConfirmPanel}
         title="Load"
-        aria-label="Load"
       >
         <FontAwesomeIcon icon={faFileArrowUp} />
       </ButtonWithPanel>
@@ -96,7 +94,6 @@ export function BottomBarFiles({
           onSave();
         }}
         title="Save"
-        aria-label="Save"
       >
         <FontAwesomeIcon icon={faFileArrowDown} />
       </button>

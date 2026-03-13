@@ -82,7 +82,6 @@ export const Player = ({ player, state }: PlayerProps) => {
         className={'color-orange'}
         disabled={state === null}
         title={title}
-        aria-label={title}
       >
         <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} />
       </button>

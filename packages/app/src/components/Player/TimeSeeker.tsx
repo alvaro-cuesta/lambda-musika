@@ -46,7 +46,6 @@ export const TimeSeeker = ({ value, onChange, isPlaying }: TimeSeekerProps) => {
         className="color-purple"
         onClick={handleRestart}
         title={restartLabel}
-        aria-label={restartLabel}
       >
         <FontAwesomeIcon icon={faFastBackward} />
       </button>
@@ -56,7 +55,6 @@ export const TimeSeeker = ({ value, onChange, isPlaying }: TimeSeekerProps) => {
         className="color-green"
         onClick={handleRewind}
         title={rewindLabel}
-        aria-label={rewindLabel}
       >
         <FontAwesomeIcon icon={faBackward} />
       </button>
@@ -72,7 +70,6 @@ export const TimeSeeker = ({ value, onChange, isPlaying }: TimeSeekerProps) => {
         className="color-blue"
         onClick={handleFastForward}
         title={forwardLabel}
-        aria-label={forwardLabel}
       >
         <FontAwesomeIcon icon={faForward} />
       </button>
@@ -82,7 +79,6 @@ export const TimeSeeker = ({ value, onChange, isPlaying }: TimeSeekerProps) => {
         className="color-red"
         onClick={handleVeryFastForward}
         title={fastForwardLabel}
-        aria-label={fastForwardLabel}
       >
         <span className="fa-layers">
           <FontAwesomeIcon

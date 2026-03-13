@@ -31,7 +31,7 @@ export function BottomBarCommit({ onCommit }: BottomBarCommitProps) {
       aria-label="Commit (CTRL-S)"
     >
       <FontAwesomeIcon icon={faShare} />
-      Commit
+      <span aria-hidden="true">Commit</span>
     </button>
   );
 }

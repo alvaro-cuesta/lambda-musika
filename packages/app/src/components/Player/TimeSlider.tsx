@@ -51,7 +51,7 @@ export function TimeSlider({
 
   return (
     <div className={styles.container}>
-      {toMinsSecs(Math.floor(value))}
+      <span aria-label="Current time">{toMinsSecs(Math.floor(value))}</span>
 
       <input
         {...other}
@@ -65,7 +65,7 @@ export function TimeSlider({
         onMouseMove={handleMouseMove}
       />
 
-      {toMinsSecs(length)}
+      <span aria-label="Total time">{toMinsSecs(length)}</span>
     </div>
   );
 }

@@ -107,7 +107,6 @@ export function BottomBarRender({
           value={renderSampleRate}
           disabled={isRendering}
           title="Render sample rate"
-          aria-label="Render sample rate"
         >
           {AVAILABLE_SAMPLE_RATES.map((f) => (
             <option
@@ -124,7 +123,6 @@ export function BottomBarRender({
           value={renderBitDepth}
           disabled={isRendering}
           title="Render bit depth"
-          aria-label="Render bit depth"
         >
           {SUPPORTED_BIT_DEPTHS.map((b) => (
             <option
@@ -144,14 +142,13 @@ export function BottomBarRender({
       onClick={onOpen}
       onClose={onClose}
       panel={panel}
-      title="Examples"
-      aria-label="Examples"
+      title="Render .WAV"
     >
       <FontAwesomeIcon
         icon={isRendering ? faSpinner : faDownload}
         spin={isRendering}
       />
-      .WAV
+      <span aria-hidden="true">.WAV</span>
     </ButtonWithPanel>
   );
 }
