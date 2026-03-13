@@ -14,7 +14,7 @@ import EmptyScript from '../examples/empty.musika?raw';
 import { useSetting, type Settings } from '../hooks/useSetting.js';
 import type { ExceptionInfo } from '../lib/exception.js';
 import type { EditorSerialState } from '../utils/editor.js';
-import { assertIsNever } from '../utils/types';
+import { assertIsNever } from '../utils/types.js';
 import styles from './Editor.module.scss';
 
 function getEditorOptions(
