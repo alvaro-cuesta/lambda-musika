@@ -1,3 +1,5 @@
+import dedent from 'dedent';
+
 type MetaAuthor = {
   name: string;
   email?: string;
@@ -15,16 +17,16 @@ type KnownMetadataKey =
   | 'genre'
   | 'album';
 
-// This type is used as authoring guidance for `exports.meta` in user scripts.
-export type StereoRendererMetaInput = {
-  title?: OneOrMany<string>;
-  authors?: OneOrMany<string | MetaAuthor>;
-  license?: OneOrMany<string>;
-  details?: OneOrMany<string>;
-  url?: OneOrMany<string>;
-  genre?: OneOrMany<string>;
-  album?: OneOrMany<string>;
-} & Record<string, OneOrMany<string> | undefined>;
+// This type will be used as authoring guidance for `exports.meta` in user scripts.
+// export type StereoRendererMetaInput = {
+//   title?: OneOrMany<string>;
+//   authors?: OneOrMany<string | MetaAuthor>;
+//   license?: OneOrMany<string>;
+//   details?: OneOrMany<string>;
+//   url?: OneOrMany<string>;
+//   genre?: OneOrMany<string>;
+//   album?: OneOrMany<string>;
+// } & Record<string, OneOrMany<string> | undefined>;
 
 export type StereoRendererMeta = {
   title?: string[];
@@ -42,7 +44,7 @@ type MetadataWarning = {
 };
 
 type MetadataKeyNormalizerConfig<T> = {
-  parseItem: (item: unknown) => T | null;
+  parseItem: (item: unknown) => OneOrMany<T> | null;
   droppedItemMessage: (key: string) => string;
   droppedAllMessage: (key: string) => string;
 };
@@ -62,6 +64,13 @@ const AUTHORS_METADATA_CONFIG: MetadataKeyNormalizerConfig<MetaAuthor> = {
     'Dropped metadata "authors" because it has no valid author values',
 };
 
+const DETAILS_METADATA_CONFIG: MetadataKeyNormalizerConfig<string> = {
+  parseItem: (item) =>
+    typeof item === 'string' ? parseDetailsParagraphs(item) : null,
+  droppedItemMessage: STRING_METADATA_CONFIG.droppedItemMessage,
+  droppedAllMessage: STRING_METADATA_CONFIG.droppedAllMessage,
+};
+
 const KNOWN_METADATA_CONFIG: Record<
   KnownMetadataKey,
   MetadataKeyNormalizerConfig<string | MetaAuthor>
@@ -69,7 +78,7 @@ const KNOWN_METADATA_CONFIG: Record<
   title: STRING_METADATA_CONFIG,
   album: STRING_METADATA_CONFIG,
   license: STRING_METADATA_CONFIG,
-  details: STRING_METADATA_CONFIG,
+  details: DETAILS_METADATA_CONFIG,
   url: STRING_METADATA_CONFIG,
   genre: STRING_METADATA_CONFIG,
   authors: AUTHORS_METADATA_CONFIG,
@@ -118,6 +127,27 @@ function toArray(value: unknown): unknown[] {
   return Array.isArray(value) ? value : [value];
 }
 
+function toTypedArray<T>(value: OneOrMany<T>): T[] {
+  return Array.isArray(value) ? value : [value];
+}
+
+function parseDetailsParagraphs(input: string): string[] {
+  const normalized = dedent(input).trim();
+  if (!normalized) return [];
+
+  return normalized
+    .split(/(?:\r?\n[ \t]*){2,}/)
+    .map((paragraph) =>
+      paragraph
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .join(' ')
+        .replace(/[ \t]+/g, ' ')
+        .trim(),
+    )
+    .filter((paragraph) => paragraph.length > 0);
+}
+
 type NormalizeMetadataOptions<T> = {
   key: string;
   value: unknown;
@@ -138,7 +168,7 @@ function normalizeMetadataValues<T>({
   const normalized = values.flatMap((item) => {
     const parsed = parseItem(item);
     if (parsed !== null) {
-      return [parsed];
+      return toTypedArray(parsed);
     }
 
     droppedCount += 1;

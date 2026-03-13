@@ -101,6 +101,48 @@ describe('metadata', () => {
       });
     });
 
+    it('parses details into markdown-style paragraphs with dedent', () => {
+      expect(
+        extractMeta({
+          details: `
+            First line
+            continues same paragraph.
+
+            Second paragraph.
+          `,
+        }),
+      ).toEqual({
+        meta: {
+          details: [
+            'First line continues same paragraph.',
+            'Second paragraph.',
+          ],
+        },
+        warnings: [],
+      });
+    });
+
+    it('flattens details arrays into paragraph arrays', () => {
+      expect(
+        extractMeta({
+          details: [
+            'One line',
+            `
+              Two line one
+              Two line two
+
+              Three
+            `,
+          ],
+        }),
+      ).toEqual({
+        meta: {
+          details: ['One line', 'Two line one Two line two', 'Three'],
+        },
+        warnings: [],
+      });
+    });
+
     it('drops non-string scalar fields and emits warnings', () => {
       expect(extractMeta({ title: 42, album: false, details: null })).toEqual({
         meta: {},
@@ -123,6 +165,19 @@ describe('metadata', () => {
 
     it('emits summary warning for empty string arrays', () => {
       expect(extractMeta({ details: [] })).toEqual({
+        meta: {},
+        warnings: [
+          {
+            key: 'details',
+            message:
+              'Dropped metadata "details" because it has no valid string values',
+          },
+        ],
+      });
+    });
+
+    it('drops whitespace-only details values', () => {
+      expect(extractMeta({ details: '   \n\n  ' })).toEqual({
         meta: {},
         warnings: [
           {
