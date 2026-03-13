@@ -16,8 +16,8 @@ import type {
   ScriptPlayerEvents,
 } from '../lib/ScriptPlayer/ScriptPlayer.js';
 import { isEditorSerialState } from '../utils/editor.js';
-import { downloadBlob } from '../utils/file.js';
-import { dateToSortableString, toMinsSecs } from '../utils/time.js';
+import { downloadBlob, getFileStem } from '../utils/file.js';
+import { toMinsSecs } from '../utils/time.js';
 import styles from './App.module.scss';
 import { BottomBar } from './BottomBar/BottomBar.js';
 import {
@@ -219,12 +219,19 @@ export const App = ({ audioCtx, player }: AppProps) => {
     if (!editorRef.current) return;
     const source = editorRef.current.getValue();
     if (source === null) return;
+
+    const compileResult = compile(source, audioCtx.sampleRate);
+    const fileStem = getFileStem(
+      compileResult.type === 'success' ? compileResult.meta : {},
+      'script',
+    );
+
     const blob = new Blob([source], {
       type: 'application/javascript;charset=utf-8',
     });
-    downloadBlob(`script-${dateToSortableString(new Date())}.musika`, blob);
+    downloadBlob(`${fileStem}.musika`, blob);
     markClean();
-  }, [markClean]);
+  }, [audioCtx.sampleRate, markClean]);
 
   const handleRender = useCallback(
     (sampleRate: number, bitDepth: BitDepth) => {
@@ -274,8 +281,11 @@ export const App = ({ audioCtx, player }: AppProps) => {
                     2,
                     sampleRate,
                   );
+
+                  const filePrefix = getFileStem(compileResult.meta, 'render');
+
                   downloadBlob(
-                    `render-${dateToSortableString(new Date())}_${toMinsSecs(compileResult.length, '-')}_${sampleRate}-${bitDepth}b.wav`,
+                    `${filePrefix}_${toMinsSecs(compileResult.length, '-')}_${sampleRate}-${bitDepth}b.wav`,
                     blob,
                   );
                 }
