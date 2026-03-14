@@ -5,7 +5,7 @@ exports.meta = {
   license: 'CC-BY-NC-SA-4.0',
   details: `
     This example demonstrates how to create a simple arpeggio sequencer using
-    Musika's `Music` module.
+    Musika's \`Music\` module.
   `,
 }
 
