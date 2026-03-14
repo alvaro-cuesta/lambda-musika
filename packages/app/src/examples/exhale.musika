@@ -1,3 +1,14 @@
+exports.meta = {
+  title: 'Exhale',
+  album: 'Lambda Musika Examples',
+  authors: 'Álvaro Cuesta (https://alvaro.cuesta.dev)',
+  license: 'CC-BY-NC-SA-4.0',
+  details: `
+    An example showcasing how to create a whistle-like sound using Musika's
+    noise generator and filters.
+  `,
+}
+
 const { Generator, Filter, Envelope, Music, Util } = Musika
 
 const TEMPO = Music.Tempo(2, 4, 90)

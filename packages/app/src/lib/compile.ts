@@ -2,24 +2,20 @@ import type { StereoRenderer, Time } from '@lambda-musika/audio';
 import * as Musika from '@lambda-musika/musika';
 import { parse } from 'acorn';
 import {
-  type AcornException,
-  type ExceptionInfo,
   parseAcornException,
   tryParseException,
+  type AcornException,
+  type ExceptionInfo,
 } from './exception.js';
+import { extractMeta, type StereoRendererMeta } from './metadata.js';
 
 const ACORN_ECMA_VERSION = 2023;
-
-type StereoRendererExports = {
-  render?: StereoRenderer;
-  length?: number | null;
-} & Record<string, unknown>;
 
 type StereoRendererBuilder = (
   Musika: typeof import('@lambda-musika/musika'),
   sampleRate: number,
   console: Console,
-  exports: StereoRendererExports,
+  exports: Record<string | number | symbol, unknown>,
 ) => void;
 
 const GLOBALS = ['Musika', 'sampleRate', 'console', 'exports'];
@@ -30,6 +26,8 @@ export type CompileResult =
       builder: StereoRendererBuilder;
       render: StereoRenderer;
       length: number | null;
+      meta: StereoRendererMeta;
+      warnings: ExceptionInfo[];
     }
   | {
       type: 'error';
@@ -64,14 +62,15 @@ ${source}
   }
 
   // Run renderer builder
-  const exports: StereoRendererExports = {};
+  const exports: Record<string | number | symbol, unknown> = {};
   try {
     builder(Musika, sampleRate, console, exports);
   } catch (e) {
     return { type: 'error' as const, error: tryParseException(e) };
   }
 
-  const renderRaw: unknown = exports.render;
+  // Validate exports.render
+  const renderRaw = exports['render'];
   if (typeof renderRaw !== 'function') {
     return {
       type: 'error' as const,
@@ -88,7 +87,8 @@ ${source}
   // We will have to assume the type here since we can't really typecheck the function args/return type
   const render = renderRaw as StereoRenderer;
 
-  const length: unknown = exports.length ?? null;
+  // Validate exports.length
+  const length: unknown = exports['length'] ?? null;
   if (typeof length !== 'number' && length !== null) {
     return {
       type: 'error' as const,
@@ -116,5 +116,23 @@ ${source}
     return { type: 'error' as const, error: tryParseException(e) };
   }
 
-  return { type: 'success' as const, builder, render, length };
+  // Validate exports.meta
+  const { meta, warnings: metaWarnings } = extractMeta(exports['meta']);
+  const warnings = metaWarnings.map((warning) => ({
+    name: 'MetadataWarning',
+    message: warning.message,
+    fileName: '<metadata>',
+    row: 0,
+    column: 0,
+    e: null,
+  }));
+
+  return {
+    type: 'success' as const,
+    builder,
+    render,
+    length,
+    meta,
+    warnings,
+  };
 }

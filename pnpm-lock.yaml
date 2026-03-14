@@ -95,6 +95,9 @@ importers:
       classnames:
         specifier: ^2.5.1
         version: 2.5.1
+      dedent:
+        specifier: ^1.7.2
+        version: 1.7.2
       pretty-bytes:
         specifier: ^7.0.1
         version: 7.1.0
@@ -1858,6 +1861,14 @@ packages:
   decode-ico@0.4.1:
     resolution: {integrity: sha512-69NZfbKIzux1vBOd31al3XnMnH+2mqDhEgLdpygErm4d60N+UwA5Sq5WFjmEDQzumgB9fElojGwWG0vybVfFmA==}
     engines: {node: '>=8.6'}
+
+  dedent@1.7.2:
+    resolution: {integrity: sha512-WzMx3mW98SN+zn3hgemf4OzdmyNhhhKz5Ay0pUfQiMQ3e1g+xmTJWp/pKdwKVXhdSkAEGIIzqeuWrL3mV/AXbA==}
+    peerDependencies:
+      babel-plugin-macros: ^3.1.0
+    peerDependenciesMeta:
+      babel-plugin-macros:
+        optional: true
 
   deep-eql@5.0.2:
     resolution: {integrity: sha512-h5k/5U50IJJFpzfL6nO9jaaumfjO/f2NjK/oYB2Djzm4p9L+3T9qWpZqZ2hAbLPuuYq9wrU08WQyBTL5GbPk5Q==}
@@ -4924,6 +4935,8 @@ snapshots:
       '@canvas/image-data': 1.1.0
       decode-bmp: 0.2.1
       to-data-view: 1.1.0
+
+  dedent@1.7.2: {}
 
   deep-eql@5.0.2: {}
 

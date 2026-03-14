@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 
-import { afterEach, describe, expect, it, vi } from 'vitest';
-import { downloadBlob, loadFile } from './file.js';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { StereoRendererMeta } from '../lib/metadata.js';
+import { downloadBlob, getFileStem, loadFile } from './file.js';
 
 const originalFileReader = globalThis.FileReader;
 const originalCreateObjectURL = (URL as { createObjectURL?: unknown })
@@ -235,5 +236,84 @@ describe('loadFile', () => {
     } as unknown as typeof FileReader;
 
     await expect(loadFile('text')).resolves.toBeNull();
+  });
+});
+
+describe('getFileStem', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 2, 3, 4, 5, 6));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('uses title when no author is available', () => {
+    const metadata: StereoRendererMeta = {};
+    metadata.title = ['Sea'];
+
+    expect(getFileStem(metadata, 'script')).toBe('Sea_20260303040506');
+  });
+
+  it('uses "title1, title2" when multiple titles are available', () => {
+    const metadata: StereoRendererMeta = {};
+    metadata.title = ['Sea', 'Breeze'];
+
+    expect(getFileStem(metadata, 'script')).toBe('Sea, Breeze_20260303040506');
+  });
+
+  it('uses "author - title" when both are available', () => {
+    const metadata: StereoRendererMeta = {};
+    metadata.title = ['Exhale'];
+    metadata.authors = [{ name: 'Álvaro Cuesta' }];
+
+    expect(getFileStem(metadata, 'script')).toBe(
+      'Álvaro Cuesta - Exhale_20260303040506',
+    );
+  });
+
+  it('uses "author1, author2 - title" when multiple authors are available', () => {
+    const metadata: StereoRendererMeta = {};
+    metadata.title = ['Exhale'];
+    metadata.authors = [{ name: 'Álvaro Cuesta' }, { name: 'Artist 2' }];
+
+    expect(getFileStem(metadata, 'script')).toBe(
+      'Álvaro Cuesta, Artist 2 - Exhale_20260303040506',
+    );
+  });
+
+  it('uses "author - title1, title2" when multiple titles are available', () => {
+    const metadata: StereoRendererMeta = {};
+    metadata.title = ['Exhale', 'Breathe'];
+    metadata.authors = [{ name: 'Álvaro Cuesta' }];
+
+    expect(getFileStem(metadata, 'script')).toBe(
+      'Álvaro Cuesta - Exhale, Breathe_20260303040506',
+    );
+  });
+
+  it('uses fallback when title is not present', () => {
+    const metadata: StereoRendererMeta = {};
+    metadata.authors = [{ name: 'Someone' }];
+
+    expect(getFileStem(metadata, 'script')).toBe('script_20260303040506');
+  });
+
+  it('uses fallback if title slug is empty', () => {
+    const metadata: StereoRendererMeta = {};
+    metadata.title = ['    '];
+
+    expect(getFileStem(metadata, 'render')).toBe('render_20260303040506');
+  });
+
+  it('removes invalid filename characters', () => {
+    const metadata: StereoRendererMeta = {};
+    metadata.title = ['My:Song?'];
+    metadata.authors = [{ name: 'A/B' }];
+
+    expect(getFileStem(metadata, 'script')).toBe(
+      'A-B - My-Song-_20260303040506',
+    );
   });
 });

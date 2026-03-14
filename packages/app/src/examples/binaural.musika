@@ -1,5 +1,14 @@
-// Very low frequency -- might not produce sound on phone speakers!
-// Adjust frequency below
+exports.meta = {
+  title: 'Binaural Beats',
+  authors: 'Álvaro Cuesta (https://alvaro.cuesta.dev)',
+  license: 'CC-BY-NC-SA-4.0',
+  details: `
+    A simple binaural beat generator.
+
+    Very low frequency -- might not produce sound on phone speakers!
+    Adjust frequencies and beat below.
+  `,
+}
 
 const { Generator } = Musika
 
