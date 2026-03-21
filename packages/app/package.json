@@ -23,7 +23,7 @@
   "config": {
     "name": "Lambda Musika, the functional DAW",
     "shortName": "Lambda Musika",
-    "description": "The functional DAW",
+    "description": "JavaScript DAW that emphasizes functions as its core building block, running on the web. Live-coding ready!",
     "author": "https://alvaro.cuesta.dev",
     "themeColor": "#2d2d2d",
     "url": "https://lambda.cuesta.dev",
