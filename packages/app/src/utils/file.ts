@@ -1,3 +1,6 @@
+import type { StereoRendererMeta } from '../lib/metadata.js';
+import { dateToSortableString } from './time.js';
+
 /**
  * Downloads a Blob object as a file.
  *
@@ -80,4 +83,42 @@ export function loadFile<T extends 'text' | 'dataURL' | 'arrayBuffer'>(
 
     input.click();
   });
+}
+
+function joinNonEmpty(value: string[]): string {
+  return value
+    .map(cleanFilenamePart)
+    .filter((item) => item.length > 0)
+    .join(', ');
+}
+
+function cleanFilenamePart(value: string): string {
+  return (
+    value
+      // Clean non-filename-safe characters
+      // eslint-disable-next-line no-control-regex -- this is not a mistake, we want to remove control characters
+      .replace(/[<>:"/\\|?*\u0000-\u001f]/g, '-')
+      .trim()
+  );
+}
+
+function getMetadataFileStem(meta: StereoRendererMeta): string | null {
+  if (!meta.title) return null;
+
+  const titlePart = joinNonEmpty(meta.title);
+  if (titlePart.length === 0) return null;
+
+  const authorNames = meta.authors?.map((author) => author.name);
+  const authorPart = authorNames ? joinNonEmpty(authorNames) : null;
+
+  return authorPart ? `${authorPart} - ${titlePart}` : titlePart;
+}
+
+export function getFileStem(
+  meta: StereoRendererMeta,
+  fallbackPrefix: string,
+): string {
+  const prefix = getMetadataFileStem(meta) ?? fallbackPrefix;
+  const date = dateToSortableString(new Date());
+  return `${prefix}_${date}`;
 }

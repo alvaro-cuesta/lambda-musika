@@ -44,23 +44,68 @@ For now there is no official documentation available. Just dive in the source co
 ### Available defines:
 
 - `sampleRate` (`number`)
-  - Current audio device sample rate (e.g. `44100`).
+
+  Current audio device sample rate (e.g. `44100`).
+
 - `Musika`
-  - The [Musika](packages/musika/src/) library ([docs](https://lambda.cuesta.dev/docs/)).
+
+  The [Musika](packages/musika/src/) library ([docs](https://lambda.cuesta.dev/docs/)).
+
 - `exports.render` (required, `(t: Time) => [number, number]`)
-  - The render function `t => [l, r]`.
+
+  The render function `t => [l, r]`.
   - `t` is `Time` in seconds.
   - `l` and `r` are output `number` samples for the left and right channels in `[-1, 1]` range.
+
 - `exports.length` (optional `number`)
-  - Sets the total length of the song in seconds.
+
+  Sets the total length of the song in seconds.
   - Used to seek using the time slider.
   - When omitted the time slider is disabled and the sound is played endlessly (useful for drone or endless procedural music).
+
+- `exports.meta` (optional `object`)
+
+  Script metadata. Values are `string`s unless otherwise specified. All keys support arrays to indicate multiple values.
+  - `title`: music title.
+  - `authors`: music author(s).
+    - **String form**: `"Name <email> (url)"`.
+    - **Object form**: `{ name: string, email?: string, url?: string }`.
+  - `license`: music license(s), e.g. `CC-BY-NC-SA-4.0`.
+    - Unsure? Choose a [Creative Commons license](https://creativecommons.org/share-your-work/cclicenses/).
+  - `details`: some additional information about the music.
+  - `url`: web page(s) related to the music (code repository, SoundCloud...)
+  - `genre`: music genre(s) (pop, jazz, ...)
+  - `album`: music album name.
+  - You can also add arbitrary custom metadata keys.
+
+  Example:
+
+  ```js
+  exports.meta = {
+    title: 'My Song',
+    album: 'My Album',
+    license: 'CC-BY-NC-SA-4.0',
+    details: 'A short description.',
+    url: ['https://example.com/repo', 'https://soundcloud.com/example'],
+    genre: ['ambient', 'electronic'],
+    authors: [
+      'Alice <alice@example.com>',
+      { name: 'Bob', url: 'https://bob.example.com' },
+    ],
+    mood: 'uplifting', // custom key
+  };
+  ```
 
 _(Note that Musika scripts are only CommonJS-like. They have `exports` but there is no `require`, `module`, nor other CommonJS affordances.)_
 
 ### Empty script skeleton:
 
 ```js
+exports.meta = {
+  title: 'Untitled Song',
+  authors: 'Unknown Artist',
+};
+
 const { Generator, Envelope, Filter, Operator, Music, Util } = Musika;
 
 exports.render = (t) => [0, 0];

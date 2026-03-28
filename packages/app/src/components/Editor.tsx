@@ -14,6 +14,7 @@ import EmptyScript from '../examples/empty.musika?raw';
 import { useSetting, type Settings } from '../hooks/useSetting.js';
 import type { ExceptionInfo } from '../lib/exception.js';
 import type { EditorSerialState } from '../utils/editor.js';
+import { assertIsNever } from '../utils/types.js';
 import styles from './Editor.module.scss';
 
 function getEditorOptions(
@@ -57,6 +58,7 @@ export type EditorRef = {
   getValue: () => string | null;
   newScript: (content?: string) => void;
   addError: (error: ExceptionInfo) => void;
+  addWarnings: (warnings: ExceptionInfo[]) => void;
   clearErrors: () => void;
   getSerialState: () => EditorSerialState | null;
   setSerialState: (state: EditorSerialState) => void;
@@ -73,9 +75,57 @@ type EditorProps = {
 function clearErrorsFromSession(session: ace.EditSession) {
   session.setAnnotations([]);
   if (session.lineWidgets) {
-    session.lineWidgets.forEach((w) => {
-      session.widgetManager.removeLineWidget(w);
-    });
+    for (let i = session.lineWidgets.length - 1; i >= 0; i--) {
+      const widget = session.lineWidgets[i];
+      if (widget) {
+        session.widgetManager.removeLineWidget(widget);
+      }
+    }
+  }
+}
+
+type EditorDiagnostic = {
+  type: 'error' | 'warning';
+  info: ExceptionInfo;
+};
+
+function setDiagnostics(editor: ace.Editor, diagnostics: EditorDiagnostic[]) {
+  const session = editor.getSession();
+
+  if (diagnostics.length === 0) {
+    clearErrorsFromSession(session);
+    return;
+  }
+
+  const annotations: Ace.Annotation[] = diagnostics.map(({ type, info }) => {
+    const { name, message, row, column } = info;
+    // Cleans stuff like `SyntaxError: Unexpected token (113:8)` to just `SyntaxError: Unexpected token`
+    const cleanMessage = message.replace(/\s+\(\d+:\d+\)$/, '');
+    return {
+      type,
+      text: `${name}: ${cleanMessage}`,
+      row,
+      column,
+    };
+  });
+  session.setAnnotations(annotations);
+
+  for (const diagnostic of diagnostics) {
+    const { type, info } = diagnostic;
+
+    switch (type) {
+      case 'error': {
+        console.error(info);
+        break;
+      }
+      case 'warning': {
+        console.warn(info);
+        break;
+      }
+      default: {
+        assertIsNever(type);
+      }
+    }
   }
 }
 
@@ -160,16 +210,21 @@ export const Editor = ({ defaultValue, gutterState, ref }: EditorProps) => {
       addError(error: ExceptionInfo) {
         if (!editorRef.current) return;
         const editor = editorRef.current;
-        const session = editor.getSession();
+        clearErrorsFromSession(editor.getSession());
+        setDiagnostics(editor, [{ type: 'error', info: error }]);
+      },
 
-        clearErrorsFromSession(session);
-
-        const { name, message, row, column } = error;
-        // Cleans stuff like `SyntaxError: Unexpected token (113:8)` to just `SyntaxError: Unexpected token`
-        const cleanMessage = message.replace(/\s+\(\d+:\d+\)$/, '');
-        const text = `${name}: ${cleanMessage}`;
-        session.setAnnotations([{ type: 'error', text, row, column }]);
-        console.error(error);
+      addWarnings(warnings: ExceptionInfo[]) {
+        if (!editorRef.current) return;
+        const editor = editorRef.current;
+        clearErrorsFromSession(editor.getSession());
+        setDiagnostics(
+          editor,
+          warnings.map((warning) => ({
+            type: 'warning' as const,
+            info: warning,
+          })),
+        );
       },
 
       clearErrors() {
